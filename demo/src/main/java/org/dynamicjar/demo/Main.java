@@ -1,7 +1,7 @@
 package org.dynamicjar.demo;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.dynamicjar.core.DynamicJar;
+import org.dynamicjar.core.main.DynamicJar;
 
 import java.io.IOException;
 

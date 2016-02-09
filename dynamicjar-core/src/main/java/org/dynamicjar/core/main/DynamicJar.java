@@ -1,6 +1,7 @@
-package org.dynamicjar.core;
+package org.dynamicjar.core.main;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.dynamicjar.core.exception.DependencyResolutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,8 +12,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
-
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * *** AUTOTRADE ***
@@ -38,17 +37,10 @@ public class DynamicJar {
 
         InputStream pomInputStream = mainClass.getResourceAsStream(path);
 
-
-        String userHome = System.getProperty("user.home");
-        String mavenHome =
-            isNotEmpty(System.getProperty("M2_HOME")) ? System.getProperty("M2_HOME") :
-            isNotEmpty(userHome) ? userHome + "/.m2/" : "./.m2/";
-
-        logger.debug("Maven home: " + mavenHome);
         try {
             List<File> dependencyFiles =
                 MavenHelper.getDependencyFiles(pomInputStream);
-            logger.info(dependencyFiles.toString());
+            logger.debug(dependencyFiles.toString());
         } catch (DependencyResolutionException e) {
             logger.error("Failed to resolve dependencies", e);
         }

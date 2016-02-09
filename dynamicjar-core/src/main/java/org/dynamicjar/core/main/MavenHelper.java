@@ -1,4 +1,4 @@
-package org.dynamicjar.core;
+package org.dynamicjar.core.main;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.model.Model;
@@ -15,6 +15,7 @@ import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingResult;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.dynamicjar.core.exception.DependencyResolutionException;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -196,6 +197,8 @@ class MavenHelper {
 
         PreorderNodeListGenerator nlg = new PreorderNodeListGenerator();
         node.accept(nlg);
+
+        //TODO: return node including children as DependencyNode. Include all scopes to be able to warn for conflicting versions.
 
         return nlg.getArtifacts(true);
     }
