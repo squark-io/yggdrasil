@@ -1,8 +1,6 @@
 package org.dynamicjar.core;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.eclipse.aether.collection.DependencyCollectionException;
-import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,12 +47,10 @@ public class DynamicJar {
         logger.debug("Maven home: " + mavenHome);
         try {
             List<File> dependencyFiles =
-                MavenHelper.getDependencyFiles(pomInputStream, new File(mavenHome + "/repository"));
+                MavenHelper.getDependencyFiles(pomInputStream);
             logger.info(dependencyFiles.toString());
-        } catch (DependencyCollectionException e) {
-            e.printStackTrace();
         } catch (DependencyResolutionException e) {
-            e.printStackTrace();
+            logger.error("Failed to resolve dependencies", e);
         }
     }
 
