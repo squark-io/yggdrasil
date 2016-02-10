@@ -16,6 +16,8 @@ import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingResult;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dynamicjar.core.exception.DependencyResolutionException;
+import org.dynamicjar.core.model.DependencyTreeNode;
+import org.dynamicjar.core.util.LambdaExceptionUtil;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -36,7 +38,7 @@ import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.util.artifact.JavaScopes;
 import org.eclipse.aether.util.filter.ScopeDependencyFilter;
-import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +46,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -63,23 +64,37 @@ class MavenHelper {
 
     private static Logger logger = LoggerFactory.getLogger(MavenHelper.class);
 
-    static List<File> getDependencyFiles(InputStream projectPom)
+    public static DependencyTreeNode getDependencyFiles(InputStream projectPom)
         throws DependencyResolutionException {
         try {
             MavenProject mavenProject = loadProject(projectPom);
             return getDependencyFiles(mavenProject);
-        } catch (IOException | DependencyResolutionException | XmlPullParserException |
+        } catch (IOException | XmlPullParserException |
             SettingsBuildingException | DependencyCollectionException e) {
             throw new DependencyResolutionException(e);
         }
     }
 
-    private static List<File> getDependencyFiles(MavenProject mavenProject)
+    @NotNull
+    private static MavenProject loadProject(InputStream pomFile)
+        throws IOException, XmlPullParserException, DependencyResolutionException {
+        MavenXpp3Reader mavenReader = new MavenXpp3Reader();
+
+        if (pomFile != null) {
+            Model model = mavenReader.read(pomFile);
+            return new MavenProject(model);
+        }
+
+        throw new DependencyResolutionException("Failed to find pom.xml");
+    }
+
+    private static DependencyTreeNode getDependencyFiles(MavenProject mavenProject)
         throws DependencyCollectionException, DependencyResolutionException,
         SettingsBuildingException {
 
         Settings mavenSettings = getMavenSettings();
 
+        //@TODO add repositores from MavenProject
         RepositorySystem repositorySystem = getNewRepositorySystem();
         RepositorySystemSession repositorySystemSession =
             newRepositorySystemSession(repositorySystem, getLocalRepository(mavenSettings));
@@ -92,40 +107,33 @@ class MavenHelper {
             remoteRepositories.add(centralRepository);
         }
 
+        DependencyTreeNode rootDependencyTreeNode =
+            DependencyTreeNode.fromMavenProject(mavenProject);
         List<org.apache.maven.model.Dependency> dependencies = mavenProject.getDependencies();
-        final List<File> dependencyFiles = new ArrayList<>();
 
         dependencies.parallelStream()
             .filter(dependency -> JavaScopes.PROVIDED.equalsIgnoreCase(dependency.getScope()))
-            .forEach(dependency -> {
-                Collection<Artifact> resolvedDependencies = null;
+            .forEach(LambdaExceptionUtil.rethrowConsumer(dependency -> {
                 try {
                     Artifact dependencyArtifact =
                         new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
                             dependency.getClassifier(), dependency.getType(),
                             dependency.getVersion());
-                    resolvedDependencies = resolveDependencies(dependencyArtifact, repositorySystem,
-                        repositorySystemSession, remoteRepositories);
+                    DependencyTreeNode dependencyTreeNode =
+                        resolveDependencies(dependencyArtifact, repositorySystem,
+                            repositorySystemSession, remoteRepositories);
+                    if (dependencyTreeNode == null) {
+                        logger.error("No dependencies found");
+                        throw new DependencyResolutionException("No dependencies found");
+                    }
+                    rootDependencyTreeNode.addChildDependency(dependencyTreeNode);
                 } catch (DependencyCollectionException | org.eclipse.aether.resolution
                     .DependencyResolutionException e) {
                     logger.error("Failed to retrieve dependency", e);
                 }
+            }));
 
-                if (resolvedDependencies != null) {
-                    resolvedDependencies.forEach(artifact -> {
-                        if (artifact.getFile() != null) {
-                            dependencyFiles.add(artifact.getFile());
-                        } else {
-                            logger.warn("Failed to resolve file for artifact " + artifact);
-                        }
-                    });
-                } else {
-                    logger.error("No dependencies found");
-                }
-
-            });
-
-        return dependencyFiles;
+        return rootDependencyTreeNode;
     }
 
     private static Settings getMavenSettings() throws SettingsBuildingException {
@@ -150,6 +158,36 @@ class MavenHelper {
         return settingsBuildingResult.getEffectiveSettings();
     }
 
+    private static RepositorySystem getNewRepositorySystem() {
+        DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
+        locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
+        locator.addService(TransporterFactory.class, FileTransporterFactory.class);
+        locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
+
+        return locator.getService(RepositorySystem.class);
+    }
+
+    private static RepositorySystemSession newRepositorySystemSession(
+        RepositorySystem repositorySystem, LocalRepository localRepository) {
+        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+
+        session.setLocalRepositoryManager(
+            repositorySystem.newLocalRepositoryManager(session, localRepository));
+
+        return session;
+    }
+
+    private static LocalRepository getLocalRepository(Settings mavenSettings) {
+        String overrideLocalRepository = System.getProperty(MAVEN_LOCAL_REPOSITORY);
+        String localRepository = mavenSettings.getLocalRepository();
+        if (StringUtils.isEmpty(localRepository)) {
+            localRepository = USER_HOME + "/.m2/repository";
+        }
+        return new LocalRepository(
+            StringUtils.isNotEmpty(overrideLocalRepository) ? overrideLocalRepository :
+            localRepository);
+    }
+
     private static List<RemoteRepository> getRemoteRepositories(Settings mavenSettings) {
         Map<String, Profile> mavenProfiles = mavenSettings.getProfilesAsMap();
         List<RemoteRepository> remoteRepositories = new ArrayList<>();
@@ -166,18 +204,7 @@ class MavenHelper {
         return remoteRepositories;
     }
 
-    private static LocalRepository getLocalRepository(Settings mavenSettings) {
-        String overrideLocalRepository = System.getProperty(MAVEN_LOCAL_REPOSITORY);
-        String localRepository = mavenSettings.getLocalRepository();
-        if (StringUtils.isEmpty(localRepository)) {
-            localRepository = USER_HOME + "/.m2/repository";
-        }
-        return new LocalRepository(
-            StringUtils.isNotEmpty(overrideLocalRepository) ? overrideLocalRepository :
-            localRepository);
-    }
-
-    private static Collection<Artifact> resolveDependencies(Artifact defaultArtifact,
+    private static DependencyTreeNode resolveDependencies(Artifact defaultArtifact,
         RepositorySystem repositorySystem, RepositorySystemSession repositorySystemSession,
         List<RemoteRepository> remoteRepositories) throws DependencyCollectionException,
         org.eclipse.aether.resolution.DependencyResolutionException {
@@ -195,42 +222,6 @@ class MavenHelper {
         dependencyRequest.setRoot(node);
         repositorySystem.resolveDependencies(repositorySystemSession, dependencyRequest);
 
-        PreorderNodeListGenerator nlg = new PreorderNodeListGenerator();
-        node.accept(nlg);
-
-        //TODO: return node including children as DependencyNode. Include all scopes to be able to warn for conflicting versions.
-
-        return nlg.getArtifacts(true);
-    }
-
-    private static RepositorySystemSession newRepositorySystemSession(
-        RepositorySystem repositorySystem, LocalRepository localRepository) {
-        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
-
-        session.setLocalRepositoryManager(
-            repositorySystem.newLocalRepositoryManager(session, localRepository));
-
-        return session;
-    }
-
-    private static RepositorySystem getNewRepositorySystem() {
-        DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
-        locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
-        locator.addService(TransporterFactory.class, FileTransporterFactory.class);
-        locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
-
-        return locator.getService(RepositorySystem.class);
-    }
-
-    private static MavenProject loadProject(InputStream pomFile)
-        throws IOException, XmlPullParserException {
-        MavenXpp3Reader mavenReader = new MavenXpp3Reader();
-
-        if (pomFile != null) {
-            Model model = mavenReader.read(pomFile);
-            return new MavenProject(model);
-        }
-
-        return null;
+        return new DependencyTreeNode(node, JavaScopes.PROVIDED);
     }
 }

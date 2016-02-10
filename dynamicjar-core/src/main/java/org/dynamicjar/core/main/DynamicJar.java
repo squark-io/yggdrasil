@@ -2,6 +2,7 @@ package org.dynamicjar.core.main;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dynamicjar.core.exception.DependencyResolutionException;
+import org.dynamicjar.core.model.DependencyTreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +12,6 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.List;
 
 /**
  * *** AUTOTRADE ***
@@ -38,9 +38,8 @@ public class DynamicJar {
         InputStream pomInputStream = mainClass.getResourceAsStream(path);
 
         try {
-            List<File> dependencyFiles =
-                MavenHelper.getDependencyFiles(pomInputStream);
-            logger.debug(dependencyFiles.toString());
+            DependencyTreeNode dependencies = MavenHelper.getDependencyFiles(pomInputStream);
+            logger.debug(dependencies.toString());
         } catch (DependencyResolutionException e) {
             logger.error("Failed to resolve dependencies", e);
         }
