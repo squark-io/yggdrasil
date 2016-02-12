@@ -15,9 +15,10 @@ import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingResult;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.dynamicjar.core.exception.DependencyResolutionException;
-import org.dynamicjar.core.model.DependencyTreeNode;
-import org.dynamicjar.core.util.LambdaExceptionUtil;
+import org.dynamic.core.api.DependencyResolver;
+import org.dynamic.core.api.exception.DependencyResolutionException;
+import org.dynamic.core.api.model.DependencyTreeNode;
+import org.dynamic.core.api.util.LambdaExceptionUtil;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -46,10 +47,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-class MavenHelper {
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+
+public class MavenDependencyResolver implements DependencyResolver {
     static final String USER_HOME = System.getProperty("user.home");
 
     private static final File USER_MAVEN_CONFIGURATION_HOME = new File(USER_HOME, ".m2");
@@ -62,9 +67,10 @@ class MavenHelper {
             "conf/settings.xml");
     private static final String MAVEN_LOCAL_REPOSITORY = "maven.local.repository";
 
-    private static Logger logger = LoggerFactory.getLogger(MavenHelper.class);
+    private static Logger logger = LoggerFactory.getLogger(MavenDependencyResolver.class);
 
-    public static DependencyTreeNode getDependencyFiles(InputStream projectPom)
+    @Override
+    public DependencyTreeNode getDependencyFiles(InputStream projectPom)
         throws DependencyResolutionException {
         try {
             MavenProject mavenProject = loadProject(projectPom);
@@ -108,7 +114,8 @@ class MavenHelper {
         }
 
         DependencyTreeNode rootDependencyTreeNode =
-            DependencyTreeNode.fromMavenProject(mavenProject);
+            new DependencyTreeNode(mavenProject.getGroupId(), mavenProject.getArtifactId(),
+                mavenProject.getPackaging(), mavenProject.getVersion(), mavenProject.getFile());
         List<org.apache.maven.model.Dependency> dependencies = mavenProject.getDependencies();
 
         dependencies.parallelStream()
@@ -222,6 +229,25 @@ class MavenHelper {
         dependencyRequest.setRoot(node);
         repositorySystem.resolveDependencies(repositorySystemSession, dependencyRequest);
 
-        return new DependencyTreeNode(node, JavaScopes.PROVIDED);
+        return fromDependencyNode(node);
+    }
+
+    private static DependencyTreeNode fromDependencyNode(DependencyNode dependencyNode) {
+        Artifact artifact = dependencyNode.getArtifact();
+        String groupId = artifact.getGroupId();
+        String artifactId = artifact.getArtifactId();
+        String extension = artifact.getExtension();
+        String classifier = artifact.getClassifier();
+        String version = artifact.getVersion();
+        File file = artifact.getFile();
+        String scope = dependencyNode.getDependency().getScope();
+        Set<DependencyTreeNode> children = new HashSet<>();
+        if (isNotEmpty(dependencyNode.getChildren())) {
+            dependencyNode.getChildren().parallelStream().forEach(child -> {
+                children.add(fromDependencyNode(child));
+            });
+        }
+        return new DependencyTreeNode(groupId, artifactId, extension, classifier, version, file,
+            scope, children, JavaScopes.PROVIDED);
     }
 }

@@ -1,4 +1,4 @@
-package org.dynamicjar.core.exception;
+package org.dynamic.core.api.exception;
 
 /**
  * *** AUTOTRADE ***

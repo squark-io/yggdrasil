@@ -1,4 +1,4 @@
-package org.dynamicjar.core.util;
+package org.dynamic.core.api.util;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;

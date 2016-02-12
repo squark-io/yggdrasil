@@ -1,16 +1,14 @@
-package org.dynamicjar.core.model;
+package org.dynamic.core.api.model;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.maven.project.MavenProject;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.graph.DependencyNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.Set;
 
 /**
  * *** AUTOTRADE ***
@@ -30,7 +28,7 @@ public class DependencyTreeNode {
     private String scope;
     private DependencyTree childDependencies;
 
-    private DependencyTreeNode(String groupId, String artifactId, String extension, String version,
+    public DependencyTreeNode(String groupId, String artifactId, String extension, String version,
         File file) {
         this.groupId = groupId;
         this.artifactId = artifactId;
@@ -40,38 +38,37 @@ public class DependencyTreeNode {
         this.childDependencies = new DependencyTree(this);
     }
 
-    private DependencyTreeNode(DependencyNode dependencyNode, @Nullable String defaultScope,
+    private DependencyTreeNode(String groupId, String artifactId, String extension,
+        String classifier, String version, File file, String scope,
+        @Nullable Set<DependencyTreeNode> children, @Nullable String defaultScope,
         @NotNull DependencyTree parentTree) {
-        this(dependencyNode, defaultScope);
+        this(groupId, artifactId, extension, classifier, version, file, scope, children,
+            defaultScope);
         this.parentTree = parentTree;
 
     }
 
-    public DependencyTreeNode(DependencyNode dependencyNode, @Nullable String defaultScope) {
-        Artifact artifact = dependencyNode.getArtifact();
-        this.groupId = artifact.getGroupId();
-        this.artifactId = artifact.getArtifactId();
-        this.extension = artifact.getExtension();
-        this.classifier = artifact.getClassifier();
-        this.version = artifact.getVersion();
-        this.file = artifact.getFile();
-        this.scope = dependencyNode.getDependency().getScope();
+    public DependencyTreeNode(String groupId, String artifactId, String extension,
+        String classifier, String version, File file, String scope,
+        @Nullable Set<DependencyTreeNode> children, @Nullable String defaultScope) {
+        this.groupId = groupId;
+        this.artifactId = artifactId;
+        this.extension = extension;
+        this.classifier = classifier;
+        this.version = version;
+        this.file = file;
+        this.scope = scope;
         if (StringUtils.isEmpty(this.scope)) {
             this.scope = defaultScope;
         }
         this.childDependencies = new DependencyTree(this);
-        if (CollectionUtils.isNotEmpty(dependencyNode.getChildren())) {
-            dependencyNode.getChildren().stream().forEach(childNode -> {
+        if (CollectionUtils.isNotEmpty(children)) {
+            children.stream().forEach(childNode -> {
                 //No default scope for child nodes.
-                this.childDependencies
-                    .put(new DependencyTreeNode(childNode, null, this.childDependencies));
+                childNode.setParentTree(this.childDependencies);
+                this.childDependencies.put(childNode);
             });
         }
-    }
-
-    public static DependencyTreeNode fromMavenProject(MavenProject mavenProject) {
-        return new DependencyTreeNode(mavenProject.getGroupId(), mavenProject.getArtifactId(),
-            mavenProject.getPackaging(), mavenProject.getVersion(), mavenProject.getFile());
     }
 
     public File getFile() {

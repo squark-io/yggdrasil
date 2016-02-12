@@ -1,4 +1,4 @@
-package org.dynamicjar.core.model;
+package org.dynamic.core.api.model;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
