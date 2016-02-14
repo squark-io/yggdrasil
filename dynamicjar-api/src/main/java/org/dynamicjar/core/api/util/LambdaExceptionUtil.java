@@ -1,11 +1,11 @@
-package org.dynamic.core.api.util;
+package org.dynamicjar.core.api.util;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/**
+/**F
  * http://stackoverflow.com/a/27644392/961395
  */
 public class LambdaExceptionUtil {

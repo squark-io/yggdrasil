@@ -1,7 +1,7 @@
-package org.dynamic.core.api;
+package org.dynamicjar.core.api;
 
-import org.dynamic.core.api.exception.DependencyResolutionException;
-import org.dynamic.core.api.model.DependencyTreeNode;
+import org.dynamicjar.core.api.exception.DependencyResolutionException;
+import org.dynamicjar.core.api.model.DependencyTreeNode;
 
 import java.io.InputStream;
 

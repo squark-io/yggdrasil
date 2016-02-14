@@ -1,4 +1,4 @@
-package org.dynamic.core.api.model;
+package org.dynamicjar.core.api.model;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
