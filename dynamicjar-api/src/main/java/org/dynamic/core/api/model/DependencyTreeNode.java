@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -17,7 +18,7 @@ import java.util.Set;
  * Created by Erik Håkansson on 2016-02-09.
  * Copyright 2016
  */
-public class DependencyTreeNode {
+public class DependencyTreeNode implements Serializable {
     private DependencyTree parentTree;
     private String groupId;
     private String artifactId;
@@ -170,7 +171,9 @@ public class DependencyTreeNode {
         if (StringUtils.isNotEmpty(classifier)) {
             buffer.append(':').append(classifier);
         }
-        buffer.append(':').append(version);
+        if (StringUtils.isNotEmpty(version)) {
+            buffer.append(':').append(version);
+        }
         return buffer.toString();
     }
 
@@ -212,5 +215,16 @@ public class DependencyTreeNode {
 
     public void setExtension(String extension) {
         this.extension = extension;
+    }
+
+    public String buildIdentifierStringWithoutVersion() {
+        return buildIdentifierStringWithoutVersion(this);
+    }
+
+    public static String buildIdentifierStringWithoutVersion(
+        DependencyTreeNode dependencyTreeNode) {
+        return buildIdentifierString(dependencyTreeNode.getGroupId(),
+            dependencyTreeNode.getArtifactId(), dependencyTreeNode.getExtension(),
+            dependencyTreeNode.getClassifier(), null);
     }
 }

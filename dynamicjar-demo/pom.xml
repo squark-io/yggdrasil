@@ -17,17 +17,23 @@
         <dependency>
             <groupId>org.dynamicjar</groupId>
             <artifactId>dynamicjar-core</artifactId>
-            <version>0.0.1-ALPHA-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.dynamicjar</groupId>
             <artifactId>dynamicjar-maven</artifactId>
-            <version>0.0.1-ALPHA-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.5</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -52,6 +58,7 @@
                                     <mainClass>org.dynamicjar.demo.Main</mainClass>
                                 </transformer>
                             </transformers>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
                         </configuration>
                     </execution>
                 </executions>

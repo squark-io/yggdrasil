@@ -55,13 +55,11 @@ import java.util.Set;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 public class MavenDependencyResolver implements DependencyResolver {
-    static final String USER_HOME = System.getProperty("user.home");
 
+    private static final String USER_HOME = System.getProperty("user.home");
     private static final File USER_MAVEN_CONFIGURATION_HOME = new File(USER_HOME, ".m2");
-
     private static final File DEFAULT_USER_SETTINGS_FILE =
         new File(USER_MAVEN_CONFIGURATION_HOME, "settings.xml");
-
     private static final File DEFAULT_GLOBAL_SETTINGS_FILE =
         new File(System.getProperty("M2_HOME", System.getProperty("maven.home", "")),
             "conf/settings.xml");
@@ -69,20 +67,8 @@ public class MavenDependencyResolver implements DependencyResolver {
 
     private static Logger logger = LoggerFactory.getLogger(MavenDependencyResolver.class);
 
-    @Override
-    public DependencyTreeNode getDependencyFiles(InputStream projectPom)
-        throws DependencyResolutionException {
-        try {
-            MavenProject mavenProject = loadProject(projectPom);
-            return getDependencyFiles(mavenProject);
-        } catch (IOException | XmlPullParserException |
-            SettingsBuildingException | DependencyCollectionException e) {
-            throw new DependencyResolutionException(e);
-        }
-    }
-
     @NotNull
-    private static MavenProject loadProject(InputStream pomFile)
+    private static MavenProject loadProject(final InputStream pomFile)
         throws IOException, XmlPullParserException, DependencyResolutionException {
         MavenXpp3Reader mavenReader = new MavenXpp3Reader();
 
@@ -94,7 +80,7 @@ public class MavenDependencyResolver implements DependencyResolver {
         throw new DependencyResolutionException("Failed to find pom.xml");
     }
 
-    private static DependencyTreeNode getDependencyFiles(MavenProject mavenProject)
+    private static DependencyTreeNode getDependencyFiles(final MavenProject mavenProject)
         throws DependencyCollectionException, DependencyResolutionException,
         SettingsBuildingException {
 
@@ -175,7 +161,7 @@ public class MavenDependencyResolver implements DependencyResolver {
     }
 
     private static RepositorySystemSession newRepositorySystemSession(
-        RepositorySystem repositorySystem, LocalRepository localRepository) {
+        final RepositorySystem repositorySystem, final LocalRepository localRepository) {
         DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
 
         session.setLocalRepositoryManager(
@@ -184,7 +170,7 @@ public class MavenDependencyResolver implements DependencyResolver {
         return session;
     }
 
-    private static LocalRepository getLocalRepository(Settings mavenSettings) {
+    private static LocalRepository getLocalRepository(final Settings mavenSettings) {
         String overrideLocalRepository = System.getProperty(MAVEN_LOCAL_REPOSITORY);
         String localRepository = mavenSettings.getLocalRepository();
         if (StringUtils.isEmpty(localRepository)) {
@@ -195,7 +181,7 @@ public class MavenDependencyResolver implements DependencyResolver {
             localRepository);
     }
 
-    private static List<RemoteRepository> getRemoteRepositories(Settings mavenSettings) {
+    private static List<RemoteRepository> getRemoteRepositories(final Settings mavenSettings) {
         Map<String, Profile> mavenProfiles = mavenSettings.getProfilesAsMap();
         List<RemoteRepository> remoteRepositories = new ArrayList<>();
         for (String activeProfile : mavenSettings.getActiveProfiles()) {
@@ -211,9 +197,10 @@ public class MavenDependencyResolver implements DependencyResolver {
         return remoteRepositories;
     }
 
-    private static DependencyTreeNode resolveDependencies(Artifact defaultArtifact,
-        RepositorySystem repositorySystem, RepositorySystemSession repositorySystemSession,
-        List<RemoteRepository> remoteRepositories) throws DependencyCollectionException,
+    private static DependencyTreeNode resolveDependencies(final Artifact defaultArtifact,
+        final RepositorySystem repositorySystem,
+        final RepositorySystemSession repositorySystemSession,
+        final List<RemoteRepository> remoteRepositories) throws DependencyCollectionException,
         org.eclipse.aether.resolution.DependencyResolutionException {
 
         Dependency dependency = new Dependency((defaultArtifact), null);
@@ -232,7 +219,7 @@ public class MavenDependencyResolver implements DependencyResolver {
         return fromDependencyNode(node);
     }
 
-    private static DependencyTreeNode fromDependencyNode(DependencyNode dependencyNode) {
+    private static DependencyTreeNode fromDependencyNode(final DependencyNode dependencyNode) {
         Artifact artifact = dependencyNode.getArtifact();
         String groupId = artifact.getGroupId();
         String artifactId = artifact.getArtifactId();
@@ -249,5 +236,24 @@ public class MavenDependencyResolver implements DependencyResolver {
         }
         return new DependencyTreeNode(groupId, artifactId, extension, classifier, version, file,
             scope, children, JavaScopes.PROVIDED);
+    }
+
+    @Override
+    public final DependencyTreeNode getDependencyFiles(final InputStream projectPom)
+        throws DependencyResolutionException {
+        try {
+            MavenProject mavenProject = loadProject(projectPom);
+            return getDependencyFiles(mavenProject);
+        } catch (IOException | XmlPullParserException |
+            SettingsBuildingException | DependencyCollectionException e) {
+            throw new DependencyResolutionException(e);
+        }
+    }
+
+    @Override
+    public final InputStream getDependencyDescriberFor(final Class clazz, final String groupId,
+        final String artifactId) {
+        String path = "/META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
+        return clazz.getResourceAsStream(path);
     }
 }

@@ -16,4 +16,6 @@ public interface DependencyResolver {
 
     DependencyTreeNode getDependencyFiles(InputStream dependencyDefinitions)
     throws DependencyResolutionException;
+
+    InputStream getDependencyDescriberFor(Class clazz, String groupId, String artifactId);
 }

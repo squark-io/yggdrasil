@@ -16,6 +16,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             DynamicJar.loadDependencies(Main.class, "org.dynamicjar", "dynamicjar-demo");
+            new Business().helloWorld();
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         }
