@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 
 /**
- * *** AUTOTRADE ***
+ * *** DynamicJar ***
  * <p>
  * <p>
  * Created by Erik Håkansson on 2016-02-09.

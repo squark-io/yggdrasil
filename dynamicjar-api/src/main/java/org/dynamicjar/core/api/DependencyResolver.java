@@ -6,7 +6,7 @@ import org.dynamicjar.core.api.model.DependencyTreeNode;
 import java.io.InputStream;
 
 /**
- * *** AUTOTRADE ***
+ * *** DynamicJar ***
  * <p>
  * <p>
  * Created by Erik Håkansson on 2016-02-12.

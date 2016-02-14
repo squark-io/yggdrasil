@@ -1,12 +1,10 @@
 package org.dynamicjar.demo;
 
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.dynamicjar.core.api.exception.DependencyResolutionException;
 import org.dynamicjar.core.main.DynamicJar;
 
-import java.io.IOException;
-
 /**
- * *** AUTOTRADE ***
+ * *** DynamicJar ***
  * <p>
  * <p>
  * Created by Erik Håkansson on 2016-02-05.
@@ -17,7 +15,7 @@ public class Main {
         try {
             DynamicJar.loadDependencies(Main.class, "org.dynamicjar", "dynamicjar-demo");
             new Business().helloWorld();
-        } catch (IOException | XmlPullParserException e) {
+        } catch (DependencyResolutionException e) {
             e.printStackTrace();
         }
     }

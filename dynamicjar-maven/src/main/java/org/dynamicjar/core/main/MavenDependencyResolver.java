@@ -19,6 +19,7 @@ import org.dynamicjar.core.api.DependencyResolver;
 import org.dynamicjar.core.api.exception.DependencyResolutionException;
 import org.dynamicjar.core.api.model.DependencyTreeNode;
 import org.dynamicjar.core.api.util.LambdaExceptionUtil;
+import org.dynamicjar.core.api.util.Scopes;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
@@ -37,7 +38,6 @@ import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
-import org.eclipse.aether.util.artifact.JavaScopes;
 import org.eclipse.aether.util.filter.ScopeDependencyFilter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -105,7 +105,7 @@ public class MavenDependencyResolver implements DependencyResolver {
         List<org.apache.maven.model.Dependency> dependencies = mavenProject.getDependencies();
 
         dependencies.parallelStream()
-            .filter(dependency -> JavaScopes.PROVIDED.equalsIgnoreCase(dependency.getScope()))
+            .filter(dependency -> Scopes.PROVIDED.equalsIgnoreCase(dependency.getScope()))
             .forEach(LambdaExceptionUtil.rethrowConsumer(dependency -> {
                 try {
                     Artifact dependencyArtifact =
@@ -235,7 +235,7 @@ public class MavenDependencyResolver implements DependencyResolver {
             });
         }
         return new DependencyTreeNode(groupId, artifactId, extension, classifier, version, file,
-            scope, children, JavaScopes.PROVIDED);
+            scope, children, Scopes.PROVIDED);
     }
 
     @Override

@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * *** AUTOTRADE ***
+ * *** DynamicJar ***
  * <p>
  * <p>
  * Created by Erik Håkansson on 2016-02-13.

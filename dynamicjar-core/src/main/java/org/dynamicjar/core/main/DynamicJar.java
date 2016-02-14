@@ -2,12 +2,11 @@ package org.dynamicjar.core.main;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dynamicjar.core.api.DependencyResolver;
 import org.dynamicjar.core.api.exception.DependencyResolutionException;
 import org.dynamicjar.core.api.model.DependencyTreeNode;
 import org.dynamicjar.core.api.util.LambdaExceptionUtil;
-import org.eclipse.aether.util.artifact.JavaScopes;
+import org.dynamicjar.core.api.util.Scopes;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -31,7 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * *** AUTOTRADE ***
+ * *** DynamicJar ***
  * <p>
  * <p>
  * Created by Erik Håkansson on 2016-02-04.
@@ -46,7 +45,7 @@ public final class DynamicJar {
     }
 
     public static void loadDependencies(final Class mainClass, final String groupId,
-        final String artifactId) throws IOException, XmlPullParserException {
+        final String artifactId) throws DependencyResolutionException {
 
         Set<DependencyTreeNode> dependencies = new HashSet<>();
         try {
@@ -78,10 +77,9 @@ public final class DynamicJar {
 
             loadJars(dependencies, mainClass);
 
-        } catch (DependencyResolutionException e) {
-            logger.error("Failed to resolve dependencies", e);
+        } catch (IOException e) {
+            throw new DependencyResolutionException("Failed to resolve dependencies", e);
         }
-
 
     }
 
@@ -89,10 +87,10 @@ public final class DynamicJar {
         Map<String, String> loadedJars = new HashMap<>();
         List<DependencyTreeNode> flatDependencies = getFlatDependencies(dependencies);
         for (DependencyTreeNode dependency : flatDependencies) {
-            if (!StringUtils.equals(dependency.getScope(), JavaScopes.PROVIDED)) {
+            if (!StringUtils.equals(dependency.getScope(), Scopes.PROVIDED)) {
                 logger.debug(
                     "Found dependency " + dependency.buildIdentifierString() + " not of scope " +
-                    JavaScopes.PROVIDED + ". Skipping.");
+                    Scopes.PROVIDED + ". Skipping.");
                 continue;
             }
             String identifier = dependency.buildIdentifierStringWithoutVersion();

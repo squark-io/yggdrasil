@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 /**
- * *** AUTOTRADE ***
+ * *** DynamicJar ***
  * <p>
  * <p>
  * Created by Erik Håkansson on 2016-02-09.
