@@ -44,12 +44,22 @@ public final class DynamicJar {
         //Disallow instantiation
     }
 
-    public static void loadDependencies(final Class mainClass, final String groupId,
-        final String artifactId) throws DependencyResolutionException {
+    public static void loadDependencies(final String groupId, final String artifactId)
+        throws DependencyResolutionException {
+        loadDependencies(groupId, artifactId, ClassLoader.getSystemClassLoader());
+    }
+
+    public static void loadDependencies(final String groupId, final String artifactId,
+        final Class forClass) throws DependencyResolutionException {
+        loadDependencies(groupId, artifactId, forClass.getClassLoader());
+    }
+
+    public static void loadDependencies(final String groupId, final String artifactId,
+        final ClassLoader classLoader) throws DependencyResolutionException {
 
         Set<DependencyTreeNode> dependencies = new HashSet<>();
         try {
-            Set<Class<? extends DependencyResolver>> dependencyResolvers = getDependencyResolvers();
+            Set<Class<? extends DependencyResolver>> dependencyResolvers = getDependencyResolvers(classLoader);
             if (CollectionUtils.isEmpty(dependencyResolvers)) {
                 throw new DependencyResolutionException(
                     "Failed to find implementations of " + DependencyResolver.class.getName());
@@ -60,7 +70,7 @@ public final class DynamicJar {
                         DependencyResolver dependencyResolverInstance =
                             dependencyResolver.newInstance();
                         InputStream dependencyDescriber = dependencyResolverInstance
-                            .getDependencyDescriberFor(mainClass, groupId, artifactId);
+                            .getDependencyDescriberFor(groupId, artifactId);
                         DependencyTreeNode dependencyRoot =
                             dependencyResolverInstance.getDependencyFiles(dependencyDescriber);
                         if (dependencyRoot != null) {
@@ -75,7 +85,7 @@ public final class DynamicJar {
                 }));
             logger.debug(dependencies.toString());
 
-            loadJars(dependencies, mainClass);
+            loadJars(dependencies, classLoader);
 
         } catch (IOException e) {
             throw new DependencyResolutionException("Failed to resolve dependencies", e);
@@ -83,7 +93,7 @@ public final class DynamicJar {
 
     }
 
-    private static void loadJars(final Set<DependencyTreeNode> dependencies, Class forClass) throws IOException {
+    private static void loadJars(final Set<DependencyTreeNode> dependencies, ClassLoader classLoader) throws IOException {
         Map<String, String> loadedJars = new HashMap<>();
         List<DependencyTreeNode> flatDependencies = getFlatDependencies(dependencies);
         for (DependencyTreeNode dependency : flatDependencies) {
@@ -108,7 +118,7 @@ public final class DynamicJar {
                 continue;
             }
             logger.debug("Loading dependency " + dependency.buildIdentifierString());
-            addJar(dependency.getFile(), forClass);
+            addJar(dependency.getFile(), classLoader);
             loadedJars
                 .put(dependency.buildIdentifierStringWithoutVersion(), dependency.getVersion());
         }
@@ -124,10 +134,10 @@ public final class DynamicJar {
         return jars;
     }
 
-    private static Set<Class<? extends DependencyResolver>> getDependencyResolvers() {
+    private static Set<Class<? extends DependencyResolver>> getDependencyResolvers(ClassLoader classLoader) {
         Long before = System.currentTimeMillis();
         Reflections reflections = new Reflections(
-            new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath())
+            new ConfigurationBuilder().setUrls(ClasspathHelper.forClassLoader(classLoader))
                 .setScanners(new SubTypesScanner())
                 .filterInputsBy(new FilterBuilder().include(".*\\.class")));
         Set<Class<? extends DependencyResolver>> dependencyResolvers =
@@ -138,22 +148,21 @@ public final class DynamicJar {
         return dependencyResolvers;
     }
 
-    public static void addJar(final String jar, Class forClass) throws IOException {
+    public static void addJar(final String jar, ClassLoader classLoader) throws IOException {
         File file = new File(jar);
-        addJar(file, forClass);
+        addJar(file, classLoader);
     }
 
-    public static void addJar(final File jar, Class forClass) throws IOException {
-        addJar(jar.toURI().toURL(), forClass);
+    public static void addJar(final File jar, ClassLoader classLoader) throws IOException {
+        addJar(jar.toURI().toURL(), classLoader);
     }
 
-    public static void addJar(final URL jar, Class forClass) throws IOException {
-        URLClassLoader systemClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+    public static void addJar(final URL jar, ClassLoader classLoader) throws IOException {
         Class<?> urlClassLoaderClass = URLClassLoader.class;
         try {
             Method method = urlClassLoaderClass.getDeclaredMethod("addURL", URL.class);
             method.setAccessible(true);
-            method.invoke(systemClassLoader, jar);
+            method.invoke(classLoader, jar);
         } catch (Throwable t) {
             logger.error("Failed to load JAR", t);
             throw new IOException(t);

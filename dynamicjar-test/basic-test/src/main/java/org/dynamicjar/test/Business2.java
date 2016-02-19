@@ -1,4 +1,4 @@
-package org.dynamicjar.demo;
+package org.dynamicjar.test;
 
 
 import org.apache.logging.log4j.LogManager;
@@ -11,10 +11,15 @@ import org.apache.logging.log4j.Logger;
  * Created by Erik Håkansson on 2016-02-13.
  * Copyright 2016
  */
-public class Business {
+public class Business2 {
+    private Logger logger;
 
     public void helloWorld() {
-        Logger logger = LogManager.getLogger(Business.class);
+        logger = LogManager.getLogger(Business1.class);
         logger.info("Hello world");
+    }
+
+    public Object getLogger() {
+        return logger;
     }
 }

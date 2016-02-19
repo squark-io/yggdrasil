@@ -251,9 +251,9 @@ public class MavenDependencyResolver implements DependencyResolver {
     }
 
     @Override
-    public final InputStream getDependencyDescriberFor(final Class clazz, final String groupId,
+    public final InputStream getDependencyDescriberFor(final String groupId,
         final String artifactId) {
         String path = "/META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
-        return clazz.getResourceAsStream(path);
+        return MavenDependencyResolver.class.getResourceAsStream(path);
     }
 }

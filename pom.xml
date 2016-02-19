@@ -16,7 +16,7 @@
 
     <modules>
         <module>dynamicjar-core</module>
-        <module>dynamicjar-demo</module>
+        <module>dynamicjar-test</module>
         <module>dynamicjar-maven</module>
         <module>dynamicjar-api</module>
     </modules>

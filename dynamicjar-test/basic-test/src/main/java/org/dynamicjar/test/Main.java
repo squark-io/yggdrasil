@@ -1,4 +1,4 @@
-package org.dynamicjar.demo;
+package org.dynamicjar.test;
 
 import org.dynamicjar.core.api.exception.DependencyResolutionException;
 import org.dynamicjar.core.main.DynamicJar;
@@ -13,8 +13,8 @@ import org.dynamicjar.core.main.DynamicJar;
 public class Main {
     public static void main(String[] args) {
         try {
-            DynamicJar.loadDependencies(Main.class, "org.dynamicjar", "dynamicjar-demo");
-            new Business().helloWorld();
+            DynamicJar.loadDependencies("org.dynamicjar.dynamicjar-test", "basic-test", Main.class);
+            new Business1().helloWorld();
         } catch (DependencyResolutionException e) {
             e.printStackTrace();
         }
