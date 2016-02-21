@@ -89,7 +89,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -106,6 +105,7 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>integration-testing</id>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>

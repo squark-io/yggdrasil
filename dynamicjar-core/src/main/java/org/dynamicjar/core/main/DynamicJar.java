@@ -7,11 +7,6 @@ import org.dynamicjar.core.api.exception.DependencyResolutionException;
 import org.dynamicjar.core.api.model.DependencyTreeNode;
 import org.dynamicjar.core.api.util.LambdaExceptionUtil;
 import org.dynamicjar.core.api.util.Scopes;
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +54,8 @@ public final class DynamicJar {
 
         Set<DependencyTreeNode> dependencies = new HashSet<>();
         try {
-            Set<Class<? extends DependencyResolver>> dependencyResolvers = getDependencyResolvers(classLoader);
+            Collection<Class<? extends DependencyResolver>> dependencyResolvers =
+                DependencyResolverFactory.getDependencyResolvers();
             if (CollectionUtils.isEmpty(dependencyResolvers)) {
                 throw new DependencyResolutionException(
                     "Failed to find implementations of " + DependencyResolver.class.getName());
@@ -93,7 +89,8 @@ public final class DynamicJar {
 
     }
 
-    private static void loadJars(final Set<DependencyTreeNode> dependencies, ClassLoader classLoader) throws IOException {
+    private static void loadJars(final Set<DependencyTreeNode> dependencies,
+        ClassLoader classLoader) throws IOException {
         Map<String, String> loadedJars = new HashMap<>();
         List<DependencyTreeNode> flatDependencies = getFlatDependencies(dependencies);
         for (DependencyTreeNode dependency : flatDependencies) {
@@ -132,20 +129,6 @@ public final class DynamicJar {
             jars.addAll(getFlatDependencies(dependencyTreeNode.getChildDependencies().values()));
         }
         return jars;
-    }
-
-    private static Set<Class<? extends DependencyResolver>> getDependencyResolvers(ClassLoader classLoader) {
-        Long before = System.currentTimeMillis();
-        Reflections reflections = new Reflections(
-            new ConfigurationBuilder().setUrls(ClasspathHelper.forClassLoader(classLoader))
-                .setScanners(new SubTypesScanner())
-                .filterInputsBy(new FilterBuilder().include(".*\\.class")));
-        Set<Class<? extends DependencyResolver>> dependencyResolvers =
-            reflections.getSubTypesOf(DependencyResolver.class);
-        logger.debug(
-            "Scanning classpath for implementations of [" + DependencyResolver.class.getName() +
-            "] took " + (System.currentTimeMillis() - before) + "ms.");
-        return dependencyResolvers;
     }
 
     public static void addJar(final String jar, ClassLoader classLoader) throws IOException {
