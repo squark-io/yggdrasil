@@ -12,71 +12,54 @@
     <groupId>org.dynamicjar</groupId>
     <artifactId>dynamicjar-maven</artifactId>
 
-    <properties>
-        <aether.version>1.0.2.v20150114</aether.version>
-        <maven.version>3.3.9</maven.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-
     <dependencies>
 
-        <!-- local dependencies -->
+        <!-- LOCAL DEPENDENCIES -->
         <dependency>
             <groupId>org.dynamicjar</groupId>
             <artifactId>dynamicjar-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
+        <!-- EXTERNAL DEPENDENCIES -->
         <dependency>
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-api</artifactId>
-            <version>${aether.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-connector-basic</artifactId>
-            <version>${aether.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-transport-file</artifactId>
-            <version>${aether.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-transport-http</artifactId>
-            <version>${aether.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-aether-provider</artifactId>
-            <version>3.3.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
-            <version>${maven.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>4.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
         </dependency>
         <dependency>
             <groupId>com.intellij</groupId>
             <artifactId>annotations</artifactId>
-            <version>12.0</version>
         </dependency>
     </dependencies>
 
