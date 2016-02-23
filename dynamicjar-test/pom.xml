@@ -16,6 +16,7 @@
     <modules>
         <module>basic-test</module>
         <module>yamlconfigfile-test</module>
+        <module>jsonconfigfile-test</module>
     </modules>
 
 </project>
