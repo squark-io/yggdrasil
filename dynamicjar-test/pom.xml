@@ -15,7 +15,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>basic-test</module>
-        <module>configfile-test</module>
+        <module>yamlconfigfile-test</module>
     </modules>
 
 </project>

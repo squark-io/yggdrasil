@@ -13,7 +13,7 @@ import static org.testng.Assert.assertEquals;
  * Created by Erik Håkansson on 2016-02-15.
  * Copyright 2016
  */
-public class ConfigFileIntegrationTest {
+public class YamlConfigFileIntegrationTest {
 
     private static final String LOG_4_J_CLASS_NAME = "org.apache.logging.log4j.core.Logger";
 
@@ -29,8 +29,8 @@ public class ConfigFileIntegrationTest {
     public void loadJarIntegrationTest()
         throws DependencyResolutionException, ClassNotFoundException, IllegalAccessException,
         InstantiationException, PropertyLoadException {
-        DynamicJar.loadDependencies(ConfigFileTestTarget1.class);
-        ConfigFileTestTarget1 business = new ConfigFileTestTarget1();
+        DynamicJar.loadDependencies(YamlConfigFileTestTarget.class);
+        YamlConfigFileTestTarget business = new YamlConfigFileTestTarget();
         business.helloWorld();
         assertEquals(business.getLogger().getClass().getName(), LOG_4_J_CLASS_NAME);
     }
