@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             DynamicJar.loadDependencies("org.dynamicjar.dynamicjar-test", "basic-test", Main.class);
-            new TestTarget2().helloWorld();
+            new TestTarget1().helloWorld();
         } catch (DependencyResolutionException e) {
             e.printStackTrace();
         }

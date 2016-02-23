@@ -99,8 +99,9 @@ public class MavenDependencyResolver implements DependencyResolver {
             remoteRepositories.add(centralRepository);
         }
 
-        DynamicJarDependency rootDynamicJarDependency = new DynamicJarDependency(mavenProject.getGroupId(), mavenProject.getArtifactId(),
-            mavenProject.getPackaging(), mavenProject.getVersion(), mavenProject.getFile());
+        DynamicJarDependency rootDynamicJarDependency =
+            new DynamicJarDependency(mavenProject.getGroupId(), mavenProject.getArtifactId(),
+                mavenProject.getPackaging(), mavenProject.getVersion(), mavenProject.getFile());
 
         List<org.apache.maven.model.Dependency> dependencies = mavenProject.getDependencies();
 
@@ -239,7 +240,7 @@ public class MavenDependencyResolver implements DependencyResolver {
     }
 
     @Override
-    public final DynamicJarDependency getDependencyFiles(final InputStream projectPom)
+    public final DynamicJarDependency resolveDependencies(final InputStream projectPom)
         throws DependencyResolutionException {
         try {
             MavenProject mavenProject = loadProject(projectPom);
@@ -255,5 +256,32 @@ public class MavenDependencyResolver implements DependencyResolver {
         final String artifactId) {
         String path = "/META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
         return MavenDependencyResolver.class.getResourceAsStream(path);
+    }
+
+    @Override
+    public DynamicJarDependency resolveDependency(DynamicJarDependency dependency)
+        throws DependencyResolutionException {
+
+        Artifact aetherArtifact =
+            new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
+                dependency.getClassifier(), dependency.getExtension(), dependency.getVersion());
+
+        RepositorySystem repositorySystem = getNewRepositorySystem();
+        Settings mavenSettings = null;
+        try {
+            mavenSettings = getMavenSettings();
+        } catch (SettingsBuildingException e) {
+            throw new DependencyResolutionException(e);
+        }
+        RepositorySystemSession repositorySystemSession =
+            newRepositorySystemSession(repositorySystem, getLocalRepository(mavenSettings));
+        List<RemoteRepository> remoteRepositories = getRemoteRepositories(mavenSettings);
+        try {
+            return resolveDependencies(aetherArtifact, repositorySystem, repositorySystemSession,
+                remoteRepositories);
+        } catch (DependencyCollectionException | org.eclipse.aether.resolution
+            .DependencyResolutionException e) {
+            throw new DependencyResolutionException(e);
+        }
     }
 }

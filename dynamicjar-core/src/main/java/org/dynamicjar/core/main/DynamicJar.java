@@ -40,19 +40,21 @@ import java.util.Set;
  */
 public final class DynamicJar {
 
-    private static final String JSON_PROPERTIES_FILE = "META_INF/dynamicjar.json";
-    private static final String YAML_PROPERTIES_FILE = "META_INF/dynamicjar.yaml";
+    private static final String YAML_PROPERTIES_FILE = "/META-INF/dynamicjar.yaml";
+    private static final String JSON_PROPERTIES_FILE = "/META-INF/dynamicjar.json";
     private static Logger logger = LoggerFactory.getLogger(DynamicJar.class);
 
     private DynamicJar() {
         //Disallow instantiation
     }
 
-    public static void loadDependencies() throws PropertyLoadException {
+    public static void loadDependencies()
+        throws PropertyLoadException, DependencyResolutionException {
         loadDependencies(ClassLoader.getSystemClassLoader());
     }
 
-    public static void loadDependencies(ClassLoader classLoader) throws PropertyLoadException {
+    public static void loadDependencies(ClassLoader classLoader)
+        throws PropertyLoadException, DependencyResolutionException {
         InputStream inputStream;
         inputStream = DynamicJar.class.getResourceAsStream(YAML_PROPERTIES_FILE);
         DynamicJarConfiguration dynamicJarConfiguration = null;
@@ -61,7 +63,8 @@ public final class DynamicJar {
             if (inputStream != null) {
                 Gson gson = new Gson();
                 try {
-                    dynamicJarConfiguration = gson.fromJson(new InputStreamReader(inputStream), DynamicJarConfiguration.class);
+                    dynamicJarConfiguration = gson.fromJson(new InputStreamReader(inputStream),
+                        DynamicJarConfiguration.class);
                 } catch (JsonParseException e) {
                     throw new PropertyLoadException(e);
                 }
@@ -80,10 +83,30 @@ public final class DynamicJar {
         } else if (dynamicJarConfiguration == null) {
             throw new PropertyLoadException("Unknown error. Failed to load properties");
         }
+        Collection<Class<? extends DependencyResolver>> dependencyResolvers =
+            DependencyResolverFactory.getDependencyResolvers();
+        if (CollectionUtils.isEmpty(dependencyResolvers)) {
+            throw new DependencyResolutionException(
+                "Failed to find implementations of " + DependencyResolver.class.getName());
+        }
+        final Set<DynamicJarDependency> dependencies = dynamicJarConfiguration.getDependencies();
+        Set<DynamicJarDependency> resolvedDependencies = new HashSet<>();
+        dependencyResolvers.stream()
+            .forEach(LambdaExceptionUtil.rethrowConsumer(dependencyResolver -> {
+                DependencyResolver dependencyResolverInstance = dependencyResolver.newInstance();
+                resolvedDependencies
+                    .addAll(dependencyResolverInstance.resolveDependencies(dependencies));
+            }));
+        try {
+            loadJars(resolvedDependencies, classLoader);
+        } catch (IOException e) {
+            throw new DependencyResolutionException("Failed to resolve dependencies", e);
+        }
 
     }
 
-    public static void loadDependencies(Class forClass) throws PropertyLoadException {
+    public static void loadDependencies(Class forClass)
+        throws PropertyLoadException, DependencyResolutionException {
         loadDependencies(forClass.getClassLoader());
     }
 
@@ -116,7 +139,7 @@ public final class DynamicJar {
                         InputStream dependencyDescriber = dependencyResolverInstance
                             .getDependencyDescriberFor(groupId, artifactId);
                         DynamicJarDependency rootDependency =
-                            dependencyResolverInstance.getDependencyFiles(dependencyDescriber);
+                            dependencyResolverInstance.resolveDependencies(dependencyDescriber);
                         if (rootDependency != null) {
                             dependencies.add(rootDependency);
                         }
@@ -143,9 +166,8 @@ public final class DynamicJar {
         List<DynamicJarDependency> flatDependencies = getFlatDependencies(dependencies);
         for (DynamicJarDependency dependency : flatDependencies) {
             if (!StringUtils.equals(dependency.getScope(), Scopes.PROVIDED)) {
-                logger.debug(
-                    "Found dependency " + dependency.toShortString() + " of scope " +
-                    dependency.getScope() + ". Skipping.");
+                logger.debug("Found dependency " + dependency.toShortString() + " of scope " +
+                             dependency.getScope() + ". Skipping.");
                 continue;
             }
             String identifier = dependency.toShortStringWithoutVersion();
@@ -162,19 +184,21 @@ public final class DynamicJar {
                 }
                 continue;
             }
-            logger.debug("Loading dependency " + dependency.toShortString() + " of scope " + dependency.getScope());
+            logger.debug("Loading dependency " + dependency.toShortString() + " of scope " +
+                         dependency.getScope());
             addJar(dependency.getFile(), classLoader);
-            loadedJars
-                .put(dependency.toShortStringWithoutVersion(), dependency.getVersion());
+            loadedJars.put(dependency.toShortStringWithoutVersion(), dependency.getVersion());
         }
     }
 
     private static List<DynamicJarDependency> getFlatDependencies(
         final Collection<DynamicJarDependency> dependencies) {
         List<DynamicJarDependency> jars = new ArrayList<>();
-        for (DynamicJarDependency dependency : dependencies) {
-            jars.add(dependency);
-            jars.addAll(getFlatDependencies(dependency.getChildDependencies()));
+        if (dependencies != null) {
+            for (DynamicJarDependency dependency : dependencies) {
+                jars.add(dependency);
+                jars.addAll(getFlatDependencies(dependency.getChildDependencies()));
+            }
         }
         return jars;
     }

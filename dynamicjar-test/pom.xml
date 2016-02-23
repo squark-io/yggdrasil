@@ -15,6 +15,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>basic-test</module>
+        <module>configfile-test</module>
     </modules>
 
 </project>

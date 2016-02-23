@@ -21,7 +21,7 @@ public class DynamicJarDependency {
 
     private String groupId;
     private String artifactId;
-    private String extension;
+    private String extension = "jar";
     private String classifier;
     private String version;
     private File file;
