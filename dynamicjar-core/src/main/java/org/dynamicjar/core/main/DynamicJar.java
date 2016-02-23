@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.dynamicjar.core.api.DependencyResolver;
+import org.dynamicjar.core.api.DependencyResolutionProvider;
 import org.dynamicjar.core.api.exception.DependencyResolutionException;
 import org.dynamicjar.core.api.exception.PropertyLoadException;
 import org.dynamicjar.core.api.model.DynamicJarConfiguration;
@@ -83,19 +83,19 @@ public final class DynamicJar {
         } else if (dynamicJarConfiguration == null) {
             throw new PropertyLoadException("Unknown error. Failed to load properties");
         }
-        Collection<Class<? extends DependencyResolver>> dependencyResolvers =
-            DependencyResolverFactory.getDependencyResolvers();
+        Collection<Class<? extends DependencyResolutionProvider>> dependencyResolvers =
+            DependencyResolutionProviderFactory.getDependencyResolvers();
         if (CollectionUtils.isEmpty(dependencyResolvers)) {
             throw new DependencyResolutionException(
-                "Failed to find implementations of " + DependencyResolver.class.getName());
+                "Failed to find implementations of " + DependencyResolutionProvider.class.getName());
         }
         final Set<DynamicJarDependency> dependencies = dynamicJarConfiguration.getDependencies();
         Set<DynamicJarDependency> resolvedDependencies = new HashSet<>();
         dependencyResolvers.stream()
             .forEach(LambdaExceptionUtil.rethrowConsumer(dependencyResolver -> {
-                DependencyResolver dependencyResolverInstance = dependencyResolver.newInstance();
+                DependencyResolutionProvider dependencyResolutionProviderInstance = dependencyResolver.newInstance();
                 resolvedDependencies
-                    .addAll(dependencyResolverInstance.resolveDependencies(dependencies));
+                    .addAll(dependencyResolutionProviderInstance.resolveDependencies(dependencies));
             }));
         try {
             loadJars(resolvedDependencies, classLoader);
@@ -125,21 +125,21 @@ public final class DynamicJar {
 
         Set<DynamicJarDependency> dependencies = new HashSet<>();
         try {
-            Collection<Class<? extends DependencyResolver>> dependencyResolvers =
-                DependencyResolverFactory.getDependencyResolvers();
+            Collection<Class<? extends DependencyResolutionProvider>> dependencyResolvers =
+                DependencyResolutionProviderFactory.getDependencyResolvers();
             if (CollectionUtils.isEmpty(dependencyResolvers)) {
                 throw new DependencyResolutionException(
-                    "Failed to find implementations of " + DependencyResolver.class.getName());
+                    "Failed to find implementations of " + DependencyResolutionProvider.class.getName());
             }
             dependencyResolvers.stream()
                 .forEach(LambdaExceptionUtil.rethrowConsumer(dependencyResolver -> {
                     try {
-                        DependencyResolver dependencyResolverInstance =
+                        DependencyResolutionProvider dependencyResolutionProviderInstance =
                             dependencyResolver.newInstance();
-                        InputStream dependencyDescriber = dependencyResolverInstance
+                        InputStream dependencyDescriber = dependencyResolutionProviderInstance
                             .getDependencyDescriberFor(groupId, artifactId);
                         DynamicJarDependency rootDependency =
-                            dependencyResolverInstance.resolveDependencies(dependencyDescriber);
+                            dependencyResolutionProviderInstance.resolveDependencies(dependencyDescriber);
                         if (rootDependency != null) {
                             dependencies.add(rootDependency);
                         }

@@ -35,7 +35,7 @@
     <modules>
         <module>dynamicjar-core</module>
         <module>dynamicjar-test</module>
-        <module>dynamicjar-maven</module>
+        <module>dynamicjar-maven-provider</module>
         <module>dynamicjar-api</module>
     </modules>
 
@@ -54,7 +54,7 @@
             </dependency>
             <dependency>
                 <groupId>org.dynamicjar</groupId>
-                <artifactId>dynamicjar-maven</artifactId>
+                <artifactId>dynamicjar-maven-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

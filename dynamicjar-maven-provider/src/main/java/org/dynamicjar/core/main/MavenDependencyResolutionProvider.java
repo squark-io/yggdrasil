@@ -15,7 +15,7 @@ import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuildingResult;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.dynamicjar.core.api.DependencyResolver;
+import org.dynamicjar.core.api.DependencyResolutionProvider;
 import org.dynamicjar.core.api.exception.DependencyResolutionException;
 import org.dynamicjar.core.api.model.DynamicJarDependency;
 import org.dynamicjar.core.api.util.LambdaExceptionUtil;
@@ -54,7 +54,7 @@ import java.util.Set;
 
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
-public class MavenDependencyResolver implements DependencyResolver {
+public class MavenDependencyResolutionProvider implements DependencyResolutionProvider {
 
     private static final String USER_HOME = System.getProperty("user.home");
     private static final File USER_MAVEN_CONFIGURATION_HOME = new File(USER_HOME, ".m2");
@@ -65,7 +65,7 @@ public class MavenDependencyResolver implements DependencyResolver {
             "conf/settings.xml");
     private static final String MAVEN_LOCAL_REPOSITORY = "maven.local.repository";
 
-    private static Logger logger = LoggerFactory.getLogger(MavenDependencyResolver.class);
+    private static Logger logger = LoggerFactory.getLogger(MavenDependencyResolutionProvider.class);
 
     @NotNull
     private static MavenProject loadProject(final InputStream pomFile)
@@ -255,7 +255,7 @@ public class MavenDependencyResolver implements DependencyResolver {
     public final InputStream getDependencyDescriberFor(final String groupId,
         final String artifactId) {
         String path = "/META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
-        return MavenDependencyResolver.class.getResourceAsStream(path);
+        return MavenDependencyResolutionProvider.class.getResourceAsStream(path);
     }
 
     @Override

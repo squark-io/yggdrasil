@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>org.dynamicjar</groupId>
-            <artifactId>dynamicjar-maven</artifactId>
+            <artifactId>dynamicjar-maven-provider</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
