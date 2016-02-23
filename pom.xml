@@ -27,6 +27,8 @@
         <maven.dependency.plugin.version>2.10</maven.dependency.plugin.version>
         <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
         <maven.failsafe.plugin.version>2.19.1</maven.failsafe.plugin.version>
+        <gson.version>2.6.1</gson.version>
+        <snakeyaml.version>1.17</snakeyaml.version>
 
     </properties>
 
@@ -123,6 +125,19 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+
+
+            <!-- TEST DEPENDENCIES -->
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>

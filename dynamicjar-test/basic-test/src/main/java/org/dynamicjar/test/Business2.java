@@ -15,7 +15,7 @@ public class Business2 {
     private Logger logger;
 
     public void helloWorld() {
-        logger = LogManager.getLogger(Business1.class);
+        logger = LogManager.getLogger(TestTarget2.class);
         logger.info("Hello world");
     }
 

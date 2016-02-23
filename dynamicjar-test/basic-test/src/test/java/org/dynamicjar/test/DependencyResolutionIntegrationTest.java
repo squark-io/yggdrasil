@@ -21,7 +21,7 @@ public class DependencyResolutionIntegrationTest {
      */
     @Test(expectedExceptions = NoClassDefFoundError.class, priority = 1)
     public void noClassLoadedIntegrationTest() {
-        new Business1().helloWorld();
+        new TestTarget2().helloWorld();
     }
 
     /**

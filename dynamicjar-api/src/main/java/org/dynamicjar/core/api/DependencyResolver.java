@@ -1,7 +1,7 @@
 package org.dynamicjar.core.api;
 
 import org.dynamicjar.core.api.exception.DependencyResolutionException;
-import org.dynamicjar.core.api.model.DependencyTreeNode;
+import org.dynamicjar.core.api.model.DynamicJarDependency;
 
 import java.io.InputStream;
 
@@ -14,7 +14,7 @@ import java.io.InputStream;
  */
 public interface DependencyResolver {
 
-    DependencyTreeNode getDependencyFiles(InputStream dependencyDefinitions)
+    DynamicJarDependency getDependencyFiles(InputStream dependencyDefinitions)
     throws DependencyResolutionException;
 
     InputStream getDependencyDescriberFor(String groupId, String artifactId);

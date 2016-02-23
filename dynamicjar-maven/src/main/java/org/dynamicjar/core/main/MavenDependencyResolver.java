@@ -17,7 +17,7 @@ import org.apache.maven.settings.building.SettingsBuildingResult;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dynamicjar.core.api.DependencyResolver;
 import org.dynamicjar.core.api.exception.DependencyResolutionException;
-import org.dynamicjar.core.api.model.DependencyTreeNode;
+import org.dynamicjar.core.api.model.DynamicJarDependency;
 import org.dynamicjar.core.api.util.LambdaExceptionUtil;
 import org.dynamicjar.core.api.util.Scopes;
 import org.eclipse.aether.DefaultRepositorySystemSession;
@@ -80,7 +80,7 @@ public class MavenDependencyResolver implements DependencyResolver {
         throw new DependencyResolutionException("Failed to find pom.xml");
     }
 
-    private static DependencyTreeNode getDependencyFiles(final MavenProject mavenProject)
+    private static DynamicJarDependency getDependencyFiles(final MavenProject mavenProject)
         throws DependencyCollectionException, DependencyResolutionException,
         SettingsBuildingException {
 
@@ -99,9 +99,9 @@ public class MavenDependencyResolver implements DependencyResolver {
             remoteRepositories.add(centralRepository);
         }
 
-        DependencyTreeNode rootDependencyTreeNode =
-            new DependencyTreeNode(mavenProject.getGroupId(), mavenProject.getArtifactId(),
-                mavenProject.getPackaging(), mavenProject.getVersion(), mavenProject.getFile());
+        DynamicJarDependency rootDynamicJarDependency = new DynamicJarDependency(mavenProject.getGroupId(), mavenProject.getArtifactId(),
+            mavenProject.getPackaging(), mavenProject.getVersion(), mavenProject.getFile());
+
         List<org.apache.maven.model.Dependency> dependencies = mavenProject.getDependencies();
 
         dependencies.parallelStream()
@@ -112,21 +112,21 @@ public class MavenDependencyResolver implements DependencyResolver {
                         new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
                             dependency.getClassifier(), dependency.getType(),
                             dependency.getVersion());
-                    DependencyTreeNode dependencyTreeNode =
+                    DynamicJarDependency dynamicJarDependency =
                         resolveDependencies(dependencyArtifact, repositorySystem,
                             repositorySystemSession, remoteRepositories);
-                    if (dependencyTreeNode == null) {
+                    if (dynamicJarDependency == null) {
                         logger.error("No dependencies found");
                         throw new DependencyResolutionException("No dependencies found");
                     }
-                    rootDependencyTreeNode.addChildDependency(dependencyTreeNode);
+                    rootDynamicJarDependency.addChildDependency(dynamicJarDependency);
                 } catch (DependencyCollectionException | org.eclipse.aether.resolution
                     .DependencyResolutionException e) {
                     logger.error("Failed to retrieve dependency", e);
                 }
             }));
 
-        return rootDependencyTreeNode;
+        return rootDynamicJarDependency;
     }
 
     private static Settings getMavenSettings() throws SettingsBuildingException {
@@ -197,7 +197,7 @@ public class MavenDependencyResolver implements DependencyResolver {
         return remoteRepositories;
     }
 
-    private static DependencyTreeNode resolveDependencies(final Artifact defaultArtifact,
+    private static DynamicJarDependency resolveDependencies(final Artifact defaultArtifact,
         final RepositorySystem repositorySystem,
         final RepositorySystemSession repositorySystemSession,
         final List<RemoteRepository> remoteRepositories) throws DependencyCollectionException,
@@ -219,7 +219,7 @@ public class MavenDependencyResolver implements DependencyResolver {
         return fromDependencyNode(node);
     }
 
-    private static DependencyTreeNode fromDependencyNode(final DependencyNode dependencyNode) {
+    private static DynamicJarDependency fromDependencyNode(final DependencyNode dependencyNode) {
         Artifact artifact = dependencyNode.getArtifact();
         String groupId = artifact.getGroupId();
         String artifactId = artifact.getArtifactId();
@@ -228,18 +228,18 @@ public class MavenDependencyResolver implements DependencyResolver {
         String version = artifact.getVersion();
         File file = artifact.getFile();
         String scope = dependencyNode.getDependency().getScope();
-        Set<DependencyTreeNode> children = new HashSet<>();
+        Set<DynamicJarDependency> children = new HashSet<>();
         if (isNotEmpty(dependencyNode.getChildren())) {
             dependencyNode.getChildren().parallelStream().forEach(child -> {
                 children.add(fromDependencyNode(child));
             });
         }
-        return new DependencyTreeNode(groupId, artifactId, extension, classifier, version, file,
+        return new DynamicJarDependency(groupId, artifactId, extension, classifier, version, file,
             scope, children, Scopes.PROVIDED);
     }
 
     @Override
-    public final DependencyTreeNode getDependencyFiles(final InputStream projectPom)
+    public final DynamicJarDependency getDependencyFiles(final InputStream projectPom)
         throws DependencyResolutionException {
         try {
             MavenProject mavenProject = loadProject(projectPom);
