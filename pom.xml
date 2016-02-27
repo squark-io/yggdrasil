@@ -29,6 +29,8 @@
         <maven.failsafe.plugin.version>2.19.1</maven.failsafe.plugin.version>
         <gson.version>2.6.1</gson.version>
         <snakeyaml.version>1.17</snakeyaml.version>
+        <weld.version>3.0.0.Alpha15</weld.version>
+        <cdi.version>2.0-EDR1</cdi.version>
 
     </properties>
 
@@ -37,6 +39,7 @@
         <module>dynamicjar-test</module>
         <module>dynamicjar-maven-provider</module>
         <module>dynamicjar-api</module>
+        <module>dynamicjar-weld</module>
     </modules>
 
     <dependencyManagement>
@@ -55,6 +58,11 @@
             <dependency>
                 <groupId>org.dynamicjar</groupId>
                 <artifactId>dynamicjar-maven-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dynamicjar</groupId>
+                <artifactId>dynamicjar-weld</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -134,6 +142,18 @@
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.weld.se</groupId>
+                <artifactId>weld-se-core</artifactId>
+                <version>${weld.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.enterprise</groupId>
+                <artifactId>cdi-api</artifactId>
+                <version>${cdi.version}</version>
+                <scope>provided</scope>
             </dependency>
 
 
