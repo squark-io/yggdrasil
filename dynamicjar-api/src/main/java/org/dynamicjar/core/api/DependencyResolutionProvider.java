@@ -4,7 +4,6 @@ import org.dynamicjar.core.api.exception.DependencyResolutionException;
 import org.dynamicjar.core.api.model.DynamicJarDependency;
 import org.dynamicjar.core.api.util.LambdaExceptionUtil;
 
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,11 +16,6 @@ import java.util.Set;
  */
 public interface DependencyResolutionProvider {
 
-    DynamicJarDependency resolveDependencies(InputStream dependencyDefinitions)
-    throws DependencyResolutionException;
-
-    InputStream getDependencyDescriberFor(String groupId, String artifactId);
-
     DynamicJarDependency resolveDependency(DynamicJarDependency dependency)
         throws DependencyResolutionException;
 
@@ -32,4 +26,5 @@ public interface DependencyResolutionProvider {
         }));
         return resolvedSet;
     }
+
 }

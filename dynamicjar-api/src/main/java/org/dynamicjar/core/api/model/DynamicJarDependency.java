@@ -26,7 +26,7 @@ public class DynamicJarDependency {
     private String version;
     private File file;
     private String scope;
-    private DynamicJarDependency parent;
+    private transient DynamicJarDependency parent;
     private Set<DynamicJarDependency> childDependencies;
 
     public DynamicJarDependency() {

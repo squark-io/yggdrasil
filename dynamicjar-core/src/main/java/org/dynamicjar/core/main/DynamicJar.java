@@ -136,15 +136,12 @@ public final class DynamicJar {
                     try {
                         DependencyResolutionProvider dependencyResolutionProviderInstance =
                             dependencyResolver.newInstance();
-                        InputStream dependencyDescriber = dependencyResolutionProviderInstance
+                        File dependencyDescriber = dependencyResolutionProviderInstance
                             .getDependencyDescriberFor(groupId, artifactId);
                         DynamicJarDependency rootDependency =
                             dependencyResolutionProviderInstance.resolveDependencies(dependencyDescriber);
                         if (rootDependency != null) {
                             dependencies.add(rootDependency);
-                        }
-                        if (dependencyDescriber != null) {
-                            dependencyDescriber.close();
                         }
                     } catch (InstantiationException | IllegalAccessException e) {
                         throw new DependencyResolutionException(e);
