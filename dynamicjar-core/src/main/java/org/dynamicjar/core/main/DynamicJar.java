@@ -48,11 +48,6 @@ public final class DynamicJar {
         //Disallow instantiation
     }
 
-    public static void loadDependencies()
-        throws PropertyLoadException, DependencyResolutionException {
-        loadDependencies(ClassLoader.getSystemClassLoader());
-    }
-
     public static void loadDependencies(ClassLoader classLoader)
         throws PropertyLoadException, DependencyResolutionException {
         InputStream inputStream;
@@ -86,14 +81,15 @@ public final class DynamicJar {
         Collection<Class<? extends DependencyResolutionProvider>> dependencyResolvers =
             DependencyResolutionProviderFactory.getDependencyResolvers();
         if (CollectionUtils.isEmpty(dependencyResolvers)) {
-            throw new DependencyResolutionException(
-                "Failed to find implementations of " + DependencyResolutionProvider.class.getName());
+            throw new DependencyResolutionException("Failed to find implementations of " +
+                                                    DependencyResolutionProvider.class.getName());
         }
         final Set<DynamicJarDependency> dependencies = dynamicJarConfiguration.getDependencies();
         Set<DynamicJarDependency> resolvedDependencies = new HashSet<>();
         dependencyResolvers.stream()
             .forEach(LambdaExceptionUtil.rethrowConsumer(dependencyResolver -> {
-                DependencyResolutionProvider dependencyResolutionProviderInstance = dependencyResolver.newInstance();
+                DependencyResolutionProvider dependencyResolutionProviderInstance =
+                    dependencyResolver.newInstance();
                 resolvedDependencies
                     .addAll(dependencyResolutionProviderInstance.resolveDependencies(dependencies));
             }));
@@ -108,53 +104,6 @@ public final class DynamicJar {
     public static void loadDependencies(Class forClass)
         throws PropertyLoadException, DependencyResolutionException {
         loadDependencies(forClass.getClassLoader());
-    }
-
-    public static void loadDependencies(final String groupId, final String artifactId)
-        throws DependencyResolutionException {
-        loadDependencies(groupId, artifactId, ClassLoader.getSystemClassLoader());
-    }
-
-    public static void loadDependencies(final String groupId, final String artifactId,
-        final Class forClass) throws DependencyResolutionException {
-        loadDependencies(groupId, artifactId, forClass.getClassLoader());
-    }
-
-    public static void loadDependencies(final String groupId, final String artifactId,
-        final ClassLoader classLoader) throws DependencyResolutionException {
-
-        Set<DynamicJarDependency> dependencies = new HashSet<>();
-        try {
-            Collection<Class<? extends DependencyResolutionProvider>> dependencyResolvers =
-                DependencyResolutionProviderFactory.getDependencyResolvers();
-            if (CollectionUtils.isEmpty(dependencyResolvers)) {
-                throw new DependencyResolutionException(
-                    "Failed to find implementations of " + DependencyResolutionProvider.class.getName());
-            }
-            dependencyResolvers.stream()
-                .forEach(LambdaExceptionUtil.rethrowConsumer(dependencyResolver -> {
-                    try {
-                        DependencyResolutionProvider dependencyResolutionProviderInstance =
-                            dependencyResolver.newInstance();
-                        File dependencyDescriber = dependencyResolutionProviderInstance
-                            .getDependencyDescriberFor(groupId, artifactId);
-                        DynamicJarDependency rootDependency =
-                            dependencyResolutionProviderInstance.resolveDependencies(dependencyDescriber);
-                        if (rootDependency != null) {
-                            dependencies.add(rootDependency);
-                        }
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        throw new DependencyResolutionException(e);
-                    }
-                }));
-            logger.debug(dependencies.toString());
-
-            loadJars(dependencies, classLoader);
-
-        } catch (IOException e) {
-            throw new DependencyResolutionException("Failed to resolve dependencies", e);
-        }
-
     }
 
     private static void loadJars(final Set<DynamicJarDependency> dependencies,
@@ -216,6 +165,4 @@ public final class DynamicJar {
         }
 
     }
-
-
 }

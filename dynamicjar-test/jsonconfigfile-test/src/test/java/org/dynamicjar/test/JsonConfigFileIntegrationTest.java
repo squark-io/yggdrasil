@@ -18,7 +18,6 @@ public class JsonConfigFileIntegrationTest {
     private static final String LOG_4_J_CLASS_NAME = "org.apache.logging.log4j.core.Logger";
 
     /**
-     *
      * @throws DependencyResolutionException
      * @throws ClassNotFoundException
      * @throws IllegalAccessException

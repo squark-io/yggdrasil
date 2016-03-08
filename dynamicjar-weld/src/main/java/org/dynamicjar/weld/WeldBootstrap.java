@@ -19,8 +19,8 @@ public class WeldBootstrap {
 
     public static void main(String[] args) {
         try {
-            DynamicJar.loadDependencies("org.dynamicjar", "dynamicjar-weld",
-                WeldBootstrap.class);
+            //DynamicJar.loadDependencies("org.dynamicjar", "dynamicjar-weld",
+            //    WeldBootstrap.class);
         } catch (DependencyResolutionException e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
