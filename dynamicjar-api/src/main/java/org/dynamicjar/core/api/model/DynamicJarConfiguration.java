@@ -1,5 +1,6 @@
 package org.dynamicjar.core.api.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -11,11 +12,28 @@ import java.util.Set;
 public class DynamicJarConfiguration {
     Set<DynamicJarDependency> dependencies;
 
+    String dynamicJarVersion;
+
     public Set<DynamicJarDependency> getDependencies() {
         return dependencies;
     }
 
     public void setDependencies(Set<DynamicJarDependency> dependencies) {
         this.dependencies = dependencies;
+    }
+
+    public void addDependency(DynamicJarDependency dependency) {
+        if (dependencies == null) {
+            dependencies = new HashSet<>();
+        }
+        dependencies.add(dependency);
+    }
+
+    public String getDynamicJarVersion() {
+        return dynamicJarVersion;
+    }
+
+    public void setDynamicJarVersion(String dynamicJarVersion) {
+        this.dynamicJarVersion = dynamicJarVersion;
     }
 }

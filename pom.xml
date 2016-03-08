@@ -38,6 +38,7 @@
         <snakeyaml.version>1.17</snakeyaml.version>
         <weld.version>3.0.0.Alpha15</weld.version>
         <cdi.version>2.0-EDR1</cdi.version>
+        <commons-io.version>2.4</commons-io.version>
 
     </properties>
 
@@ -204,6 +205,11 @@
                 <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-utils</artifactId>
                 <version>${plexus.utils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
             </dependency>
 
 
