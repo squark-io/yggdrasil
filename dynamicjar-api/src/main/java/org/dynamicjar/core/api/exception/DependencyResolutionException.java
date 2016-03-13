@@ -7,7 +7,7 @@ package org.dynamicjar.core.api.exception;
  * Created by Erik Håkansson on 2016-02-09.
  * Copyright 2016
  */
-public class DependencyResolutionException extends Exception {
+public class DependencyResolutionException extends DynamicJarException {
 
     public DependencyResolutionException(String message) {
         super(message);

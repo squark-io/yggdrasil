@@ -10,9 +10,9 @@ import java.util.Set;
  * Copyright 2016
  */
 public class DynamicJarConfiguration {
-    Set<DynamicJarDependency> dependencies;
-
-    String dynamicJarVersion;
+    private Set<DynamicJarDependency> dependencies;
+    private String dynamicJarVersion;
+    private String dependencyResolutionProviderClass;
 
     public Set<DynamicJarDependency> getDependencies() {
         return dependencies;
@@ -35,5 +35,13 @@ public class DynamicJarConfiguration {
 
     public void setDynamicJarVersion(String dynamicJarVersion) {
         this.dynamicJarVersion = dynamicJarVersion;
+    }
+
+    public String getDependencyResolutionProviderClass() {
+        return dependencyResolutionProviderClass;
+    }
+
+    public void setDependencyResolutionProviderClass(String dependencyResolutionProviderClass) {
+        this.dependencyResolutionProviderClass = dependencyResolutionProviderClass;
     }
 }

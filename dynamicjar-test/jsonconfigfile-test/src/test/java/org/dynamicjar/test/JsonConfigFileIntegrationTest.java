@@ -1,6 +1,7 @@
 package org.dynamicjar.test;
 
 import org.dynamicjar.core.api.exception.DependencyResolutionException;
+import org.dynamicjar.core.api.exception.DynamicJarException;
 import org.dynamicjar.core.api.exception.PropertyLoadException;
 import org.dynamicjar.core.main.DynamicJar;
 import org.testng.annotations.Test;
@@ -27,7 +28,11 @@ public class JsonConfigFileIntegrationTest {
     public void loadJarIntegrationTest()
         throws DependencyResolutionException, ClassNotFoundException, IllegalAccessException,
         InstantiationException, PropertyLoadException {
-        DynamicJar.loadDependencies(JsonConfigFileTestTarget.class);
+        try {
+            DynamicJar.initiate(JsonConfigFileTestTarget.class);
+        } catch (DynamicJarException e) {
+            e.printStackTrace();
+        }
         JsonConfigFileTestTarget business = new JsonConfigFileTestTarget();
         business.helloWorld();
         assertEquals(business.getLogger().getClass().getName(), LOG_4_J_CLASS_NAME);

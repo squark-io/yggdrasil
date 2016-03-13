@@ -34,6 +34,7 @@ import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.util.filter.ScopeDependencyFilter;
+import org.eclipse.aether.util.graph.traverser.StaticDependencyTraverser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,6 +152,7 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
         final RepositorySystem repositorySystem, final LocalRepository localRepository) {
         if (repositorySystemSession == null) {
             repositorySystemSession = MavenRepositorySystemUtils.newSession();
+            repositorySystemSession.setDependencyTraverser(new StaticDependencyTraverser(true));
             repositorySystemSession.setLocalRepositoryManager(repositorySystem
                 .newLocalRepositoryManager(repositorySystemSession, localRepository));
         }

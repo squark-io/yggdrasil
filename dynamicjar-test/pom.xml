@@ -14,7 +14,6 @@
     <artifactId>dynamicjar-test</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>basic-test</module>
         <module>yamlconfigfile-test</module>
         <module>jsonconfigfile-test</module>
         <module>dynamicjar-weld-test</module>

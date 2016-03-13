@@ -13,6 +13,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.util.IOUtil;
 import org.dynamicjar.core.api.DynamicJarDependencyMavenUtil;
 import org.dynamicjar.core.api.model.DynamicJarConfiguration;
@@ -37,11 +38,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -63,6 +64,8 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     private static final String dynamicJarMavenProviderGroupId = "org.dynamicjar";
     private static final String dynamicJarMavenProviderArtifactId = "dynamicjar-maven-provider";
     private static final String dynamicJarClassName = "org.dynamicjar.core.main.DynamicJar";
+    private static final String MAVEN_DEPENDENCY_RESOLUTION_PROVIDER_CLASS =
+        "org.dynamicjar.core.main.MavenDependencyResolutionProvider";
     @Parameter(defaultValue = "${plugin}", readonly = true)
     private PluginDescriptor pluginDescriptor;
     @Parameter(property = "dynamicjar.classesDir", defaultValue = "classes")
@@ -80,6 +83,11 @@ public class PackageDynamicJarMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
+
+    @Component
+    private MavenProjectHelper mavenProjectHelper;
+
+
     /**
      * The entry point to Aether, i.e. the component doing all the work.
      *
@@ -112,14 +120,18 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     private File outputDirectory;
     private Set<String> resources = new HashSet<>();
 
+    @Parameter(property = "dynamicjar.manifest")
+    private Map<String, Object> manifest;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        getLog().info("testd" + pluginDescriptor.toString());
         buildConfigurationFile();
         Manifest manifest = generateAndReturnManifest();
         try (JarOutputStream targetJarOutputStream = createTargetJar(manifest)) {
             addFiles(targetJarOutputStream);
             copyCompileDependencies(targetJarOutputStream);
+            mavenProjectHelper
+                .attachArtifact(project, project.getArtifact().getType(), "dynamicjar", new File(getTargetJarName()));
         } catch (IOException e) {
             throw new MojoExecutionException("Failed to create target jar", e);
         }
@@ -135,7 +147,6 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     private void addFile(File baseDir, File file, JarOutputStream targetJarOutputStream)
         throws MojoExecutionException {
         String relativePath = relativize(baseDir, file);
-        getLog().info("RELATIVE: " + relativePath);
         if (file.isDirectory()) {
             addDirectory(relativePath, targetJarOutputStream);
             File[] files = file.listFiles();
@@ -156,6 +167,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
                 throw new MojoExecutionException("Failed to open file " + file.getName(), e);
             }
         }
+        resources.add(relativePath);
     }
 
     private String relativize(File baseDir, File file) {
@@ -163,9 +175,13 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         return relative;
     }
 
+    private String getTargetJarName() {
+        return project.getArtifactId() + "-" + project.getVersion() + "-dynamicjar." +
+               project.getPackaging();
+    }
+
     private JarOutputStream createTargetJar(Manifest manifest) throws IOException {
-        String jarName = project.getArtifactId() + "-" + project.getVersion() + "-dynamicjar." +
-                         project.getPackaging();
+        String jarName = getTargetJarName();
         return new JarOutputStream(new FileOutputStream(outputDirectory + "/" + jarName), manifest);
     }
 
@@ -185,6 +201,11 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         JarOutputStream targetJarOutputStream) throws MojoExecutionException {
         String name = sourceJarEntry.getName();
         if (resources.contains(name)) {
+            getLog().warn("Target already contains file named " + name);
+            return;
+        }
+        if (name.matches("META-INF\\/.*\\.(RSA|SF|DSA)")) {
+            getLog().warn("Excluding " + name + " to workaround signature issues.");
             return;
         }
         JarEntry targetJarEntry = new JarEntry(name);
@@ -192,9 +213,8 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         try (InputStream in = sourceJarFile.getInputStream(sourceJarEntry)) {
             addResource(in, targetJarEntry, targetJarOutputStream);
         } catch (IOException e) {
-            throw new MojoExecutionException(
-                "Failed to copy jar entry " + name + " from jar " +
-                sourceJarFile.getName(), e);
+            throw new MojoExecutionException("Failed to copy jar entry " + name + " from jar " +
+                                             sourceJarFile.getName(), e);
         }
         resources.add(name);
     }
@@ -258,10 +278,15 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     private void buildConfigurationFile() throws MojoExecutionException {
 
         DynamicJarConfiguration dynamicJarConfiguration = new DynamicJarConfiguration();
-        DynamicJarDependency dynamicJarDependency = getProjectDependencies();
+        DynamicJarDependency dynamicJarDependency = getProjectProvidedDependencies();
         dynamicJarConfiguration.setDependencies(dynamicJarDependency.getChildDependencies());
 
         dynamicJarConfiguration.setDynamicJarVersion(pluginDescriptor.getVersion());
+
+        if ("maven".equals(dependencyResolutionProviderString)) {
+            dynamicJarConfiguration
+                .setDependencyResolutionProviderClass(MAVEN_DEPENDENCY_RESOLUTION_PROVIDER_CLASS);
+        }
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(dynamicJarConfiguration);
@@ -287,7 +312,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     }
 
     private void copyCompileDependencies(JarOutputStream jarOutputStream)
-        throws MojoExecutionException, MojoFailureException {
+        throws MojoExecutionException, MojoFailureException, IOException {
 
         List<org.apache.maven.model.Dependency> dependencies = project.getDependencies();
         addSelfDependencies(dependencies);
@@ -316,6 +341,8 @@ public class PackageDynamicJarMojo extends AbstractMojo {
                 throw new MojoExecutionException(e.getMessage());
             }
         }
+
+        jarOutputStream.close();
 
     }
 
@@ -368,26 +395,26 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         return coreDependency;
     }
 
-    private DynamicJarDependency getProjectDependencies() throws MojoExecutionException {
+    private DynamicJarDependency getProjectProvidedDependencies() throws MojoExecutionException {
 
         List<org.apache.maven.model.Dependency> mavenDependencies = project.getDependencies();
         DynamicJarDependency rootDependency =
             new DynamicJarDependency(project.getGroupId(), project.getArtifactId(), null,
                 project.getVersion(), null);
 
-        Map<String, Artifact> dependencyArtifacts = new HashMap<>();
-        mavenDependencies.parallelStream().forEach(dependency -> {
+        Map<Artifact, String> dependencyArtifacts = new ConcurrentHashMap<>();
+        mavenDependencies.stream().forEach(dependency -> {
             if (Scopes.PROVIDED.equals(dependency.getScope())) {
-                dependencyArtifacts.put(dependency.getScope(),
+                dependencyArtifacts.put(
                     new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
                         dependency.getClassifier(), null, dependency.getVersion(),
-                        new DefaultArtifactType(dependency.getType())));
+                        new DefaultArtifactType(dependency.getType())), dependency.getScope());
             }
         });
 
-        for (Map.Entry<String, Artifact> entry : dependencyArtifacts.entrySet()) {
+        for (Map.Entry<Artifact, String> entry : dependencyArtifacts.entrySet()) {
             CollectRequest collectRequest = new CollectRequest();
-            collectRequest.setRoot(new Dependency(entry.getValue(), entry.getKey()));
+            collectRequest.setRoot(new Dependency(entry.getKey(), entry.getValue()));
             collectRequest.setRepositories(remoteRepositories);
             DynamicJarDependency dynamicJarDependency;
             try {
@@ -409,9 +436,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
 
     private void copyNode(DependencyNode node, JarOutputStream targetJarOutputStream)
         throws MojoExecutionException {
-        if (!Scopes.COMPILE.equals(node.getDependency().getScope()) ||
-            node.getArtifact().getGroupId().startsWith("java") ||
-            node.getArtifact().getGroupId().startsWith("com.sun")) {
+        if (!Scopes.COMPILE.equals(node.getDependency().getScope())) {
             return;
         }
         getLog().info("Unpacking dependency jar " + node.getArtifact().getFile().getPath());

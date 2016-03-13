@@ -1,15 +1,17 @@
 package org.dynamicjar.core.main;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import org.apache.commons.lang3.StringUtils;
 import org.dynamicjar.core.api.DependencyResolutionProvider;
 import org.dynamicjar.core.api.exception.DependencyResolutionException;
+import org.dynamicjar.core.api.model.DynamicJarConfiguration;
 import org.dynamicjar.core.api.util.LambdaExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,23 +24,24 @@ public class DependencyResolutionProviderFactory {
 
     private static Logger logger = LoggerFactory.getLogger(DynamicJar.class);
 
-    static DependencyResolutionProvider getFirstDependencyResolver() throws DependencyResolutionException {
-        Optional<Class<? extends DependencyResolutionProvider>> dependencyResolverOptional = getDependencyResolvers().stream().findFirst();
-        if (dependencyResolverOptional.isPresent()) {
+    static Collection<Class<? extends DependencyResolutionProvider>> getDependencyResolvers(DynamicJarConfiguration configuration)
+        throws DependencyResolutionException {
+
+        if (configuration != null && StringUtils.isNotEmpty(configuration.getDependencyResolutionProviderClass())) {
+
             try {
-                return dependencyResolverOptional.get().newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                //noinspection unchecked
+                Class<? extends DependencyResolutionProvider> clazz =
+                    (Class<? extends DependencyResolutionProvider>) Class.forName(configuration.getDependencyResolutionProviderClass());
+                return Collections.singletonList(clazz);
+            } catch (ClassNotFoundException e) {
                 throw new DependencyResolutionException(e);
             }
         }
-        throw new DependencyResolutionException("Failed to find DependencyResolver");
-    }
 
-    static Collection<Class<? extends DependencyResolutionProvider>> getDependencyResolvers()
-        throws DependencyResolutionException {
         Long before = System.currentTimeMillis();
         Map<String, Class<? extends DependencyResolutionProvider>> matches = new ConcurrentHashMap<>();
-        new FastClasspathScanner("").scan().getNamesOfClassesImplementing(DependencyResolutionProvider.class)
+        new FastClasspathScanner("-javax.inject").scan().getNamesOfClassesImplementing(DependencyResolutionProvider.class)
             .parallelStream().forEach(LambdaExceptionUtil.rethrowConsumer(className -> {
             try {
                 //noinspection unchecked

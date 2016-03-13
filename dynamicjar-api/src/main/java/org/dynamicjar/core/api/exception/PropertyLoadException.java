@@ -6,8 +6,9 @@ package org.dynamicjar.core.api.exception;
  * Created by Erik Håkansson on 2016-02-23.
  * Copyright 2016
  */
-public class PropertyLoadException extends Exception {
+public class PropertyLoadException extends DynamicJarException {
     public PropertyLoadException() {
+        super();
     }
 
     public PropertyLoadException(String message) {

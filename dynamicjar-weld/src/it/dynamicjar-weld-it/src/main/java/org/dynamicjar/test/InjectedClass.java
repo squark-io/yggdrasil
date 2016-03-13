@@ -11,6 +11,6 @@ import javax.enterprise.inject.Default;
 @Default
 public class InjectedClass {
     public void sayHello() {
-        System.out.println("HELLO");
+        System.out.println("dynamicjar-weld: HELLO");
     }
 }

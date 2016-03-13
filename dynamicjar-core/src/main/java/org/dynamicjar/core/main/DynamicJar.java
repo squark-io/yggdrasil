@@ -2,34 +2,17 @@ package org.dynamicjar.core.main;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.dynamicjar.core.api.DependencyResolutionProvider;
-import org.dynamicjar.core.api.exception.DependencyResolutionException;
+import org.dynamicjar.core.api.exception.DynamicJarException;
 import org.dynamicjar.core.api.exception.PropertyLoadException;
 import org.dynamicjar.core.api.model.DynamicJarConfiguration;
-import org.dynamicjar.core.api.model.DynamicJarDependency;
-import org.dynamicjar.core.api.util.LambdaExceptionUtil;
-import org.dynamicjar.core.api.util.Scopes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * *** DynamicJar ***
@@ -44,18 +27,38 @@ public final class DynamicJar {
     private static final String JSON_PROPERTIES_FILE = "/META-INF/dynamicjar.json";
     private static Logger logger = LoggerFactory.getLogger(DynamicJar.class);
 
+    public static void main(String[] args) {
+        try {
+            initiate(DynamicJar.class);
+        } catch (DynamicJarException e) {
+            logger.error(Marker.ANY_MARKER, e);
+        }
+    }
+
     private DynamicJar() {
         //Disallow instantiation
     }
 
-    public static void loadDependencies(ClassLoader classLoader)
-        throws PropertyLoadException, DependencyResolutionException {
+    public static void initiate(ClassLoader forClassLoader)
+        throws DynamicJarException {
+        DependencyResolutionHandler.loadDependencies(forClassLoader, getConfiguration());
+        FrameworkProviderService.loadProviders(forClassLoader);
+    }
+
+    public static void initiate(Class forClass)
+        throws DynamicJarException {
+        DependencyResolutionHandler.loadDependencies(forClass.getClassLoader(), getConfiguration());
+        FrameworkProviderService.loadProviders(forClass.getClassLoader());
+    }
+
+    private static DynamicJarConfiguration getConfiguration() throws PropertyLoadException {
         InputStream inputStream;
         inputStream = DynamicJar.class.getResourceAsStream(YAML_PROPERTIES_FILE);
         DynamicJarConfiguration dynamicJarConfiguration = null;
         if (inputStream == null) {
             inputStream = DynamicJar.class.getResourceAsStream(JSON_PROPERTIES_FILE);
             if (inputStream != null) {
+                logger.info("Found JSON configuration");
                 Gson gson = new Gson();
                 try {
                     dynamicJarConfiguration = gson.fromJson(new InputStreamReader(inputStream),
@@ -65,6 +68,7 @@ public final class DynamicJar {
                 }
             }
         } else {
+            logger.info("Found YAML configuration");
             Yaml yaml = new Yaml();
             try {
                 dynamicJarConfiguration = yaml.loadAs(inputStream, DynamicJarConfiguration.class);
@@ -78,91 +82,7 @@ public final class DynamicJar {
         } else if (dynamicJarConfiguration == null) {
             throw new PropertyLoadException("Unknown error. Failed to load properties");
         }
-        Collection<Class<? extends DependencyResolutionProvider>> dependencyResolvers =
-            DependencyResolutionProviderFactory.getDependencyResolvers();
-        if (CollectionUtils.isEmpty(dependencyResolvers)) {
-            throw new DependencyResolutionException("Failed to find implementations of " +
-                                                    DependencyResolutionProvider.class.getName());
-        }
-        final Set<DynamicJarDependency> dependencies = dynamicJarConfiguration.getDependencies();
-        Set<DynamicJarDependency> resolvedDependencies = new HashSet<>();
-        dependencyResolvers.stream()
-            .forEach(LambdaExceptionUtil.rethrowConsumer(dependencyResolver -> {
-                DependencyResolutionProvider dependencyResolutionProviderInstance =
-                    dependencyResolver.newInstance();
-                resolvedDependencies
-                    .addAll(dependencyResolutionProviderInstance.resolveDependencies(dependencies));
-            }));
-        try {
-            loadJars(resolvedDependencies, classLoader);
-        } catch (IOException e) {
-            throw new DependencyResolutionException("Failed to resolve dependencies", e);
-        }
-
+        return dynamicJarConfiguration;
     }
 
-    public static void loadDependencies(Class forClass)
-        throws PropertyLoadException, DependencyResolutionException {
-        loadDependencies(forClass.getClassLoader());
-    }
-
-    private static void loadJars(final Set<DynamicJarDependency> dependencies,
-        ClassLoader classLoader) throws IOException {
-        Map<String, String> loadedJars = new HashMap<>();
-        List<DynamicJarDependency> flatDependencies = getFlatDependencies(dependencies);
-        for (DynamicJarDependency dependency : flatDependencies) {
-            if (!StringUtils.equals(dependency.getScope(), Scopes.PROVIDED)) {
-                logger.debug("Found dependency " + dependency.toShortString() + " of scope " +
-                             dependency.getScope() + ". Skipping.");
-                continue;
-            }
-            String identifier = dependency.toShortStringWithoutVersion();
-            String loadedVersion = loadedJars.get(identifier);
-            if (dependency.getFile() == null) {
-                logger.warn("No jar found for " + dependency.toShortString());
-                continue;
-            }
-            if (loadedVersion != null) {
-                if (!StringUtils.equals(loadedVersion, dependency.getVersion())) {
-                    logger.warn("Dependency " + identifier + " exists in at least two versions: {" +
-                                loadedVersion + ", " + dependency.getVersion() +
-                                "}. Only first found will be loaded.");
-                }
-                continue;
-            }
-            logger.debug("Loading dependency " + dependency.toShortString() + " of scope " +
-                         dependency.getScope());
-            addJar(dependency.getFile(), classLoader);
-            loadedJars.put(dependency.toShortStringWithoutVersion(), dependency.getVersion());
-        }
-    }
-
-    private static List<DynamicJarDependency> getFlatDependencies(
-        final Collection<DynamicJarDependency> dependencies) {
-        List<DynamicJarDependency> jars = new ArrayList<>();
-        if (dependencies != null) {
-            for (DynamicJarDependency dependency : dependencies) {
-                jars.add(dependency);
-                jars.addAll(getFlatDependencies(dependency.getChildDependencies()));
-            }
-        }
-        return jars;
-    }
-
-    public static void addJar(final File jar, ClassLoader classLoader) throws IOException {
-        addJar(jar.toURI().toURL(), classLoader);
-    }
-
-    public static void addJar(final URL jar, ClassLoader classLoader) throws IOException {
-        Class<?> urlClassLoaderClass = URLClassLoader.class;
-        try {
-            Method method = urlClassLoaderClass.getDeclaredMethod("addURL", URL.class);
-            method.setAccessible(true);
-            method.invoke(classLoader, jar);
-        } catch (Throwable t) {
-            logger.error("Failed to load JAR", t);
-            throw new IOException(t);
-        }
-
-    }
 }
