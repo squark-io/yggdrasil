@@ -16,7 +16,6 @@
     <modules>
         <module>yamlconfigfile-test</module>
         <module>jsonconfigfile-test</module>
-        <module>dynamicjar-weld-test</module>
     </modules>
 
 </project>
