@@ -20,7 +20,7 @@ public class FrameworkProviderService {
     private static final Logger logger = LoggerFactory.getLogger(FrameworkProviderService.class);
 
     public static void loadProviders(ClassLoader classLoader) {
-        final ServiceLoader<FrameworkProvider> loader = ServiceLoader.load(FrameworkProvider.class, classLoader);
+        final ServiceLoader<FrameworkProvider> loader = ServiceLoader.load(FrameworkProvider.class, null);
 
         try {
             Iterator<FrameworkProvider> providerIterator = loader.iterator();
