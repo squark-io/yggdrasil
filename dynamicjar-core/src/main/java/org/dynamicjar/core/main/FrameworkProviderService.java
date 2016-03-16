@@ -5,6 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
@@ -26,6 +29,17 @@ public class FrameworkProviderService {
             Iterator<FrameworkProvider> providerIterator = loader.iterator();
             if (!providerIterator.hasNext()) {
                 logger.info("No FrameworkProviders found");
+                if (logger.isDebugEnabled()) {
+                    try {
+                        Enumeration<URL> urls = classLoader.getResources("META-INF/services/" + FrameworkProvider.class
+                                .getName());
+                        while (urls.hasMoreElements()) {
+                            logger.debug(Marker.ANY_MARKER, "Classloader has the following service file: " + urls.nextElement().toString());
+                        }
+                    } catch (IOException e) {
+                        logger.error(Marker.ANY_MARKER, e);
+                    }
+                }
             }
             while (providerIterator.hasNext()) {
                 FrameworkProvider provider = providerIterator.next();
