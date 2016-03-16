@@ -47,6 +47,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.dynamicjar</groupId>
+            <artifactId>dynamicjar-maven-plugin</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -55,11 +61,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <configuration>
-                    <!--  <includes>
-                          <include>org.dynamicjar.*</include>
-                      </includes>-->
-                </configuration>
                 <executions>
                     <execution>
                         <id>pre-integration-test</id>
