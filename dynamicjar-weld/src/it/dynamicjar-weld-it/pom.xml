@@ -67,10 +67,11 @@
                         <configuration>
                             <executable>java</executable>
                             <arguments>
+                                <argument>@jacoco.arguments@</argument>
                                 <argument>-jar</argument>
-                                <argument>${build.directory}/${artifactId}-${version}-dynamicjar.jar</argument>
+                                <argument>${project.build.directory}/${project.build.finalName}-dynamicjar.${project.packaging}</argument>
                             </arguments>
-                            <outputFile>${build.directory}/it.log</outputFile>
+                            <outputFile>${project.build.directory}/it.log</outputFile>
                         </configuration>
                     </execution>
                 </executions>
