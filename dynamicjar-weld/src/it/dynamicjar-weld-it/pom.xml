@@ -67,7 +67,7 @@
                         <configuration>
                             <executable>java</executable>
                             <arguments>
-                                <argument>@jacoco.arguments@</argument>
+                                <argument>"@jacoco.arguments@"</argument>
                                 <argument>-jar</argument>
                                 <argument>${project.build.directory}/${project.build.finalName}-dynamicjar.${project.packaging}</argument>
                             </arguments>
