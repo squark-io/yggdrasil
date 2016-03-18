@@ -107,6 +107,7 @@
                     <settingsFile>src/it/settings.xml</settingsFile>
                     <filterProperties>
                         <jacoco.arguments>${invoker.mavenOpts}</jacoco.arguments>
+                        <maven.repo.local>${maven.repo.local}</maven.repo.local>
                     </filterProperties>
                     <streamLogs>true</streamLogs>
                     <goals>

@@ -70,6 +70,7 @@
                                 <argument>-jar</argument>
                                 <argument>${project.build.directory}/${project.build.finalName}-dynamicjar.${project.packaging}</argument>
                                 <argument>"@jacoco.arguments@"</argument>
+                                <argument>-Dmaven.repo.local=@maven.repo.local@</argument>
                             </arguments>
                             <outputFile>${project.build.directory}/it.log</outputFile>
                         </configuration>
