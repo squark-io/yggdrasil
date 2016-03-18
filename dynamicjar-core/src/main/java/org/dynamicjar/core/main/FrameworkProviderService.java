@@ -1,16 +1,14 @@
 package org.dynamicjar.core.main;
 
+import org.apache.xbean.finder.ResourceFinder;
 import org.dynamicjar.core.api.FrameworkProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.List;
 import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
 
 /**
  * dynamicjar
@@ -23,31 +21,24 @@ public class FrameworkProviderService {
     private static final Logger logger = LoggerFactory.getLogger(FrameworkProviderService.class);
 
     public static void loadProviders(ClassLoader classLoader) {
-        final ServiceLoader<FrameworkProvider> loader = ServiceLoader.load(FrameworkProvider.class, null);
+        ResourceFinder finder = new ResourceFinder("META-INF/services/", classLoader);
 
         try {
-            Iterator<FrameworkProvider> providerIterator = loader.iterator();
-            if (!providerIterator.hasNext()) {
+            List<Class<? extends FrameworkProvider>> implementations =
+                finder.findAllImplementations(FrameworkProvider.class);
+            if (implementations.size() == 0) {
                 logger.info("No FrameworkProviders found");
-                if (logger.isDebugEnabled()) {
-                    try {
-                        Enumeration<URL> urls = classLoader.getResources("META-INF/services/" + FrameworkProvider.class
-                                .getName());
-                        while (urls.hasMoreElements()) {
-                            logger.debug(Marker.ANY_MARKER, "Classloader has the following service file: " + urls.nextElement().toString());
-                        }
-                    } catch (IOException e) {
-                        logger.error(Marker.ANY_MARKER, e);
-                    }
+            } else {
+                for (Class<? extends FrameworkProvider> implementation : implementations) {
+                    logger.info("Loading FrameworkProvider " + implementation.getSimpleName());
+                    FrameworkProvider provider = implementation.newInstance();
+                    provider.provide();
                 }
+
             }
-            while (providerIterator.hasNext()) {
-                FrameworkProvider provider = providerIterator.next();
-                logger.info("Loading FrameworkProvider " + provider.getClass().getSimpleName());
-                provider.provide();
-            }
-        } catch (ServiceConfigurationError serviceError) {
-            logger.error(Marker.ANY_MARKER, serviceError);
+        } catch (ServiceConfigurationError | ClassNotFoundException | IOException |
+            IllegalAccessException | InstantiationException e) {
+            logger.error(Marker.ANY_MARKER, e);
         }
     }
 
