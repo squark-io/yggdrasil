@@ -1,6 +1,7 @@
 package org.dynamicjar.core.main;
 
 import org.apache.xbean.finder.ResourceFinder;
+import org.apache.xbean.finder.UrlSet;
 import org.dynamicjar.core.api.FrameworkProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +23,11 @@ public class FrameworkProviderService {
 
     public static void loadProviders(ClassLoader classLoader) {
         ResourceFinder finder = new ResourceFinder("META-INF/services/", classLoader);
-
         try {
+            UrlSet urlSet = new UrlSet(classLoader);
+            //urlSet = urlSet.exclude(classLoader.getParent());
+            //urlSet = urlSet.matching(".*dynamicjar-weld.*.jar");
+            logger.debug(urlSet.getUrls().toString());
             List<Class<? extends FrameworkProvider>> implementations =
                 finder.findAllImplementations(FrameworkProvider.class);
             if (implementations.size() == 0) {
