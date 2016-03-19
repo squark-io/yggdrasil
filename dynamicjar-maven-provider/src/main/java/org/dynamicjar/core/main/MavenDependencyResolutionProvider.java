@@ -27,6 +27,7 @@ import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.repository.LocalRepositoryManager;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
@@ -148,13 +149,16 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
         return mavenSettings;
     }
 
-    private static RepositorySystemSession newRepositorySystemSession(
+    private synchronized static RepositorySystemSession newRepositorySystemSession(
         final RepositorySystem repositorySystem, final LocalRepository localRepository) {
         if (repositorySystemSession == null) {
             repositorySystemSession = MavenRepositorySystemUtils.newSession();
             repositorySystemSession.setDependencyTraverser(new StaticDependencyTraverser(true));
-            repositorySystemSession.setLocalRepositoryManager(repositorySystem
-                .newLocalRepositoryManager(repositorySystemSession, localRepository));
+            LocalRepositoryManager localRepositoryManager = repositorySystem.newLocalRepositoryManager(repositorySystemSession, localRepository);
+            if (localRepositoryManager == null) {
+                logger.error("Failed to get localRepositoryManager");
+            }
+            repositorySystemSession.setLocalRepositoryManager(localRepositoryManager);
         }
 
         return repositorySystemSession;
