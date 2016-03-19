@@ -15,21 +15,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.xbean</groupId>
-            <artifactId>xbean-finder</artifactId>
-            <version>4.5</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.xbean</groupId>
-                    <artifactId>xbean-bundleutils</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.xbean</groupId>
-                    <artifactId>xbean-asm-util</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
