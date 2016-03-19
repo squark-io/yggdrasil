@@ -52,7 +52,7 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
     private static final File DEFAULT_GLOBAL_SETTINGS_FILE =
         new File(System.getProperty("M2_HOME", System.getProperty("maven.home", "")),
             "conf/settings.xml");
-    private static final String MAVEN_LOCAL_REPOSITORY = "maven.local.repository";
+    private static final String MAVEN_LOCAL_REPOSITORY = "maven.repo.local";
 
     private static Logger logger = LoggerFactory.getLogger(MavenDependencyResolutionProvider.class);
     private static RepositorySystem repositorySystem;
