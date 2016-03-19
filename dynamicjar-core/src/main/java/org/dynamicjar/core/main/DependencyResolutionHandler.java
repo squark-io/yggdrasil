@@ -11,10 +11,12 @@ import org.dynamicjar.core.api.util.LambdaExceptionUtil;
 import org.dynamicjar.core.api.util.Scopes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -71,7 +73,16 @@ public class DependencyResolutionHandler {
     }
 
     private static void addJar(final URL jar, ClassLoader classLoader) throws IOException {
-        Class<?> urlClassLoaderClass = URLClassLoader.class;
+        try {
+            File jarFile = new File(jar.toURI());
+            if (!jarFile.exists()) {
+                logger.warn(Marker.ANY_MARKER, "Cannot find JAR " + jar + ". Skipping.");
+            } else if (!jarFile.canRead()) {
+                logger.warn(Marker.ANY_MARKER, "Cannot read JAR " + jar + ". No read access? Skipping.");
+            }
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } Class<?> urlClassLoaderClass = URLClassLoader.class;
         try {
             Method method = urlClassLoaderClass.getDeclaredMethod("addURL", URL.class);
             method.setAccessible(true);
