@@ -13,6 +13,7 @@ public class DynamicJarConfiguration {
     private Set<DynamicJarDependency> dependencies;
     private String dynamicJarVersion;
     private String dependencyResolutionProviderClass;
+    private String mainClass;
 
     public Set<DynamicJarDependency> getDependencies() {
         return dependencies;
@@ -43,5 +44,13 @@ public class DynamicJarConfiguration {
 
     public void setDependencyResolutionProviderClass(String dependencyResolutionProviderClass) {
         this.dependencyResolutionProviderClass = dependencyResolutionProviderClass;
+    }
+
+    public String getMainClass() {
+        return mainClass;
+    }
+
+    public void setMainClass(String mainClass) {
+        this.mainClass = mainClass;
     }
 }

@@ -3,6 +3,7 @@ package org.dynamicjar.maven.plugin;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -122,6 +123,9 @@ public class PackageDynamicJarMojo extends AbstractMojo {
 
     @Parameter(property = "dynamicjar.manifest")
     private Map<String, Object> manifest;
+
+    @Parameter(property = "dynamicjar.mainClass")
+    private String mainClass;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -282,6 +286,10 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         dynamicJarConfiguration.setDependencies(dynamicJarDependency.getChildDependencies());
 
         dynamicJarConfiguration.setDynamicJarVersion(pluginDescriptor.getVersion());
+
+        if (StringUtils.isNotEmpty(mainClass)) {
+            dynamicJarConfiguration.setMainClass(mainClass);
+        }
 
         if ("maven".equals(dependencyResolutionProviderString)) {
             dynamicJarConfiguration

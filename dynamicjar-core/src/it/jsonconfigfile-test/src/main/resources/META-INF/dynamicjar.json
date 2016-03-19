@@ -1,0 +1,17 @@
+{
+  "dependencies": [
+    {
+      "groupId": "org.apache.logging.log4j",
+      "artifactId": "log4j-core",
+      "version": 2.5,
+      "scope": "provided"
+    },
+    {
+      "groupId": "org.apache.logging.log4j",
+      "artifactId": "log4j-api",
+      "version": 2.5,
+      "scope": "provided"
+    }
+  ],
+  "dependencyResolutionProviderClass": "org.dynamicjar.core.main.MavenDependencyResolutionProvider"
+}
