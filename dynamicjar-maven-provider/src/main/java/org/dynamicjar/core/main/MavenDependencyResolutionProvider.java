@@ -37,7 +37,6 @@ import org.eclipse.aether.util.filter.ScopeDependencyFilter;
 import org.eclipse.aether.util.graph.traverser.StaticDependencyTraverser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -171,7 +170,7 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
                     localRepositoryString = USER_HOME + "/.m2/repository";
                 }
             }
-            logger.debug(Marker.ANY_MARKER, "Using local repository '" + localRepositoryString + "'.");
+            logger.debug("Using local repository '" + localRepositoryString + "'.");
             localRepository = new LocalRepository(localRepositoryString);
         }
 

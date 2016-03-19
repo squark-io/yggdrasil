@@ -67,12 +67,12 @@
                         <configuration>
                             <executable>java</executable>
                             <arguments>
+                                <argument>-Dmaven.repo.local=@localRepositoryPath@</argument>
+                                <argument>"@jacoco.arguments@"</argument>
                                 <argument>-jar</argument>
                                 <argument>${project.build.directory}/${project.build.finalName}-dynamicjar.${project.packaging}</argument>
-                                <argument>"@jacoco.arguments@"</argument>
-                                <argument>-Dmaven.repo.local=@localRepositoryPath@</argument>
                             </arguments>
-                            <outputFile>${project.build.directory}/it.log</outputFile>
+                            <!--<outputFile>${project.build.directory}/it.log</outputFile>-->
                         </configuration>
                     </execution>
                 </executions>

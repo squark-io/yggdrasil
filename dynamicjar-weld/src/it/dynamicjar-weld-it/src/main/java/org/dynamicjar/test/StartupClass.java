@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
 
+import static java.lang.System.getProperties;
+
 /**
  * dynamicjar
  * <p>
@@ -22,6 +24,7 @@ public class StartupClass {
 
     public void init(@Observes ContainerInitialized event, @Parameters List<String> parameters)
     {
+        System.out.println(getProperties());
         injectedClass.sayHello();
     }
 
