@@ -25,7 +25,7 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.xbean</groupId>
-                    <artifactId>xxbean-asm-util</artifactId>
+                    <artifactId>xbean-asm-util</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

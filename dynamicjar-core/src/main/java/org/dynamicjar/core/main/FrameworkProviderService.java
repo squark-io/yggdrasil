@@ -32,6 +32,9 @@ public class FrameworkProviderService {
                 finder.findAllImplementations(FrameworkProvider.class);
             if (implementations.size() == 0) {
                 logger.info("No FrameworkProviders found");
+                FrameworkProvider frameworkProvider =
+                    (FrameworkProvider) Class.forName("org.dynamicjar.weld.WeldFrameworkProvider").newInstance();
+                frameworkProvider.provide();
             } else {
                 for (Class<? extends FrameworkProvider> implementation : implementations) {
                     logger.info("Loading FrameworkProvider " + implementation.getSimpleName());
