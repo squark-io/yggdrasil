@@ -37,6 +37,7 @@ import org.eclipse.aether.util.filter.ScopeDependencyFilter;
 import org.eclipse.aether.util.graph.traverser.StaticDependencyTraverser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -162,14 +163,16 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
 
     private static LocalRepository getLocalRepository(final Settings mavenSettings) {
         if (localRepository == null) {
-            String overrideLocalRepository = System.getProperty(MAVEN_LOCAL_REPOSITORY);
-            String localRepositoryUrl = mavenSettings.getLocalRepository();
-            if (StringUtils.isEmpty(localRepositoryUrl)) {
-                localRepositoryUrl = USER_HOME + "/.m2/repository";
+            String localRepositoryString = System.getProperty(MAVEN_LOCAL_REPOSITORY);
+            if (StringUtils.isEmpty(localRepositoryString)) {
+                logger.debug("No local repository override. Using default.");
+                localRepositoryString = mavenSettings.getLocalRepository();
+                if (StringUtils.isEmpty(localRepositoryString)) {
+                    localRepositoryString = USER_HOME + "/.m2/repository";
+                }
             }
-            localRepository = new LocalRepository(
-                StringUtils.isNotEmpty(overrideLocalRepository) ? overrideLocalRepository :
-                localRepositoryUrl);
+            logger.debug(Marker.ANY_MARKER, "Using local repository '" + localRepositoryString + "'.");
+            localRepository = new LocalRepository(localRepositoryString);
         }
 
         return localRepository;
