@@ -135,14 +135,6 @@ public class DynamicJarDependency {
         childDependencies.add(childDependency);
     }
 
-    public Optional<DynamicJarDependency> getParent() {
-        return Optional.ofNullable(parent);
-    }
-
-    public void setParent(DynamicJarDependency parent) {
-        this.parent = parent;
-    }
-
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(groupId).append(artifactId).append(version)
@@ -158,8 +150,7 @@ public class DynamicJarDependency {
         DynamicJarDependency that = (DynamicJarDependency) o;
 
         return new EqualsBuilder().append(groupId, that.groupId).append(artifactId, that.artifactId)
-            .append(version, that.version).append(classifier, that.classifier)
-            .append(extension, that.extension).append(scope, that.scope).isEquals();
+            .append(classifier, that.classifier).append(extension, that.extension).isEquals();
     }
 
     @Override
@@ -177,15 +168,12 @@ public class DynamicJarDependency {
                '}';
     }
 
-    public String toShortStringWithoutVersion() {
-        StringBuilder buffer = new StringBuilder(128);
-        buffer.append(groupId);
-        buffer.append(':').append(artifactId);
-        buffer.append(':').append(extension);
-        if (StringUtils.isNotEmpty(classifier)) {
-            buffer.append(':').append(classifier);
-        }
-        return buffer.toString();
+    public Optional<DynamicJarDependency> getParent() {
+        return Optional.ofNullable(parent);
+    }
+
+    public void setParent(DynamicJarDependency parent) {
+        this.parent = parent;
     }
 
     public String toShortString() {
@@ -198,6 +186,17 @@ public class DynamicJarDependency {
         }
         if (StringUtils.isNotEmpty(version)) {
             buffer.append(':').append(version);
+        }
+        return buffer.toString();
+    }
+
+    public String toShortStringWithoutVersion() {
+        StringBuilder buffer = new StringBuilder(128);
+        buffer.append(groupId);
+        buffer.append(':').append(artifactId);
+        buffer.append(':').append(extension);
+        if (StringUtils.isNotEmpty(classifier)) {
+            buffer.append(':').append(classifier);
         }
         return buffer.toString();
     }
