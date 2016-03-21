@@ -26,10 +26,13 @@
                 <executions>
                     <execution>
                         <id>package</id>
-                        <phase>validate</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>package-dynamicjar</goal>
                         </goals>
+                        <configuration>
+                            <mainClass>mockclass</mainClass>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
