@@ -45,7 +45,6 @@
 
     <modules>
         <module>dynamicjar-core</module>
-        <module>dynamicjar-test</module>
         <module>dynamicjar-maven-provider</module>
         <module>dynamicjar-api</module>
         <module>dynamicjar-weld</module>

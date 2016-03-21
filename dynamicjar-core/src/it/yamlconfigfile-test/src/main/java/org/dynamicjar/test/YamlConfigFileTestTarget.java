@@ -16,10 +16,6 @@ public class YamlConfigFileTestTarget {
 
     public void helloWorld() {
         logger = LogManager.getLogger(YamlConfigFileTestTarget.class);
-        logger.info("Hello world");
-    }
-
-    public Object getLogger() {
-        return logger;
+        logger.info(this.getClass().getSimpleName() + ": Hello world");
     }
 }

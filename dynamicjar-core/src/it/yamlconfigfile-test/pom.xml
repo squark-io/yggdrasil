@@ -3,14 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dynamicjar-test</artifactId>
-        <groupId>org.dynamicjar</groupId>
+        <groupId>org</groupId>
+        <artifactId>dynamicjar</artifactId>
         <version>0.0.1-ALPHA-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.dynamicjar.dynamicjar-test</groupId>
-    <artifactId>yamlconfigfile-test</artifactId>
+    <groupId>org.dynamicjar.it</groupId>
+    <artifactId>jsonconfigfile-test</artifactId>
 
     <dependencies>
         <dependency>
@@ -33,13 +33,7 @@
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -69,43 +63,19 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <configuration>
-                    <mainClass>org.dynamicjar.test.Main</mainClass>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*IntegrationTest.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*IntegrationTest.java</include>
-                    </includes>
-                    <classpathDependencyExcludes>
-                        <classpathDependencyExclude>org.apache.logging.log4j:log4j-core</classpathDependencyExclude>
-                        <classpathDependencyExclude>org.apache.logging.log4j:log4j-api</classpathDependencyExclude>
-                    </classpathDependencyExcludes>
-                    <forkMode>never</forkMode>
-                    <useFile>false</useFile>
-                    <trimStackTrace>false</trimStackTrace>
-
-                </configuration>
+                <version>1.4.0</version>
                 <executions>
                     <execution>
-                        <id>integration-testing</id>
+                        <id>it</id>
+                        <phase>verify</phase>
                         <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
+                            <goal>exec</goal>
                         </goals>
-                        <phase>integration-test</phase>
+                        <configuration>
+                            <executable>java</executable>
+                            <commandlineArgs>-Dmaven.repo.local=@localRepositoryPath@ @jacoco.arguments@ -jar ${project.build.directory}/${project.build.finalName}.${project.packaging}</commandlineArgs>
+                            <outputFile>${project.build.directory}/it.log</outputFile>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
