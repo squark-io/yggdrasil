@@ -4,18 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>dynamicjar</artifactId>
-        <groupId>org</groupId>
+        <groupId>io.hakansson</groupId>
         <version>0.0.1-ALPHA-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.dynamicjar</groupId>
+    <groupId>io.hakansson.dynamicjar</groupId>
     <artifactId>dynamicjar-maven-provider-api</artifactId>
 
     <dependencies>
         <!-- LOCAL DEPENDENCIES -->
         <dependency>
-            <groupId>org.dynamicjar</groupId>
+            <groupId>io.hakansson.dynamicjar</groupId>
             <artifactId>dynamicjar-api</artifactId>
         </dependency>
 

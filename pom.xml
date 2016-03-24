@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org</groupId>
+    <groupId>io.hakansson</groupId>
     <artifactId>dynamicjar</artifactId>
     <version>0.0.1-ALPHA-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -50,33 +50,39 @@
         <module>dynamicjar-weld</module>
         <module>dynamicjar-maven-plugin</module>
         <module>dynamicjar-maven-provider-api</module>
+        <module>dynamicjar-integration-tests</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <!-- LOCAL DEPENDENCIES -->
             <dependency>
-                <groupId>org.dynamicjar</groupId>
+                <groupId>io.hakansson.dynamicjar</groupId>
                 <artifactId>dynamicjar-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.dynamicjar</groupId>
+                <groupId>io.hakansson.dynamicjar</groupId>
                 <artifactId>dynamicjar-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.dynamicjar</groupId>
+                <groupId>io.hakansson.dynamicjar</groupId>
                 <artifactId>dynamicjar-maven-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.dynamicjar</groupId>
+                <groupId>io.hakansson.dynamicjar</groupId>
                 <artifactId>dynamicjar-maven-provider-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.dynamicjar</groupId>
+                <groupId>io.hakansson.dynamicjar</groupId>
+                <artifactId>dynamicjar-maven-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar</groupId>
                 <artifactId>dynamicjar-weld</artifactId>
                 <version>${project.version}</version>
             </dependency>
