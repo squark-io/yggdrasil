@@ -7,8 +7,6 @@ import org.slf4j.Marker;
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.ServiceConfigurationError;
@@ -25,9 +23,7 @@ public class FrameworkProviderService {
     private static final Logger logger = LoggerFactory.getLogger(FrameworkProviderService.class);
 
     public static void loadProviders(ClassLoader classLoader) {
-        logger.debug(Arrays.toString(((URLClassLoader) classLoader).getURLs()));
-
-        final ServiceLoader<FrameworkProvider> loader = ServiceLoader.load(FrameworkProvider.class, null);
+        final ServiceLoader<FrameworkProvider> loader = ServiceLoader.load(FrameworkProvider.class, classLoader);
 
         try {
             Iterator<FrameworkProvider> providerIterator = loader.iterator();

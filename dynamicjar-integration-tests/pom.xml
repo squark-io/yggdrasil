@@ -12,40 +12,6 @@
     <groupId>io.hakansson.dynamicjar</groupId>
     <artifactId>dynamicjar-integration-tests</artifactId>
 
-
-    <dependencies>
-        <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
-            <artifactId>dynamicjar-maven-plugin</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Maven Invoker plugin will add these dependencies to the "central" repository so that they're available
-             to integration tests -->
-        <dependency>
-            <groupId>org.jboss.weld.se</groupId>
-            <artifactId>weld-se</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.5</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -95,14 +61,6 @@
                     <localRepositoryPath>${project.build.directory}/it/local-central-repo</localRepositoryPath>
                     <settingsFile>src/it/settings.xml</settingsFile>
                     <streamLogs>true</streamLogs>
-                    <extraArtifacts>
-                        <extraArtifact>io.hakansson.dynamicjar:dynamicjar-maven-plugin:${project.version}</extraArtifact>
-                        <extraArtifact>io.hakansson.dynamicjar:dynamicjar-maven-provider:${project.version}</extraArtifact>
-                        <extraArtifact>io.hakansson.dynamicjar:dynamicjar-core:${project.version}</extraArtifact>
-                        <extraArtifact>io.hakansson.dynamicjar:dynamicjar-weld:${project.version}</extraArtifact>
-                        <extraArtifact>org.apache.logging.log4j:log4j-api:2.5</extraArtifact>
-                        <extraArtifact>org.apache.logging.log4j:log4j-core:2.5</extraArtifact>
-                    </extraArtifacts>
                     <filterProperties>
                         <mavenSettingsFile>${project.build.directory}/it/interpolated-settings.xml</mavenSettingsFile>
                         <jacoco.arguments>${invoker.mavenOpts}</jacoco.arguments>
@@ -111,20 +69,9 @@
                     </filterProperties>
                     <goals>
                         <goal>clean</goal>
-                        <goal>package</goal>
                         <goal>verify</goal>
                     </goals>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>integration-test</id>
-                        <goals>
-                            <goal>install</goal>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

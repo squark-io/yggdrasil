@@ -29,6 +29,7 @@ import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.LocalRepositoryManager;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
@@ -41,7 +42,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -136,6 +136,7 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
         if (repositorySystemSession == null) {
             repositorySystemSession = MavenRepositorySystemUtils.newSession();
             repositorySystemSession.setDependencyTraverser(new StaticDependencyTraverser(true));
+            repositorySystemSession.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN);
             LocalRepositoryManager localRepositoryManager = repositorySystem
                 .newLocalRepositoryManager(repositorySystemSession, localRepository);
             if (localRepositoryManager == null) {
@@ -169,16 +170,6 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
             remoteRepositories = new ArrayList<>();
         }
         Map<String, Profile> mavenProfiles = mavenSettings.getProfilesAsMap();
-        if (logger.isDebugEnabled()) {
-            StringBuilder stringBuilder = new StringBuilder();
-            String comma = "";
-            Iterator<String> iterator = mavenProfiles.keySet().iterator();
-            while (iterator.hasNext()) {
-                stringBuilder.append(comma).append(iterator.next());
-                comma = ", ";
-            }
-            logger.debug("Found the following Maven profiles: " + stringBuilder.toString());
-        }
         List<String> activeMavenProfiles = mavenSettings.getActiveProfiles();
         if (activeMavenProfiles.size() == 0) {
             for (Map.Entry<String, Profile> profile : mavenProfiles.entrySet()) {
