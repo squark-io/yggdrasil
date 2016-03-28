@@ -210,9 +210,8 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     https://github.com/apache/maven-plugins/blob/trunk/maven-shade-plugin/src/main/java/org/apache/maven/plugins/shade/DefaultShader.java @ 2016-03-24
      */
     private void logDuplicates() {
-        // CHECKSTYLE_OFF: MagicNumber
+
         Multimap<Collection<String>, String> overlapping = HashMultimap.create(20, 15);
-        // CHECKSTYLE_ON: MagicNumber
 
         for (String file : duplicates.keySet()) {
             Collection<String> resources = duplicates.get(file);
@@ -237,7 +236,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
 
             for ( String clazz : overlapping.get( jarz ) )
             {
-                classes.add( clazz.replace( ".class", "" ).replace( "/", "." ) );
+                classes.add( clazz.replace( ".class", "" ) );
             }
 
             getLog().warn(

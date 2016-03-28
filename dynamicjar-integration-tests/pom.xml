@@ -48,9 +48,6 @@
                     <skipInvocation>${skipTests}</skipInvocation>
                     <debug>false</debug>
                     <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-                    <setupIncludes>
-
-                    </setupIncludes>
                     <scriptVariables>
                         <projectVersion>${project.version}</projectVersion>
                     </scriptVariables>
@@ -72,6 +69,16 @@
                         <goal>verify</goal>
                     </goals>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-tests</id>
+                        <goals>
+                            <goal>install</goal>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

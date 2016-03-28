@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +82,8 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
         RepositorySystemSession repositorySystemSession =
             newRepositorySystemSession(repositorySystem, getLocalRepository(mavenSettings));
         List<RemoteRepository> remoteRepositories = getRemoteRepositories(mavenSettings);
-        logger.debug("Using remote repositories: " + remoteRepositories);
+        if (logger.isDebugEnabled())
+            logger.debug("Using remote repositories: " + Collections.synchronizedList(remoteRepositories));
         try {
             return resolveDependencies(aetherArtifact, repositorySystem, repositorySystemSession,
                 remoteRepositories);
