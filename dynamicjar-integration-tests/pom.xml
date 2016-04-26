@@ -12,8 +12,52 @@
     <groupId>io.hakansson.dynamicjar</groupId>
     <artifactId>dynamicjar-integration-tests</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-weld-framework-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>src/it</directory>
+                            <includes>
+                                <include>**/target/</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                    <followSymLinks>false</followSymLinks>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -52,17 +96,24 @@
                         <projectVersion>${project.version}</projectVersion>
                     </scriptVariables>
                     <pomIncludes>
-                        <pomInclude>*/pom.xml</pomInclude>
+                        <pomInclude>**/pom.xml</pomInclude>
                     </pomIncludes>
                     <postBuildHookScript>verify</postBuildHookScript>
+                    <addTestClassPath>true</addTestClassPath>
                     <localRepositoryPath>${project.build.directory}/it/local-central-repo</localRepositoryPath>
                     <settingsFile>src/it/settings.xml</settingsFile>
+                    <extraArtifacts>
+                        <extraArtifact>
+                            org.jboss.weld.servlet:weld-servlet-core:3.0.0-SNAPSHOT:jar
+                        </extraArtifact>
+                    </extraArtifacts>
                     <streamLogs>true</streamLogs>
                     <filterProperties>
                         <mavenSettingsFile>${project.build.directory}/it/interpolated-settings.xml</mavenSettingsFile>
                         <jacoco.arguments>${invoker.mavenOpts}</jacoco.arguments>
                         <localRepositoryPath>${project.build.directory}/it/local-repo</localRepositoryPath>
-                        <localCentralRepositoryUrl>file://${project.build.directory}/it/local-central-repo</localCentralRepositoryUrl>
+                        <localCentralRepositoryUrl>file://${project.build.directory}/it/local-central-repo
+                        </localCentralRepositoryUrl>
                     </filterProperties>
                     <goals>
                         <goal>clean</goal>

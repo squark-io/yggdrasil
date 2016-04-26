@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <parent>
+        <groupId>io.hakansson</groupId>
+        <artifactId>dynamicjar</artifactId>
+        <version>0.0.1-ALPHA-SNAPSHOT</version>
+    </parent>
+
+    <groupId>io.hakansson.dynamicjar</groupId>
+    <artifactId>dynamicjar-weld-framework-provider</artifactId>
+
+    <dependencies>
+
+        <!-- INTERNAL DEPENDENCIES -->
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-api</artifactId>
+        </dependency>
+
+        <!-- EXTERNAL DEPENDENCIES -->
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss</groupId>
+                    <artifactId>jandex</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipExec>true</skipExec>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
+
+
+</project>

@@ -7,6 +7,7 @@ import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarDependency;
 import io.hakansson.dynamicjar.core.api.util.LambdaExceptionUtil;
 import io.hakansson.dynamicjar.core.api.util.Scopes;
+import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassloader;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,12 +16,9 @@ import org.slf4j.Marker;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,14 +39,22 @@ public class DependencyResolutionHandler {
     private DependencyResolutionHandler() {
     }
 
+    private static boolean anyParentIsProvided(DynamicJarDependency child) {
+        return child.getParent().isPresent() &&
+               (Scopes.PROVIDED.equals(child.getParent().get().getScope()) ||
+                anyParentIsProvided(child.getParent().get()));
+    }
+
     private static void loadJars(final Set<DynamicJarDependency> dependencies,
-        ClassLoader classLoader) throws IOException {
+        NestedJarClassloader classLoader) throws IOException {
         Map<String, String> loadedJars = new HashMap<>();
         List<DynamicJarDependency> flatDependencies = getFlatDependencies(dependencies);
         for (DynamicJarDependency dependency : flatDependencies) {
-            if (!StringUtils.equals(dependency.getScope(), Scopes.PROVIDED)) {
+            if ((!StringUtils.equals(dependency.getScope(), Scopes.PROVIDED) &&
+                 !anyParentIsProvided(dependency)) || dependency.getOptional()) {
                 logger.debug("Found dependency " + dependency.toShortString() + " of scope " +
-                             dependency.getScope() + ". Skipping.");
+                             dependency.getScope() + " and optional=" + dependency.getOptional() +
+                             ". Skipping.");
                 continue;
             }
             String identifier = dependency.toShortStringWithoutVersion();
@@ -74,7 +80,8 @@ public class DependencyResolutionHandler {
         }
     }
 
-    private static boolean addJar(final URL jar, ClassLoader classLoader) throws IOException {
+    private static boolean addJar(final URL jar, NestedJarClassloader classLoader)
+        throws IOException {
         try {
             File jarFile = new File(jar.toURI());
             if (!jarFile.exists()) {
@@ -88,12 +95,8 @@ public class DependencyResolutionHandler {
         } catch (URISyntaxException e) {
             throw new IOException(e);
         }
-        Class<?> urlClassLoaderClass = URLClassLoader.class;
         try {
-            Method method = urlClassLoaderClass.getDeclaredMethod("addURL", URL.class);
-            method.setAccessible(true);
-            method.invoke(classLoader, jar);
-            logger.debug(Arrays.toString(((URLClassLoader) classLoader).getURLs()));
+            classLoader.addURL(jar);
             return true;
         } catch (Throwable t) {
             logger.error("Failed to load JAR", t);
@@ -101,12 +104,13 @@ public class DependencyResolutionHandler {
         }
     }
 
-    static void loadDependencies(ClassLoader classLoader,
-        DynamicJarConfiguration dynamicJarConfiguration)
+    static void loadDependencies(NestedJarClassloader classLoader,
+        NestedJarClassloader helperClassLoader, DynamicJarConfiguration dynamicJarConfiguration)
         throws PropertyLoadException, DependencyResolutionException {
 
         Collection<Class<? extends DependencyResolutionProvider>> dependencyResolvers =
-            DependencyResolutionProviderFactory.getDependencyResolvers(dynamicJarConfiguration);
+            DependencyResolutionProviderFactory
+                .getDependencyResolvers(dynamicJarConfiguration, helperClassLoader);
         if (CollectionUtils.isEmpty(dependencyResolvers)) {
             throw new DependencyResolutionException("Failed to find implementations of " +
                                                     DependencyResolutionProvider.class.getName());
@@ -140,7 +144,8 @@ public class DependencyResolutionHandler {
         return jars;
     }
 
-    private static boolean addJar(final File jar, ClassLoader classLoader) throws IOException {
+    private static boolean addJar(final File jar, NestedJarClassloader classLoader)
+        throws IOException {
         return addJar(jar.toURI().toURL(), classLoader);
     }
 }

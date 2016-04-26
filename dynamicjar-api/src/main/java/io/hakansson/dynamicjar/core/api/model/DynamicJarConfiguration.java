@@ -1,5 +1,6 @@
 package io.hakansson.dynamicjar.core.api.model;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +10,7 @@ import java.util.Set;
  * Created by Erik Håkansson on 2016-02-23.
  * Copyright 2016
  */
-public class DynamicJarConfiguration {
+public class DynamicJarConfiguration implements Serializable {
     private Set<DynamicJarDependency> dependencies;
     private String dynamicJarVersion;
     private String dependencyResolutionProviderClass;

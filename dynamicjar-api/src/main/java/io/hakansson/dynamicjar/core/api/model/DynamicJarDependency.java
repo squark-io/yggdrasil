@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -17,7 +18,7 @@ import java.util.Set;
  * Created by Erik Håkansson on 2016-02-23.
  * Copyright 2016
  */
-public class DynamicJarDependency {
+public class DynamicJarDependency implements Serializable {
 
     private String groupId;
     private String artifactId;
@@ -26,8 +27,10 @@ public class DynamicJarDependency {
     private String version;
     private File file;
     private String scope;
+    private Boolean excluded;
     private transient DynamicJarDependency parent;
     private Set<DynamicJarDependency> childDependencies;
+    private Boolean optional;
 
     public DynamicJarDependency() {
     }
@@ -62,6 +65,13 @@ public class DynamicJarDependency {
                 this.childDependencies.add(childDependency);
             });
         }
+    }
+
+    public DynamicJarDependency(String groupId, String artifactId, String extension,
+        String classifier, String version, File file, String scope,
+        Set<DynamicJarDependency> children, String provided, Boolean optional) {
+        this(groupId, artifactId, extension, classifier, version, file, scope, children, provided);
+        this.optional = optional;
     }
 
     public String getGroupId() {
@@ -120,6 +130,30 @@ public class DynamicJarDependency {
         this.scope = scope;
     }
 
+    public Boolean getExcluded() {
+        return excluded;
+    }
+
+    public void setExcluded(Boolean excluded) {
+        this.excluded = excluded;
+    }
+
+    public Optional<DynamicJarDependency> getParent() {
+        return Optional.ofNullable(parent);
+    }
+
+    public void setParent(DynamicJarDependency parent) {
+        this.parent = parent;
+    }
+
+    public Boolean getOptional() {
+        return optional;
+    }
+
+    public void setOptional(Boolean optional) {
+        this.optional = optional;
+    }
+
     public Set<DynamicJarDependency> getChildDependencies() {
         return childDependencies;
     }
@@ -163,17 +197,10 @@ public class DynamicJarDependency {
                ", version='" + version + '\'' +
                ", file=" + file +
                ", scope='" + scope + '\'' +
+               ", optional'" + optional + '\'' +
                ", parent='" + (getParent().isPresent() ? getParent().get().toShortString() : null) +
                ", childDependencies=" + childDependencies +
                '}';
-    }
-
-    public Optional<DynamicJarDependency> getParent() {
-        return Optional.ofNullable(parent);
-    }
-
-    public void setParent(DynamicJarDependency parent) {
-        this.parent = parent;
     }
 
     public String toShortString() {
