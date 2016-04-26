@@ -22,7 +22,7 @@
             <plugin>
                 <groupId>io.hakansson.dynamicjar</groupId>
                 <artifactId>dynamicjar-maven-plugin</artifactId>
-                <version>@project.version@</version>
+                <version>${project.version}</version>
                 <executions>
                     <execution>
                         <id>package</id>

@@ -105,6 +105,65 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*HelpMojo*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>prepare</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/jacoco-it.exec</destFile>
+                            <propertyName>invoker.mavenOpts</propertyName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipExec>true</skipExec>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-invoker-plugin</artifactId>
+                <configuration>
+                    <skipInvocation>${skipTests}</skipInvocation>
+                    <debug>false</debug>
+                    <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                    <scriptVariables>
+                        <projectVersion>${project.version}</projectVersion>
+                    </scriptVariables>
+                    <pomIncludes>
+                        <pomInclude>**/pom.xml</pomInclude>
+                    </pomIncludes>
+                    <postBuildHookScript>verify</postBuildHookScript>
+                    <addTestClassPath>true</addTestClassPath>
+                    <streamLogs>true</streamLogs>
+                    <goals>
+                        <goal>clean</goal>
+                        <goal>verify</goal>
+                    </goals>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-tests</id>
+                        <goals>
+                            <goal>install</goal>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
