@@ -35,8 +35,8 @@
         <plexus.utils.version>3.0.22</plexus.utils.version>
         <gson.version>2.6.1</gson.version>
         <snakeyaml.version>1.17</snakeyaml.version>
-        <weld.version>3.0.0-SNAPSHOT</weld.version>
-        <cdi.version>2.0-EDR1</cdi.version>
+        <weld.version>2.3.4.Final</weld.version>
+        <cdi.version>1.2</cdi.version>
         <commons-io.version>2.4</commons-io.version>
         <jacoco.plugin.version>0.7.6.201602180812</jacoco.plugin.version>
         <guava.version>19.0</guava.version>

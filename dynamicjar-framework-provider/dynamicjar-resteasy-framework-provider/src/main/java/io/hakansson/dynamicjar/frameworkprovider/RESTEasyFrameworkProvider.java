@@ -58,8 +58,6 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
             di.addServletContextAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME,
                 beanManager);
         }
-        di.addInitParameter(
-            WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation", "false");
         di.setClassLoader(ResteasyFrameworkProvider.class.getClassLoader()).setContextPath("/")
             .setDeploymentName("My Application")
             .addListener(Servlets.listener(org.jboss.weld.environment.servlet.Listener.class));

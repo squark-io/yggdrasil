@@ -15,6 +15,7 @@ public class DynamicJarConfiguration implements Serializable {
     private String dynamicJarVersion;
     private String dependencyResolutionProviderClass;
     private String mainClass;
+    private Set<ProviderConfiguration> providerConfigurations;
 
     public Set<DynamicJarDependency> getDependencies() {
         return dependencies;
@@ -53,5 +54,20 @@ public class DynamicJarConfiguration implements Serializable {
 
     public void setMainClass(String mainClass) {
         this.mainClass = mainClass;
+    }
+
+    public Set<ProviderConfiguration> getProviderConfigurations() {
+        return providerConfigurations;
+    }
+
+    public void setProviderConfigurations(Set<ProviderConfiguration> providerConfigurations) {
+        this.providerConfigurations = providerConfigurations;
+    }
+
+    public void addProviderConfiguration(ProviderConfiguration providerConfiguration) {
+        if (this.providerConfigurations == null) {
+            this.providerConfigurations = new HashSet<>();
+        }
+        this.providerConfigurations.add(providerConfiguration);
     }
 }
