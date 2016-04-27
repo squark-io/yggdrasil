@@ -267,6 +267,10 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco.plugin.version}</version>
@@ -320,6 +324,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${maven.failsafe.plugin.version}</version>
                     <executions>
                         <execution>
                             <id>it</id>
