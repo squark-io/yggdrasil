@@ -273,6 +273,7 @@
                     <executions>
                         <execution>
                             <id>prepare</id>
+                            <phase>initialize</phase>
                             <goals>
                                 <goal>prepare-agent</goal>
                             </goals>
@@ -319,13 +320,18 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>${maven.failsafe.plugin.version}</version>
-                    <configuration>
-                        <includes>
-                            <include>**/*IntegrationTest.java</include>
-                        </includes>
-                        <argLine>${jacoco.argLine}</argLine>
-                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>it</id>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                            <configuration>
+                                <argLine>${invoker.mavenOpts}</argLine>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

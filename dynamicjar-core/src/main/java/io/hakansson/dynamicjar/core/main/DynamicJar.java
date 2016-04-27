@@ -80,7 +80,7 @@ public final class DynamicJar {
         }
     }
 
-    private static DynamicJarConfiguration getConfiguration() throws PropertyLoadException {
+    static DynamicJarConfiguration getConfiguration() throws PropertyLoadException {
         if (configuration == null) {
 
             InputStream inputStream;
