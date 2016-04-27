@@ -91,6 +91,16 @@
                         <goals>
                             <goal>package-dynamicjar</goal>
                         </goals>
+                        <configuration>
+                            <providerConfigurations>
+                                <providerConfiguration>
+                                    <identifier>ResteasyFrameworkProvider</identifier>
+                                    <properties>
+                                        <port>8877</port>
+                                    </properties>
+                                </providerConfiguration>
+                            </providerConfigurations>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

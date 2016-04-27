@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarDependency;
+import io.hakansson.dynamicjar.core.api.model.ProviderConfiguration;
 import io.hakansson.dynamicjar.core.api.util.Scopes;
 import io.hakansson.dynamicjar.maven.provider.api.DynamicJarDependencyMavenUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -52,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -143,6 +145,9 @@ public class PackageDynamicJarMojo extends AbstractMojo {
 
     @Parameter(property = "dynamicjar.includeLogger", defaultValue = "true")
     private boolean includeLogger;
+
+    @Parameter(property = "dynamicjar.providerConfigurations")
+    private HashSet<ProviderConfiguration> providerConfigurations;
 
     private List<String> resources = new ArrayList<>();
 
@@ -370,6 +375,9 @@ public class PackageDynamicJarMojo extends AbstractMojo {
                 .setDependencyResolutionProviderClass(MAVEN_DEPENDENCY_RESOLUTION_PROVIDER_CLASS);
         }
 
+        validateProviderConfigurations();
+        dynamicJarConfiguration.setProviderConfigurations(providerConfigurations);
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(dynamicJarConfiguration);
 
@@ -392,6 +400,19 @@ public class PackageDynamicJarMojo extends AbstractMojo {
             throw new MojoExecutionException(e.getMessage());
         }
         return configurationFile;
+    }
+
+    private void validateProviderConfigurations() throws MojoExecutionException {
+        if (providerConfigurations != null) {
+            for (ProviderConfiguration providerConfiguration : providerConfigurations) {
+                if (providerConfiguration.getIdentifier() == null) {
+                    throw new MojoExecutionException("ProviderConfiguration must supply identifier");
+                }
+                if (providerConfiguration.getProperties() == null) {
+                    throw new MojoExecutionException("ProviderConfiguration must supply properties");
+                }
+            }
+        }
     }
 
     private void addCompileDependencies(JarOutputStream jarOutputStream)

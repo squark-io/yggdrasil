@@ -2,6 +2,7 @@ package io.hakansson.dynamicjar.core.api.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -56,8 +57,8 @@ public class DynamicJarConfiguration implements Serializable {
         this.mainClass = mainClass;
     }
 
-    public Set<ProviderConfiguration> getProviderConfigurations() {
-        return providerConfigurations;
+    public Optional<Set<ProviderConfiguration>> getProviderConfigurations() {
+        return Optional.ofNullable(providerConfigurations);
     }
 
     public void setProviderConfigurations(Set<ProviderConfiguration> providerConfigurations) {

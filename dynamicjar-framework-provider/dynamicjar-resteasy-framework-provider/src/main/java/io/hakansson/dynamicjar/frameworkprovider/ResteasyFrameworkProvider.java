@@ -38,9 +38,20 @@ import java.util.List;
 public class ResteasyFrameworkProvider implements FrameworkProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(ResteasyFrameworkProvider.class);
+    private static final String DEFAULT_PORT = "8080";
+    private static final String PROPERTY_PORT = "port";
+    private int port;
 
     @Override
     public void provide(DynamicJarConfiguration configuration) throws DynamicJarException {
+
+        configuration.getProviderConfigurations().ifPresent(
+            providerConfigurations -> providerConfigurations.stream().filter(
+                providerConfiguration -> providerConfiguration.getIdentifier()
+                    .equals(ResteasyFrameworkProvider.class.getSimpleName())).findFirst()
+                .ifPresent(providerConfiguration -> {
+                    port = Integer.valueOf((String) providerConfiguration.getProperties().getOrDefault(PROPERTY_PORT, DEFAULT_PORT));
+                }));
 
         BeanManager beanManager =
             (BeanManager) DynamicJarContext.getObject(BeanManager.class.getName());
@@ -49,7 +60,7 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
         }
 
         UndertowJaxrsServer undertowJaxrsServer = new UndertowJaxrsServer();
-        Undertow.Builder serverBuilder = Undertow.builder().addHttpListener(8080, "localhost");
+        Undertow.Builder serverBuilder = Undertow.builder().addHttpListener(port, "localhost");
 
         ResteasyDeployment deployment = new ResteasyDeployment();
         deployment.setInjectorFactoryClass(CdiInjectorFactory.class.getName());
