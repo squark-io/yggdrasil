@@ -104,6 +104,12 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
                 }
             }
         }
+        if (applicationClass == null) {
+            logger.warn("No application class found");
+        }
+        if (resourceClasses.isEmpty()) {
+            logger.warn("No resource classes found");
+        }
         deployment.setResourceClasses(resourceClasses);
         deployment.setApplicationClass(String.class.getName());
         deployment.registration();
