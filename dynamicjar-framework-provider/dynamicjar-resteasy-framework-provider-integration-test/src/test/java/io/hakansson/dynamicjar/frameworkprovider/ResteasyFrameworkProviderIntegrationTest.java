@@ -28,12 +28,12 @@ public class ResteasyFrameworkProviderIntegrationTest {
     private static boolean hasStarted = false;
 
     @BeforeSuite
-    @Parameters("targetArtifact")
-    public static void setUp(String targetArtifact) throws Exception {
+    @Parameters({"jacoco.argLine", "targetArtifact"})
+    public static void setUp(String jacocoArgLine, String targetArtifact) throws Exception {
         Executor executor = new DefaultExecutor();
 
         System.out.println(targetArtifact);
-        CommandLine commandLine = CommandLine.parse("java -jar " + targetArtifact);
+        CommandLine commandLine = CommandLine.parse("java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug " + jacocoArgLine + " -jar " + targetArtifact);
         executor.setExitValue(0);
         LogOutputStream logOutputStream = new LogOutputStream() {
             @Override

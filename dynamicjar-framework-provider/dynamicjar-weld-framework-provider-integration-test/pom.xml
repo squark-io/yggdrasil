@@ -56,6 +56,10 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <executions>
                     <execution>
                         <id>it</id>
@@ -75,6 +79,7 @@
                         <targetArtifact>
                             ${project.build.directory}/${project.artifactId}-${project.version}-dynamicjar.jar
                         </targetArtifact>
+                        <jacoco.argLine>${jacoco.argLine}</jacoco.argLine>
                     </systemProperties>
                     <argLine>${jacoco.argLine}</argLine>
                 </configuration>

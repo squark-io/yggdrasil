@@ -29,12 +29,12 @@ public class WeldProviderIntegrationTest {
     private static List<String> output = new ArrayList<>();
 
     @BeforeSuite
-    @Parameters("targetArtifact")
-    public static void setUp(String targetArtifact) throws Exception {
+    @Parameters({"jacoco.argLine", "targetArtifact"})
+    public static void setUp(String jacocoArgLine, String targetArtifact) throws Exception {
         Executor executor = new DefaultExecutor();
 
         System.out.println(targetArtifact);
-        CommandLine commandLine = CommandLine.parse("java -Dorg.apache.logging.log4j.simplelog.level=DEBUG -jar " + targetArtifact);
+        CommandLine commandLine = CommandLine.parse("java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug " + jacocoArgLine + " -jar " + targetArtifact);
         executor.setExitValue(0);
         LogOutputStream logOutputStream = new LogOutputStream() {
             @Override
