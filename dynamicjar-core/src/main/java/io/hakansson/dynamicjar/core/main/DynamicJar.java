@@ -121,33 +121,6 @@ public final class DynamicJar {
         return configuration;
     }
 
-    private static URL[] getDependencyResolutionProviderAndSelf()
-        throws NestedJarClassloaderException {
-        try {
-            File ownFile = new File(
-                DynamicJar.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            JarFile ownJar = new JarFile(ownFile);
-
-            Enumeration<JarEntry> entries = ownJar.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                if (!entry.getName().contains("dynamicjar-maven-provider")) {
-                    continue;
-                }
-                if (entry.getName().endsWith(".jar")) {
-                    logger.debug(Marker.ANY_MARKER, "Found lib " + entry.getName());
-                    URL url = null;
-                    url = new URL("jar", "", "file:" + ownFile.getPath() + "!/" + entry.getName());
-
-                    return new URL[]{url, new URL("file:" + ownFile.getPath())};
-                }
-            }
-        } catch (IOException | URISyntaxException e) {
-            throw new NestedJarClassloaderException(e);
-        }
-        throw new NestedJarClassloaderException("Failed to find dependency provider");
-    }
-
     private static void loadMainClass(ClassLoader forClassLoader,
         DynamicJarConfiguration configuration, String[] args) throws MainClassLoadException {
         //Load main class:
@@ -186,14 +159,14 @@ public final class DynamicJar {
                 if (entry.getName().endsWith(".jar")) {
                     logger.debug("Found lib " + entry.getName());
                     URL url =
-                        new URL("jar", "", "file:" + ownFile.getPath() + "!/" + entry.getName());
+                        new URL("jar", "", ownFile.toURI().toString() + "!/" + entry.getName());
                     libs.add(url);
                 } else if (entry.getName().endsWith(".ref")) {
                     InputStream inputStream = ownJar.getInputStream(entry);
                     Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
                     if (scanner.hasNext()) {
                         String target = scanner.next();
-                        URL url = new URL("jar", "", "file:" + ownFile.getPath() + "!/" + target);
+                        URL url = new URL("jar", "", ownFile.toURI().toString() + "!/" + target);
                         libs.add(url);
                     }
                 }
