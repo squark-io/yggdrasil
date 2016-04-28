@@ -1,6 +1,6 @@
-package io.hakansson.dynamicjar.frameworkprovider;
+package io.hakansson.dynamicjar.test.frameworkprovider.weld;
 
-
+import io.hakansson.dynamicjar.frameworkprovider.WeldFrameworkProvider;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
@@ -8,24 +8,26 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.LogOutputStream;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * dynamicjar
  * <p>
- * Created by Erik Håkansson on 2016-04-21.
+ * Created by Erik Håkansson on 2016-04-25.
  * Copyright 2016
  */
-public class ResteasyFrameworkProviderIntegrationTest {
+public class WeldProviderIntegrationTest {
 
     private static ExecuteWatchdog watchdog = new ExecuteWatchdog(ExecuteWatchdog.INFINITE_TIMEOUT);
-    private static boolean hasStarted = false;
+    private static boolean hasStarted;
+    private static List<String> output = new ArrayList<>();
 
     @BeforeSuite
     @Parameters({"jacoco.argLine", "targetArtifact"})
@@ -38,10 +40,10 @@ public class ResteasyFrameworkProviderIntegrationTest {
         LogOutputStream logOutputStream = new LogOutputStream() {
             @Override
             protected void processLine(String line, int logLevel) {
-                if (line
-                    .contains(ResteasyFrameworkProvider.class.getSimpleName() + " initialized.")) {
+                if (line.contains(WeldFrameworkProvider.class.getSimpleName() + " initialized.")) {
                     hasStarted = true;
                 }
+                output.add(line);
                 System.out.println(line);
             }
         };
@@ -52,7 +54,7 @@ public class ResteasyFrameworkProviderIntegrationTest {
         long time = 0L;
         while (!hasStarted) {
             if (time % 2000 == 0) System.out
-                .println("[" + ResteasyFrameworkProviderIntegrationTest.class.getSimpleName() +
+                .println("[" + WeldProviderIntegrationTest.class.getSimpleName() +
                          "] Waiting for initialization");
             if (time >= 60000L) {
                 throw new Exception("Failed to initialize.");
@@ -63,15 +65,17 @@ public class ResteasyFrameworkProviderIntegrationTest {
     }
 
     @AfterSuite(alwaysRun = true)
-    public static void tearDown() {
-        System.out.println("[" + ResteasyFrameworkProviderIntegrationTest.class.getSimpleName() +
+    public static void tearDown() throws Exception {
+        System.out.println("[" + WeldProviderIntegrationTest.class.getSimpleName() +
                            "] Tearing down.");
         watchdog.destroyProcess();
     }
 
     @Test
-    public void testIntegrationTest() {
-        given().port(8877).get("/").then().assertThat().body("get(0)", equalTo("test this string"));
+    public void test() {
+        Assert.assertTrue(output.contains("io.hakansson.dynamicjar.weld.test.InjectedClass: HELLO"));
     }
+
+
 
 }
