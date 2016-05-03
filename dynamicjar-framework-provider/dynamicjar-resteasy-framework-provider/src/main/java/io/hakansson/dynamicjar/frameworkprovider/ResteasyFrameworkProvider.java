@@ -12,22 +12,16 @@ import io.undertow.servlet.spec.ServletContextImpl;
 import org.jboss.resteasy.cdi.CdiInjectorFactory;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
-import org.jboss.weld.annotated.slim.SlimAnnotatedType;
-import org.jboss.weld.bean.ManagedBean;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.inject.Any;
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.util.AnnotationLiteral;
 import javax.servlet.ServletContext;
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Path;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * dynamicjar
@@ -40,7 +34,7 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
     private static final Logger logger = LoggerFactory.getLogger(ResteasyFrameworkProvider.class);
     private static final String DEFAULT_PORT = "8080";
     private static final String PROPERTY_PORT = "port";
-    private int port;
+    private int port = Integer.valueOf(DEFAULT_PORT);
 
     @Override
     public void provide(DynamicJarConfiguration configuration) throws DynamicJarException {
@@ -60,18 +54,20 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
         }
 
         UndertowJaxrsServer undertowJaxrsServer = new UndertowJaxrsServer();
-        Undertow.Builder serverBuilder = Undertow.builder().addHttpListener(port, "localhost");
 
         ResteasyDeployment deployment = new ResteasyDeployment();
         deployment.setInjectorFactoryClass(CdiInjectorFactory.class.getName());
         DeploymentInfo di = undertowJaxrsServer.undertowDeployment(deployment, "/");
+        di.addInitParameter(
+            WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation", "false");
         if (beanManager != null) {
             di.addServletContextAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME,
                 beanManager);
         }
         di.setClassLoader(ResteasyFrameworkProvider.class.getClassLoader()).setContextPath("/")
             .setDeploymentName("My Application")
-            .addListener(Servlets.listener(org.jboss.weld.environment.servlet.Listener.class));
+            .addListener(Servlets.listener(org.jboss.weld.environment.servlet.Listener.class))
+            .addListener(Servlets.listener(org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap.class));
 
         undertowJaxrsServer.deploy(di);
 
@@ -83,40 +79,64 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
                 .getAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME);
             DynamicJarContext.registerObject(BeanManager.class.getName(), beanManager);
         }
-        List<String> resourceClasses = new ArrayList<>();
-        String applicationClass = null;
-        for (Bean bean : beanManager.getBeans(Object.class, new AnnotationLiteral<Any>() {})) {
-            if (bean instanceof ManagedBean) {
-                SlimAnnotatedType annotatedType = ((ManagedBean) bean).getAnnotated();
-                for (Annotation annotation : annotatedType.getAnnotations()) {
-                    if (annotation instanceof Path) {
-                        logger.debug("Found resource " + bean.getBeanClass().getSimpleName());
-                        resourceClasses.add(bean.getBeanClass().getName());
-                    } else if (annotation instanceof ApplicationPath) {
-                        if (applicationClass != null) {
-                            throw new DynamicJarMultipleResourceException(
-                                "Found more than one Application class: " + applicationClass +
-                                ", " + bean.getBeanClass().getName());
-                        }
-                        applicationClass = bean.getBeanClass().getName();
-                        logger.debug("Found Application " + bean.getBeanClass().getName());
-                    }
-                }
-            }
-        }
-        if (applicationClass == null) {
-            logger.warn("No application class found");
-        }
-        if (resourceClasses.isEmpty()) {
-            logger.warn("No resource classes found");
-        }
-        deployment.setResourceClasses(resourceClasses);
-        deployment.setApplicationClass(String.class.getName());
-        deployment.registration();
 
+        Undertow.Builder serverBuilder = Undertow.builder().addHttpListener(port, "localhost");
         undertowJaxrsServer.start(serverBuilder);
 
+        JaxRsCDIExtension jaxRsCDIExtension = getBean(beanManager, JaxRsCDIExtension.class);
+        List<String> applications;
+        if ((applications = jaxRsCDIExtension.getApplications()) != null && applications.size() > 0) {
+            if (applications.size() > 1) {
+                throw new DynamicJarMultipleResourceException("Multiple Application classes: " + jaxRsCDIExtension.getApplications());
+            }
+            logger.debug("Found Application class " + applications.get(0));
+            deployment.setApplicationClass(applications.get(0));
+        }
+        List<String> resources;
+
+        if ((resources = jaxRsCDIExtension.getResources()) != null && resources.size() > 0) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Found resource classes: " + concatListOfStrings(resources, 5));
+            }
+            deployment.setResourceClasses(resources);
+        }
+
+        List<String> providers;
+        if ((providers = jaxRsCDIExtension.getProviders()) != null && providers.size() > 0) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Found provider classes: " + concatListOfStrings(providers, 5));
+            }
+            deployment.setProviderClasses(providers);
+        }
+        deployment.registration();
+
         logger.info(ResteasyFrameworkProvider.class.getSimpleName() + " initialized.");
+    }
+
+    private <T extends Object> T getBean(BeanManager manager, Class<T> type) {
+        Set<Bean<?>> beans = manager.getBeans(type);
+        Bean<?> bean = manager.resolve(beans);
+        if (bean == null)
+        {
+            return null;
+        }
+        CreationalContext<?> context = manager.createCreationalContext(bean);
+        return (T) manager.getReference(bean, type, context);
+    }
+
+    private String concatListOfStrings(List<String> list, int max) {
+        StringBuilder builder = new StringBuilder("[");
+        String comma = "";
+        for (int i = 0; i < list.size() && i < max; i++) {
+            builder.append(comma)
+                .append(list.get(i));
+            comma = ", ";
+        }
+        if (list.size() > max) {
+            builder.append("and ").append(list.size() - max).append(" more...");
+        }
+        builder.append("]");
+        return builder.toString();
     }
 
 }
