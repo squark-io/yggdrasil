@@ -18,7 +18,7 @@
         <maven.version>3.3.9</maven.version>
         <intellij.annotations.version>12.0</intellij.annotations.version>
         <fast.classpath.scanner.version>1.9.17</fast.classpath.scanner.version>
-        <slf4j.version>1.7.14</slf4j.version>
+        <slf4j.version>1.7.21</slf4j.version>
         <commons-collections4.version>4.1</commons-collections4.version>
         <commons-lang.version>3.4</commons-lang.version>
         <testng.version>6.9.10</testng.version>
@@ -187,6 +187,11 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
             <dependency>

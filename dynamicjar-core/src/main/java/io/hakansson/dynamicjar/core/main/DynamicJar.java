@@ -10,6 +10,7 @@ import io.hakansson.dynamicjar.core.api.exception.PropertyLoadException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassloader;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -198,8 +199,14 @@ public final class DynamicJar {
         URL libs[] = getLibs("META-INF/lib/");
         NestedJarClassloader isolatedClassLoader = new NestedJarClassloader(libs, null);
 
-        DependencyLoaderHandler
-            .loadDependencies(isolatedClassLoader, (NestedJarClassloader) loadingJarLibClassLoader, configuration);
+        Set<String> loadedLibs = new HashSet<>();
+        for (URL url : libs) {
+            loadedLibs.add(FilenameUtils.getName(url.getFile()));
+        }
+
+        RemoteDependencyLoader
+            .loadDependencies(isolatedClassLoader, (NestedJarClassloader) loadingJarLibClassLoader, configuration,
+                loadedLibs);
         Thread.currentThread().setContextClassLoader((ClassLoader) loadingJarLibClassLoader);
 
         FrameworkProviderService.loadProviders(isolatedClassLoader, configuration);

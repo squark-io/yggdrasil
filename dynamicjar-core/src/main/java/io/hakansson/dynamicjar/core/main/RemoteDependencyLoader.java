@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,11 +33,11 @@ import java.util.Set;
  * Created by Erik Håkansson on 2016-03-11.
  * Copyright 2016
  */
-public class DependencyLoaderHandler {
+public class RemoteDependencyLoader {
 
-    private static final Logger logger = LoggerFactory.getLogger(DependencyLoaderHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(RemoteDependencyLoader.class);
 
-    private DependencyLoaderHandler() {
+    private RemoteDependencyLoader() {
     }
 
     private static boolean anyParentIsProvided(DynamicJarDependency child) {
@@ -45,9 +46,10 @@ public class DependencyLoaderHandler {
     }
 
     private static void loadJars(final Set<DynamicJarDependency> dependencies, NestedJarClassloader classLoader,
-        boolean includeTransitive) throws IOException {
+        boolean includeTransitive, Set<String> exclusions) throws IOException {
         Map<String, String> loadedJars = new HashMap<>();
         List<DynamicJarDependency> flatDependencies = getFlatDependencies(dependencies, includeTransitive);
+        filterDependencies(flatDependencies, exclusions);
         for (DynamicJarDependency dependency : flatDependencies) {
             if ((!StringUtils.equals(dependency.getScope(), Scopes.PROVIDED) && !anyParentIsProvided(dependency))
                 || dependency.getOptional()) {
@@ -102,7 +104,8 @@ public class DependencyLoaderHandler {
     }
 
     static void loadDependencies(NestedJarClassloader classLoader, NestedJarClassloader helperClassLoader,
-        DynamicJarConfiguration dynamicJarConfiguration) throws PropertyLoadException, DependencyResolutionException {
+        DynamicJarConfiguration dynamicJarConfiguration, Set<String> exclusions)
+        throws PropertyLoadException, DependencyResolutionException {
 
         Collection<Class<? extends DependencyResolutionProvider>> dependencyResolvers =
             DependencyResolutionProviderFactory.getDependencyResolvers(dynamicJarConfiguration, helperClassLoader);
@@ -122,11 +125,25 @@ public class DependencyLoaderHandler {
             resolvedDependencies.addAll(dependencyResolutionProviderInstance.resolveDependencies(dependencies));
         }
         try {
-            loadJars(resolvedDependencies, classLoader, dynamicJarConfiguration.isLoadTransitiveProvidedDependencies());
+            loadJars(resolvedDependencies, classLoader, dynamicJarConfiguration.isLoadTransitiveProvidedDependencies(),
+                exclusions);
         } catch (IOException e) {
             throw new DependencyResolutionException("Failed to resolve dependencies", e);
         }
+    }
 
+    private static void filterDependencies(List<DynamicJarDependency> dependencies, Set<String> exclusions) {
+        Iterator<DynamicJarDependency> dependencyIterator = dependencies.iterator();
+        while (dependencyIterator.hasNext()) {
+            DynamicJarDependency dependency = dependencyIterator.next();
+            String fileName = dependency.getFile().getName();
+            if (exclusions.contains(fileName)) {
+                logger.debug("A file with the name " + fileName
+                    + " was loaded from libs, but is also found in remote dependency " + dependency.toShortString()
+                    + ". Assuming same and skipping.");
+                dependencyIterator.remove();
+            }
+        }
     }
 
     private static List<DynamicJarDependency> getFlatDependencies(final Collection<DynamicJarDependency> dependencies,
