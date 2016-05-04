@@ -1,9 +1,10 @@
-package io.hakansson.dynamicjar.core.main;
+package io.hakansson.dynamicjar.core.main.factory;
 
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.hakansson.dynamicjar.core.api.DependencyResolutionProvider;
 import io.hakansson.dynamicjar.core.api.exception.DependencyResolutionException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
+import io.hakansson.dynamicjar.core.main.DynamicJar;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassloader;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class DependencyResolutionProviderFactory {
 
     private static Logger logger = LoggerFactory.getLogger(DynamicJar.class);
 
-    static Collection<Class<? extends DependencyResolutionProvider>> getDependencyResolvers(
+    public static Collection<Class<? extends DependencyResolutionProvider>> getDependencyResolvers(
         DynamicJarConfiguration configuration, NestedJarClassloader helperClassloader)
         throws DependencyResolutionException {
 

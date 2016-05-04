@@ -148,6 +148,9 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     @Parameter(property = "dynamicjar.providerConfigurations")
     private HashSet<ProviderConfiguration> providerConfigurations;
 
+    @Parameter(property = "dynamicjar.loadTransitiveProvidedDependencies", defaultValue = "false")
+    private boolean loadTransitiveProvidedDependencies;
+
     private List<String> resources = new ArrayList<>();
 
     private Multimap<String, String> duplicates = HashMultimap.create();
@@ -351,8 +354,8 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         DynamicJarConfiguration dynamicJarConfiguration = new DynamicJarConfiguration();
         DynamicJarDependency dynamicJarDependency = getProjectProvidedDependencies();
         dynamicJarConfiguration.setDependencies(dynamicJarDependency.getChildDependencies());
-
         dynamicJarConfiguration.setDynamicJarVersion(pluginDescriptor.getVersion());
+        dynamicJarConfiguration.setLoadTransitiveProvidedDependencies(loadTransitiveProvidedDependencies);
 
         if (StringUtils.isNotEmpty(mainClass)) {
             dynamicJarConfiguration.setMainClass(mainClass);

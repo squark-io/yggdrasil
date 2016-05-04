@@ -16,6 +16,7 @@ public class DynamicJarConfiguration implements Serializable {
     private String dynamicJarVersion;
     private String dependencyResolutionProviderClass;
     private String mainClass;
+    private boolean loadTransitiveProvidedDependencies;
     private Set<ProviderConfiguration> providerConfigurations;
 
     public Set<DynamicJarDependency> getDependencies() {
@@ -70,5 +71,13 @@ public class DynamicJarConfiguration implements Serializable {
             this.providerConfigurations = new HashSet<>();
         }
         this.providerConfigurations.add(providerConfiguration);
+    }
+
+    public boolean isLoadTransitiveProvidedDependencies() {
+        return loadTransitiveProvidedDependencies;
+    }
+
+    public void setLoadTransitiveProvidedDependencies(boolean loadTransitiveProvidedDependencies) {
+        this.loadTransitiveProvidedDependencies = loadTransitiveProvidedDependencies;
     }
 }

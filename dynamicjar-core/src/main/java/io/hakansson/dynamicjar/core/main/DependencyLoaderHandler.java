@@ -6,6 +6,7 @@ import io.hakansson.dynamicjar.core.api.exception.PropertyLoadException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarDependency;
 import io.hakansson.dynamicjar.core.api.util.Scopes;
+import io.hakansson.dynamicjar.core.main.factory.DependencyResolutionProviderFactory;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassloader;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,11 +32,11 @@ import java.util.Set;
  * Created by Erik Håkansson on 2016-03-11.
  * Copyright 2016
  */
-public class DependencyResolutionHandler {
+public class DependencyLoaderHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(DependencyResolutionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(DependencyLoaderHandler.class);
 
-    private DependencyResolutionHandler() {
+    private DependencyLoaderHandler() {
     }
 
     private static boolean anyParentIsProvided(DynamicJarDependency child) {
@@ -43,10 +44,10 @@ public class DependencyResolutionHandler {
             || anyParentIsProvided(child.getParent().get()));
     }
 
-    private static void loadJars(final Set<DynamicJarDependency> dependencies, NestedJarClassloader classLoader)
-        throws IOException {
+    private static void loadJars(final Set<DynamicJarDependency> dependencies, NestedJarClassloader classLoader,
+        boolean includeTransitive) throws IOException {
         Map<String, String> loadedJars = new HashMap<>();
-        List<DynamicJarDependency> flatDependencies = getFlatDependencies(dependencies);
+        List<DynamicJarDependency> flatDependencies = getFlatDependencies(dependencies, includeTransitive);
         for (DynamicJarDependency dependency : flatDependencies) {
             if ((!StringUtils.equals(dependency.getScope(), Scopes.PROVIDED) && !anyParentIsProvided(dependency))
                 || dependency.getOptional()) {
@@ -121,19 +122,28 @@ public class DependencyResolutionHandler {
             resolvedDependencies.addAll(dependencyResolutionProviderInstance.resolveDependencies(dependencies));
         }
         try {
-            loadJars(resolvedDependencies, classLoader);
+            loadJars(resolvedDependencies, classLoader, dynamicJarConfiguration.isLoadTransitiveProvidedDependencies());
         } catch (IOException e) {
             throw new DependencyResolutionException("Failed to resolve dependencies", e);
         }
 
     }
 
-    private static List<DynamicJarDependency> getFlatDependencies(final Collection<DynamicJarDependency> dependencies) {
+    private static List<DynamicJarDependency> getFlatDependencies(final Collection<DynamicJarDependency> dependencies,
+        boolean includeTransitive) {
+        return getFlatDependencies(dependencies, includeTransitive, 0);
+    }
+
+    private static List<DynamicJarDependency> getFlatDependencies(final Collection<DynamicJarDependency> dependencies,
+        boolean includeTransitive, int depth) {
         List<DynamicJarDependency> jars = new ArrayList<>();
         if (dependencies != null) {
             for (DynamicJarDependency dependency : dependencies) {
-                jars.add(dependency);
-                jars.addAll(getFlatDependencies(dependency.getChildDependencies()));
+                if (Scopes.COMPILE.equals(dependency.getScope()) || ((Scopes.PROVIDED.equals(dependency.getScope()))
+                    && (includeTransitive || depth == 0))) {
+                    jars.add(dependency);
+                }
+                jars.addAll(getFlatDependencies(dependency.getChildDependencies(), includeTransitive, depth++));
             }
         }
         return jars;

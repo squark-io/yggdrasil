@@ -40,6 +40,7 @@
         <commons-io.version>2.4</commons-io.version>
         <jacoco.plugin.version>0.7.6.201602180812</jacoco.plugin.version>
         <guava.version>19.0</guava.version>
+        <version.xnio>3.3.1.Final</version.xnio>
     </properties>
 
     <modules>
@@ -222,7 +223,6 @@
                 <groupId>org.jboss.weld.servlet</groupId>
                 <artifactId>weld-servlet-core</artifactId>
                 <version>${weld.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>javax.enterprise</groupId>
@@ -237,7 +237,6 @@
             <dependency>
                 <groupId>org.apache.maven.plugin-tools</groupId>
                 <artifactId>maven-plugin-annotations</artifactId>
-                <scope>provided</scope>
                 <version>${maven.plugin.annotations.version}</version>
             </dependency>
             <dependency>
@@ -249,6 +248,11 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.xnio</groupId>
+                <artifactId>xnio-nio</artifactId>
+                <version>${version.xnio}</version>
             </dependency>
 
 

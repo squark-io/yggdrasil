@@ -62,7 +62,6 @@ public final class DynamicJar {
         LoggerContext loggerContext = (LoggerContext) LogManager.getContext();
         final Configuration config = loggerContext.getConfiguration();
 
-
         config.getRootLogger().setLevel(Level.DEBUG);
 
     }
@@ -92,8 +91,8 @@ public final class DynamicJar {
                     logger.info("Found JSON configuration");
                     Gson gson = new Gson();
                     try {
-                        dynamicJarConfiguration = gson.fromJson(new InputStreamReader(inputStream),
-                            DynamicJarConfiguration.class);
+                        dynamicJarConfiguration =
+                            gson.fromJson(new InputStreamReader(inputStream), DynamicJarConfiguration.class);
                     } catch (JsonParseException e) {
                         throw new PropertyLoadException(e);
                     }
@@ -102,8 +101,7 @@ public final class DynamicJar {
                 logger.info("Found YAML configuration");
                 Yaml yaml = new Yaml();
                 try {
-                    dynamicJarConfiguration =
-                        yaml.loadAs(inputStream, DynamicJarConfiguration.class);
+                    dynamicJarConfiguration = yaml.loadAs(inputStream, DynamicJarConfiguration.class);
                 } catch (YAMLException e) {
                     throw new PropertyLoadException(e);
                 }
@@ -121,14 +119,13 @@ public final class DynamicJar {
         return configuration;
     }
 
-    private static void loadMainClass(ClassLoader forClassLoader,
-        DynamicJarConfiguration configuration, String[] args) throws MainClassLoadException {
+    private static void loadMainClass(ClassLoader forClassLoader, DynamicJarConfiguration configuration, String[] args)
+        throws MainClassLoadException {
         //Load main class:
         if (StringUtils.isNotEmpty(configuration.getMainClass())) {
             logger.debug("Loading main class " + configuration.getMainClass());
             try {
-                Class<?> mainClass =
-                    Class.forName(configuration.getMainClass(), true, forClassLoader);
+                Class<?> mainClass = Class.forName(configuration.getMainClass(), true, forClassLoader);
                 Object mainClassInstance = mainClass.newInstance();
                 Method mainMethod = mainClass.getMethod("main", String[].class);
                 mainMethod.invoke(mainClassInstance, args);
@@ -146,8 +143,7 @@ public final class DynamicJar {
                 path = path + "/";
             }
             Set<URL> libs = new HashSet<>();
-            File ownFile = new File(
-                DynamicJar.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            File ownFile = new File(DynamicJar.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             JarFile ownJar = new JarFile(ownFile);
 
             Enumeration<JarEntry> entries = ownJar.entries();
@@ -158,8 +154,7 @@ public final class DynamicJar {
                 }
                 if (entry.getName().endsWith(".jar")) {
                     logger.debug("Found lib " + entry.getName());
-                    URL url =
-                        new URL("jar", "", ownFile.toURI().toString() + "!/" + entry.getName());
+                    URL url = new URL("jar", "", ownFile.toURI().toString() + "!/" + entry.getName());
                     libs.add(url);
                 } else if (entry.getName().endsWith(".ref")) {
                     InputStream inputStream = ownJar.getInputStream(entry);
@@ -177,18 +172,16 @@ public final class DynamicJar {
         }
     }
 
-    public static NestedJarClassloader initiate(ClassLoader classLoader,
-        DynamicJarConfiguration configuration)
+    public static NestedJarClassloader initiate(ClassLoader classLoader, DynamicJarConfiguration configuration)
 
         throws NestedJarClassloaderException {
         if (!(classLoader instanceof NestedJarClassloader)) {
-            classLoader = new NestedJarClassloader(new URL[]{}, classLoader);
+            classLoader = new NestedJarClassloader(new URL[] {}, classLoader);
         }
 
         try {
             Class<?> dynamicJarClass = Class.forName(DynamicJar.class.getName(), true, classLoader);
-            Method initiateMethod =
-                dynamicJarClass.getDeclaredMethod("initiate", byte[].class, Object.class);
+            Method initiateMethod = dynamicJarClass.getDeclaredMethod("initiate", byte[].class, Object.class);
             initiateMethod.setAccessible(true);
             return (NestedJarClassloader) initiateMethod
                 .invoke(null, ConfigurationSerializer.serializeConfig(configuration), classLoader);
@@ -198,17 +191,15 @@ public final class DynamicJar {
         }
     }
 
-    private static NestedJarClassloader initiate(byte[] configurationBytes,
-        Object loadingJarLibClassLoader) throws DynamicJarException {
+    private static NestedJarClassloader initiate(byte[] configurationBytes, Object loadingJarLibClassLoader)
+        throws DynamicJarException {
         logger.info("Initiating DynamicJar");
-        DynamicJarConfiguration configuration =
-            ConfigurationSerializer.deserializeConfig(configurationBytes);
+        DynamicJarConfiguration configuration = ConfigurationSerializer.deserializeConfig(configurationBytes);
         URL libs[] = getLibs("META-INF/lib/");
         NestedJarClassloader isolatedClassLoader = new NestedJarClassloader(libs, null);
 
-        DependencyResolutionHandler
-            .loadDependencies(isolatedClassLoader, (NestedJarClassloader) loadingJarLibClassLoader,
-                configuration);
+        DependencyLoaderHandler
+            .loadDependencies(isolatedClassLoader, (NestedJarClassloader) loadingJarLibClassLoader, configuration);
         Thread.currentThread().setContextClassLoader((ClassLoader) loadingJarLibClassLoader);
 
         FrameworkProviderService.loadProviders(isolatedClassLoader, configuration);
@@ -220,15 +211,13 @@ public final class DynamicJar {
         initiate(forClass, getConfiguration());
     }
 
-    public static NestedJarClassloader initiate(Class forClass,
-        DynamicJarConfiguration configuration) throws DynamicJarException {
+    public static NestedJarClassloader initiate(Class forClass, DynamicJarConfiguration configuration)
+        throws DynamicJarException {
         return initiate(forClass.getClassLoader(), configuration);
     }
 
-    public static NestedJarClassloader initiate(ClassLoader forClassLoader)
-        throws DynamicJarException {
+    public static NestedJarClassloader initiate(ClassLoader forClassLoader) throws DynamicJarException {
         return initiate(forClassLoader, getConfiguration());
     }
-
 
 }
