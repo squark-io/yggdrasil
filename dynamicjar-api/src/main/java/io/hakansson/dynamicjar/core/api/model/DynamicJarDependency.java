@@ -35,8 +35,7 @@ public class DynamicJarDependency implements Serializable {
     public DynamicJarDependency() {
     }
 
-    public DynamicJarDependency(String groupId, String artifactId, String extension, String version,
-        File file) {
+    public DynamicJarDependency(String groupId, String artifactId, String extension, String version, File file) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.extension = extension;
@@ -44,9 +43,8 @@ public class DynamicJarDependency implements Serializable {
         this.file = file;
     }
 
-    public DynamicJarDependency(String groupId, String artifactId, String extension,
-        String classifier, String version, File file, String scope,
-        @Nullable Set<DynamicJarDependency> childDependencies, @Nullable String defaultScope) {
+    public DynamicJarDependency(String groupId, String artifactId, String extension, String classifier, String version,
+        File file, String scope, @Nullable Set<DynamicJarDependency> childDependencies, @Nullable String defaultScope) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.extension = extension;
@@ -59,17 +57,15 @@ public class DynamicJarDependency implements Serializable {
         }
         this.childDependencies = new HashSet<>();
         if (CollectionUtils.isNotEmpty(childDependencies)) {
-            childDependencies.stream().forEach(childDependency -> {
-                //No default scope for child nodes.
+            for (DynamicJarDependency childDependency : childDependencies) {
                 childDependency.setParent(this);
                 this.childDependencies.add(childDependency);
-            });
+            }
         }
     }
 
-    public DynamicJarDependency(String groupId, String artifactId, String extension,
-        String classifier, String version, File file, String scope,
-        Set<DynamicJarDependency> children, String provided, Boolean optional) {
+    public DynamicJarDependency(String groupId, String artifactId, String extension, String classifier, String version,
+        File file, String scope, Set<DynamicJarDependency> children, String provided, Boolean optional) {
         this(groupId, artifactId, extension, classifier, version, file, scope, children, provided);
         this.optional = optional;
     }
@@ -171,15 +167,17 @@ public class DynamicJarDependency implements Serializable {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(groupId).append(artifactId).append(version)
-            .append(classifier).append(extension).append(scope).toHashCode();
+        return new HashCodeBuilder(17, 37).append(groupId).append(artifactId).append(version).append(classifier)
+            .append(extension).append(scope).toHashCode();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o)
+            return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         DynamicJarDependency that = (DynamicJarDependency) o;
 
@@ -190,17 +188,17 @@ public class DynamicJarDependency implements Serializable {
     @Override
     public String toString() {
         return "DynamicJarDependency{" +
-               "groupId='" + groupId + '\'' +
-               ", artifactId='" + artifactId + '\'' +
-               ", extension='" + extension + '\'' +
-               ", classifier='" + classifier + '\'' +
-               ", version='" + version + '\'' +
-               ", file=" + file +
-               ", scope='" + scope + '\'' +
-               ", optional'" + optional + '\'' +
-               ", parent='" + (getParent().isPresent() ? getParent().get().toShortString() : null) +
-               ", childDependencies=" + childDependencies +
-               '}';
+            "groupId='" + groupId + '\'' +
+            ", artifactId='" + artifactId + '\'' +
+            ", extension='" + extension + '\'' +
+            ", classifier='" + classifier + '\'' +
+            ", version='" + version + '\'' +
+            ", file=" + file +
+            ", scope='" + scope + '\'' +
+            ", optional'" + optional + '\'' +
+            ", parent='" + (getParent().isPresent() ? getParent().get().toShortString() : null) +
+            ", childDependencies=" + childDependencies +
+            '}';
     }
 
     public String toShortString() {

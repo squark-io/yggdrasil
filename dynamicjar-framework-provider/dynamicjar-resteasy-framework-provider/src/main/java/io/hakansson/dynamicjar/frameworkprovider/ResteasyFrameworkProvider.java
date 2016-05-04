@@ -4,6 +4,7 @@ import io.hakansson.dynamicjar.core.api.DynamicJarContext;
 import io.hakansson.dynamicjar.core.api.FrameworkProvider;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
+import io.hakansson.dynamicjar.core.api.model.ProviderConfiguration;
 import io.hakansson.dynamicjar.frameworkprovider.exception.DynamicJarMultipleResourceException;
 import io.undertow.Undertow;
 import io.undertow.servlet.Servlets;
@@ -39,16 +40,17 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
     @Override
     public void provide(DynamicJarConfiguration configuration) throws DynamicJarException {
 
-        configuration.getProviderConfigurations().ifPresent(
-            providerConfigurations -> providerConfigurations.stream().filter(
-                providerConfiguration -> providerConfiguration.getIdentifier()
-                    .equals(ResteasyFrameworkProvider.class.getSimpleName())).findFirst()
-                .ifPresent(providerConfiguration -> {
-                    port = Integer.valueOf((String) providerConfiguration.getProperties().getOrDefault(PROPERTY_PORT, DEFAULT_PORT));
-                }));
+        configuration.getProviderConfigurations().ifPresent(providerConfigurations -> {
+            for (ProviderConfiguration providerConfiguration : providerConfigurations) {
+                if (providerConfiguration.getIdentifier().equals(ResteasyFrameworkProvider.class.getSimpleName())) {
+                    port = Integer.valueOf(
+                        (String) providerConfiguration.getProperties().getOrDefault(PROPERTY_PORT, DEFAULT_PORT));
+                    break;
+                }
+            }
+        });
 
-        BeanManager beanManager =
-            (BeanManager) DynamicJarContext.getObject(BeanManager.class.getName());
+        BeanManager beanManager = (BeanManager) DynamicJarContext.getObject(BeanManager.class.getName());
         if (beanManager != null) {
             logger.info("Found existing BeanManager. Using.");
         }
@@ -58,11 +60,9 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
         ResteasyDeployment deployment = new ResteasyDeployment();
         deployment.setInjectorFactoryClass(CdiInjectorFactory.class.getName());
         DeploymentInfo di = undertowJaxrsServer.undertowDeployment(deployment, "/");
-        di.addInitParameter(
-            WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation", "false");
+        di.addInitParameter(WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation", "false");
         if (beanManager != null) {
-            di.addServletContextAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME,
-                beanManager);
+            di.addServletContextAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME, beanManager);
         }
         di.setClassLoader(ResteasyFrameworkProvider.class.getClassLoader()).setContextPath("/")
             .setDeploymentName("My Application")
@@ -75,8 +75,7 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
             (ServletContextImpl) deployment.getDefaultContextObjects().get(ServletContext.class);
 
         if (beanManager == null) {
-            beanManager = (BeanManager) servletContext
-                .getAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME);
+            beanManager = (BeanManager) servletContext.getAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME);
             DynamicJarContext.registerObject(BeanManager.class.getName(), beanManager);
         }
 
@@ -87,7 +86,8 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
         List<String> applications;
         if ((applications = jaxRsCDIExtension.getApplications()) != null && applications.size() > 0) {
             if (applications.size() > 1) {
-                throw new DynamicJarMultipleResourceException("Multiple Application classes: " + jaxRsCDIExtension.getApplications());
+                throw new DynamicJarMultipleResourceException(
+                    "Multiple Application classes: " + jaxRsCDIExtension.getApplications());
             }
             logger.debug("Found Application class " + applications.get(0));
             deployment.setApplicationClass(applications.get(0));
@@ -116,8 +116,7 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
     private <T extends Object> T getBean(BeanManager manager, Class<T> type) {
         Set<Bean<?>> beans = manager.getBeans(type);
         Bean<?> bean = manager.resolve(beans);
-        if (bean == null)
-        {
+        if (bean == null) {
             return null;
         }
         CreationalContext<?> context = manager.createCreationalContext(bean);
@@ -128,8 +127,7 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
         StringBuilder builder = new StringBuilder("[");
         String comma = "";
         for (int i = 0; i < list.size() && i < max; i++) {
-            builder.append(comma)
-                .append(list.get(i));
+            builder.append(comma).append(list.get(i));
             comma = ", ";
         }
         if (list.size() > max) {

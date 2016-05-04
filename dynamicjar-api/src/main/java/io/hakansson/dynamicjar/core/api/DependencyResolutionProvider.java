@@ -2,7 +2,6 @@ package io.hakansson.dynamicjar.core.api;
 
 import io.hakansson.dynamicjar.core.api.exception.DependencyResolutionException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarDependency;
-import io.hakansson.dynamicjar.core.api.util.LambdaExceptionUtil;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,9 +20,9 @@ public interface DependencyResolutionProvider {
     default Set<DynamicJarDependency> resolveDependencies(Set<DynamicJarDependency> dependencies)
         throws DependencyResolutionException {
         Set<DynamicJarDependency> resolvedSet = new HashSet<>();
-        dependencies.parallelStream().forEach(LambdaExceptionUtil.rethrowConsumer(dynamicJarDependency -> {
+        for (DynamicJarDependency dynamicJarDependency : dependencies) {
             resolvedSet.add(resolveDependency(dynamicJarDependency));
-        }));
+        }
         return resolvedSet;
     }
 
