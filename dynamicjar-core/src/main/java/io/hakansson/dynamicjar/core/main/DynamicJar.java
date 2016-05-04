@@ -59,11 +59,13 @@ public final class DynamicJar {
 
     private DynamicJar() {
         //private to disallow instantiation
+        String logLevelString = System.getProperty("dynamicjar.logLevel", "INFO");
+        Level logLevel = Level.getLevel(logLevelString);
         //todo: check if in debug mode or debug flag is passed
         LoggerContext loggerContext = (LoggerContext) LogManager.getContext();
         final Configuration config = loggerContext.getConfiguration();
 
-        config.getRootLogger().setLevel(Level.DEBUG);
+        config.getRootLogger().setLevel(logLevel);
 
     }
 
