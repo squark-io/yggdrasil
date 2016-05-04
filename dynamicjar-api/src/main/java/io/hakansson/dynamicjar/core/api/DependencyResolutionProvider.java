@@ -16,10 +16,10 @@ import java.util.Set;
  */
 public interface DependencyResolutionProvider {
 
-    DynamicJarDependency resolveDependency(DynamicJarDependency dependency)
-        throws DependencyResolutionException;
+    DynamicJarDependency resolveDependency(DynamicJarDependency dependency) throws DependencyResolutionException;
 
-    default Set<DynamicJarDependency> resolveDependencies(Set<DynamicJarDependency> dependencies) {
+    default Set<DynamicJarDependency> resolveDependencies(Set<DynamicJarDependency> dependencies)
+        throws DependencyResolutionException {
         Set<DynamicJarDependency> resolvedSet = new HashSet<>();
         dependencies.parallelStream().forEach(LambdaExceptionUtil.rethrowConsumer(dynamicJarDependency -> {
             resolvedSet.add(resolveDependency(dynamicJarDependency));
