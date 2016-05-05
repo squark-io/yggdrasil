@@ -64,9 +64,11 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
 
     private static final String USER_HOME = System.getProperty("user.home");
     private static final File USER_MAVEN_CONFIGURATION_HOME = new File(USER_HOME, ".m2");
-    private static final File DEFAULT_USER_SETTINGS_FILE = new File(USER_MAVEN_CONFIGURATION_HOME, "settings.xml");
+    private static final File DEFAULT_USER_SETTINGS_FILE =
+        new File(USER_MAVEN_CONFIGURATION_HOME, "settings.xml");
     private static final File DEFAULT_GLOBAL_SETTINGS_FILE =
-        new File(System.getProperty("M2_HOME", System.getProperty("maven.home", "")), "conf/settings.xml");
+        new File(System.getProperty("M2_HOME", System.getProperty("maven.home", "")),
+            "conf/settings.xml");
     private static final String MAVEN_LOCAL_REPOSITORY = "maven.repo.local";
 
     private Logger logger = LoggerFactory.getLogger(MavenDependencyResolutionProvider.class);
@@ -77,12 +79,12 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
     private ArrayList<RemoteRepository> remoteRepositories;
 
     @Override
-    public DynamicJarDependency resolveDependency(DynamicJarDependency dependency)
-        throws DependencyResolutionException {
+    public DynamicJarDependency resolveDependency(DynamicJarDependency dependency,
+        boolean loadTransitiveProvidedDependencies) throws DependencyResolutionException {
 
         Artifact aetherArtifact =
-            new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(), dependency.getClassifier(),
-                dependency.getExtension(), dependency.getVersion());
+            new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
+                dependency.getClassifier(), dependency.getExtension(), dependency.getVersion());
 
         RepositorySystem repositorySystem = getNewRepositorySystem();
         Settings mavenSettings;
@@ -92,27 +94,29 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
             throw new DependencyResolutionException(e);
         }
         RepositorySystemSession repositorySystemSession =
-            newRepositorySystemSession(repositorySystem, getLocalRepository(mavenSettings), mavenSettings);
+            newRepositorySystemSession(repositorySystem, getLocalRepository(mavenSettings),
+                mavenSettings, loadTransitiveProvidedDependencies);
         List<RemoteRepository> remoteRepositories = getRemoteRepositories(mavenSettings);
-        if (logger.isDebugEnabled())
-            logger.debug("Using remote repositories: " + Collections.synchronizedList(remoteRepositories));
+        if (logger.isDebugEnabled()) logger.debug(
+            "Using remote repositories: " + Collections.synchronizedList(remoteRepositories));
         try {
-            return resolveDependencies(aetherArtifact, null, repositorySystem, repositorySystemSession,
-                remoteRepositories);
-        } catch (DependencyCollectionException | org.eclipse.aether.resolution.DependencyResolutionException e) {
+            return resolveDependencies(aetherArtifact, null, repositorySystem,
+                repositorySystemSession, remoteRepositories);
+        } catch (DependencyCollectionException | org.eclipse.aether.resolution
+            .DependencyResolutionException e) {
             throw new DependencyResolutionException(e);
         }
     }
 
     @Override
-    public Set<DynamicJarDependency> resolveDependencies(Set<DynamicJarDependency> dependencies)
-        throws DependencyResolutionException {
+    public Set<DynamicJarDependency> resolveDependencies(Set<DynamicJarDependency> dependencies,
+        boolean loadTransitiveProvidedDependencies) throws DependencyResolutionException {
 
         List<Dependency> mavenDependencies = new ArrayList<>();
         for (DynamicJarDependency dependency : dependencies) {
             Artifact aetherArtifact =
-                new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(), dependency.getClassifier(),
-                    dependency.getExtension(), dependency.getVersion());
+                new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
+                    dependency.getClassifier(), dependency.getExtension(), dependency.getVersion());
             Dependency mavenDependency = new Dependency(aetherArtifact, null);
             mavenDependencies.add(mavenDependency);
         }
@@ -125,14 +129,16 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
             throw new DependencyResolutionException(e);
         }
         RepositorySystemSession repositorySystemSession =
-            newRepositorySystemSession(repositorySystem, getLocalRepository(mavenSettings), mavenSettings);
+            newRepositorySystemSession(repositorySystem, getLocalRepository(mavenSettings),
+                mavenSettings, loadTransitiveProvidedDependencies);
         List<RemoteRepository> remoteRepositories = getRemoteRepositories(mavenSettings);
-        if (logger.isDebugEnabled())
-            logger.debug("Using remote repositories: " + Collections.synchronizedList(remoteRepositories));
+        if (logger.isDebugEnabled()) logger.debug(
+            "Using remote repositories: " + Collections.synchronizedList(remoteRepositories));
         try {
-            return resolveDependencies(null, mavenDependencies, repositorySystem, repositorySystemSession,
-                remoteRepositories).getChildDependencies();
-        } catch (DependencyCollectionException | org.eclipse.aether.resolution.DependencyResolutionException e) {
+            return resolveDependencies(null, mavenDependencies, repositorySystem,
+                repositorySystemSession, remoteRepositories).getChildDependencies();
+        } catch (DependencyCollectionException | org.eclipse.aether.resolution
+            .DependencyResolutionException e) {
             throw new DependencyResolutionException(e);
         }
     }
@@ -140,7 +146,8 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
     private RepositorySystem getNewRepositorySystem() {
         if (repositorySystem == null) {
             DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
-            locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
+            locator.addService(RepositoryConnectorFactory.class,
+                BasicRepositoryConnectorFactory.class);
             locator.addService(TransporterFactory.class, FileTransporterFactory.class);
             locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
             repositorySystem = locator.getService(RepositorySystem.class);
@@ -153,10 +160,11 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
         if (mavenSettings == null) {
             String overrideUserSettings = System.getProperty("maven.settings");
             File overrideUserSettingsFile =
-                StringUtils.isNotEmpty(overrideUserSettings) ? new File(overrideUserSettings) : null;
+                StringUtils.isNotEmpty(overrideUserSettings) ? new File(overrideUserSettings) :
+                null;
 
-            File settingsFileToUse =
-                overrideUserSettingsFile != null ? overrideUserSettingsFile : DEFAULT_USER_SETTINGS_FILE;
+            File settingsFileToUse = overrideUserSettingsFile != null ? overrideUserSettingsFile :
+                                     DEFAULT_USER_SETTINGS_FILE;
             logger.debug("Using Maven settings file " + settingsFileToUse.getPath());
 
             SettingsBuildingRequest settingsBuildingRequest = new DefaultSettingsBuildingRequest();
@@ -165,7 +173,8 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
             settingsBuildingRequest.setGlobalSettingsFile(DEFAULT_GLOBAL_SETTINGS_FILE);
 
             SettingsBuildingResult settingsBuildingResult;
-            DefaultSettingsBuilderFactory mvnSettingBuilderFactory = new DefaultSettingsBuilderFactory();
+            DefaultSettingsBuilderFactory mvnSettingBuilderFactory =
+                new DefaultSettingsBuilderFactory();
             DefaultSettingsBuilder settingsBuilder = mvnSettingBuilderFactory.newInstance();
             settingsBuildingResult = settingsBuilder.build(settingsBuildingRequest);
 
@@ -174,13 +183,22 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
         return mavenSettings;
     }
 
-    private synchronized RepositorySystemSession newRepositorySystemSession(final RepositorySystem repositorySystem,
-        final LocalRepository localRepository, Settings mavenSettings) throws DependencyResolutionException {
+    private synchronized RepositorySystemSession newRepositorySystemSession(
+        final RepositorySystem repositorySystem, final LocalRepository localRepository,
+        Settings mavenSettings, boolean loadTransitiveProvidedDependencies)
+        throws DependencyResolutionException {
         if (repositorySystemSession == null) {
             repositorySystemSession = MavenRepositorySystemUtils.newSession();
+            String[] excludedScopes;
+            if (loadTransitiveProvidedDependencies) {
+                excludedScopes = new String[]{Scopes.TEST, Scopes.RUNTIME, Scopes.SYSTEM};
+            } else {
+                excludedScopes =
+                    new String[]{Scopes.TEST, Scopes.RUNTIME, Scopes.SYSTEM, Scopes.PROVIDED};
+            }
             DependencySelector depFilter =
-                new AndDependencySelector(new ScopeDependencySelector(Scopes.TEST), new OptionalDependencySelector(),
-                    new ExclusionDependencySelector());
+                new AndDependencySelector(new ScopeDependencySelector(excludedScopes),
+                    new OptionalDependencySelector(), new ExclusionDependencySelector());
             repositorySystemSession.setDependencySelector(depFilter);
             repositorySystemSession.setDependencyTraverser(new StaticDependencyTraverser(true));
             repositorySystemSession.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN);
@@ -206,8 +224,8 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
                 }
             }
             repositorySystemSession.setProxySelector(proxySelector);
-            LocalRepositoryManager localRepositoryManager =
-                repositorySystem.newLocalRepositoryManager(repositorySystemSession, localRepository);
+            LocalRepositoryManager localRepositoryManager = repositorySystem
+                .newLocalRepositoryManager(repositorySystemSession, localRepository);
             if (localRepositoryManager == null) {
                 logger.error("Failed to get localRepositoryManager");
             }
@@ -228,11 +246,13 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
         if (proxyUrl.getUserInfo() != null) {
             String userInfo = proxyUrl.getUserInfo();
             String authority = proxyUrl.getAuthority();
-            authentication = new AuthenticationBuilder().addUsername(userInfo).addPassword(authority).build();
+            authentication =
+                new AuthenticationBuilder().addUsername(userInfo).addPassword(authority).build();
         }
         Proxy proxy;
         if (authentication != null) {
-            proxy = new Proxy(proxyUrl.getProtocol(), proxyUrl.getHost(), proxyUrl.getPort(), authentication);
+            proxy = new Proxy(proxyUrl.getProtocol(), proxyUrl.getHost(), proxyUrl.getPort(),
+                authentication);
         } else {
             proxy = new Proxy(proxyUrl.getProtocol(), proxyUrl.getHost(), proxyUrl.getPort());
         }
@@ -241,9 +261,10 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
 
     private Proxy toAetherProxy(org.apache.maven.settings.Proxy mavenProxy) {
         Authentication authentication =
-            new AuthenticationBuilder().addUsername(mavenProxy.getUsername()).addPassword(mavenProxy.getPassword())
-                .build();
-        return new Proxy(mavenProxy.getProtocol(), mavenProxy.getHost(), mavenProxy.getPort(), authentication);
+            new AuthenticationBuilder().addUsername(mavenProxy.getUsername())
+                .addPassword(mavenProxy.getPassword()).build();
+        return new Proxy(mavenProxy.getProtocol(), mavenProxy.getHost(), mavenProxy.getPort(),
+            authentication);
     }
 
     private LocalRepository getLocalRepository(final Settings mavenSettings) {
@@ -271,8 +292,8 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
         List<String> activeMavenProfiles = mavenSettings.getActiveProfiles();
         if (activeMavenProfiles.size() == 0) {
             for (Map.Entry<String, Profile> profile : mavenProfiles.entrySet()) {
-                if (profile.getValue().getActivation() != null && profile.getValue().getActivation()
-                    .isActiveByDefault()) {
+                if (profile.getValue().getActivation() != null &&
+                    profile.getValue().getActivation().isActiveByDefault()) {
                     activeMavenProfiles.add(profile.getKey());
                 }
             }
@@ -283,7 +304,8 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
             List<Repository> profileRepositories = profile.getRepositories();
             for (Repository repository : profileRepositories) {
                 RemoteRepository remoteRepository =
-                    new RemoteRepository.Builder(repository.getId(), "default", repository.getUrl()).build();
+                    new RemoteRepository.Builder(repository.getId(), "default", repository.getUrl())
+                        .build();
                 remoteRepositories.add(remoteRepository);
             }
         }
@@ -293,8 +315,9 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
 
     private DynamicJarDependency resolveDependencies(@Nullable final Artifact defaultArtifact,
         @Nullable List<Dependency> mavenDependencies, final RepositorySystem repositorySystem,
-        final RepositorySystemSession repositorySystemSession, final List<RemoteRepository> remoteRepositories)
-        throws DependencyCollectionException, org.eclipse.aether.resolution.DependencyResolutionException {
+        final RepositorySystemSession repositorySystemSession,
+        final List<RemoteRepository> remoteRepositories) throws DependencyCollectionException,
+        org.eclipse.aether.resolution.DependencyResolutionException {
 
         CollectRequest collectRequest = new CollectRequest();
         if (defaultArtifact != null) {
@@ -308,7 +331,8 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
         for (RemoteRepository remoteRepository : remoteRepositories) {
             collectRequest.addRepository(remoteRepository);
         }
-        DependencyNode node = repositorySystem.collectDependencies(repositorySystemSession, collectRequest).getRoot();
+        DependencyNode node =
+            repositorySystem.collectDependencies(repositorySystemSession, collectRequest).getRoot();
 
         DependencyRequest dependencyRequest = new DependencyRequest();
         dependencyRequest.setFilter(new ScopeDependencyFilter(null));

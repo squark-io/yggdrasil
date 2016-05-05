@@ -15,13 +15,15 @@ import java.util.Set;
  */
 public interface DependencyResolutionProvider {
 
-    DynamicJarDependency resolveDependency(DynamicJarDependency dependency) throws DependencyResolutionException;
+    DynamicJarDependency resolveDependency(DynamicJarDependency dependency,
+        boolean loadTransitiveProvidedDependencies) throws DependencyResolutionException;
 
-    default Set<DynamicJarDependency> resolveDependencies(Set<DynamicJarDependency> dependencies)
+    default Set<DynamicJarDependency> resolveDependencies(Set<DynamicJarDependency> dependencies,
+        boolean loadTransitiveProvidedDependencies)
         throws DependencyResolutionException {
         Set<DynamicJarDependency> resolvedSet = new HashSet<>();
         for (DynamicJarDependency dynamicJarDependency : dependencies) {
-            resolvedSet.add(resolveDependency(dynamicJarDependency));
+            resolvedSet.add(resolveDependency(dynamicJarDependency, loadTransitiveProvidedDependencies));
         }
         return resolvedSet;
     }
