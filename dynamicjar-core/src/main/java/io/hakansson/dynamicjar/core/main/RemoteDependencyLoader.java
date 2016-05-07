@@ -112,7 +112,7 @@ public class RemoteDependencyLoader {
         NestedJarClassloader helperClassLoader, DynamicJarConfiguration dynamicJarConfiguration,
         Set<String> exclusions) throws PropertyLoadException, DependencyResolutionException {
 
-        Collection<Class<? extends DependencyResolutionProvider>> dependencyResolvers =
+        Collection<DependencyResolutionProvider> dependencyResolvers =
             DependencyResolutionProviderFactory
                 .getDependencyResolvers(dynamicJarConfiguration, helperClassLoader);
         if (CollectionUtils.isEmpty(dependencyResolvers)) {
@@ -121,17 +121,9 @@ public class RemoteDependencyLoader {
         }
         final Set<DynamicJarDependency> dependencies = dynamicJarConfiguration.getDependencies();
         Set<DynamicJarDependency> resolvedDependencies = new HashSet<>();
-        for (Class<? extends DependencyResolutionProvider> dependencyResolver :
-            dependencyResolvers) {
-            DependencyResolutionProvider dependencyResolutionProviderInstance;
-            try {
-                dependencyResolutionProviderInstance = dependencyResolver.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new DependencyResolutionException(e);
-            }
-            resolvedDependencies.addAll(dependencyResolutionProviderInstance
-                .resolveDependencies(dependencies,
-                    dynamicJarConfiguration.isLoadTransitiveProvidedDependencies()));
+        for (DependencyResolutionProvider provider : dependencyResolvers) {
+            resolvedDependencies.addAll(provider.resolveDependencies(dependencies,
+                dynamicJarConfiguration.isLoadTransitiveProvidedDependencies()));
         }
         try {
             loadJars(resolvedDependencies, classLoader,

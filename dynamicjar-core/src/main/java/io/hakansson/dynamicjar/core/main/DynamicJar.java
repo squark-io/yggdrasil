@@ -183,6 +183,7 @@ public final class DynamicJar {
         }
 
         try {
+            Thread.currentThread().setContextClassLoader(classLoader);
             Class<?> dynamicJarClass = Class.forName(DynamicJar.class.getName(), true, classLoader);
             Method initiateMethod = dynamicJarClass.getDeclaredMethod("initiate", byte[].class, Object.class);
             initiateMethod.setAccessible(true);

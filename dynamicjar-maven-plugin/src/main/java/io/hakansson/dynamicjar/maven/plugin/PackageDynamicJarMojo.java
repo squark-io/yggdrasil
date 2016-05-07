@@ -245,7 +245,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
                 .collect(Collectors.toCollection(LinkedList::new));
 
             getLog().warn(Joiner.on(", ").join(jarzStrings) + " define " + classes.size() +
-                " overlapping classes: ");
+                " overlapping resource(s): ");
             int max = 10;
             for (int i = 0; i < Math.min(max, classes.size()); i++) {
                 getLog().warn("  - " + classes.get(i));
@@ -362,7 +362,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         }
 
         if ("maven".equals(dependencyResolutionProviderString)) {
-            dynamicJarConfiguration.setDependencyResolutionProviderClass(MAVEN_DEPENDENCY_RESOLUTION_PROVIDER_CLASS);
+            //dynamicJarConfiguration.setDependencyResolutionProviderClass(MAVEN_DEPENDENCY_RESOLUTION_PROVIDER_CLASS);
         }
 
         validateProviderConfigurations();
