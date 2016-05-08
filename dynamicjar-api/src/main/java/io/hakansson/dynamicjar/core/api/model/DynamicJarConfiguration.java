@@ -14,7 +14,6 @@ import java.util.Set;
 public class DynamicJarConfiguration implements Serializable {
     private Set<DynamicJarDependency> dependencies;
     private String dynamicJarVersion;
-    private String dependencyResolutionProviderClass;
     private String mainClass;
     private boolean loadTransitiveProvidedDependencies;
     private Set<ProviderConfiguration> providerConfigurations;
@@ -40,14 +39,6 @@ public class DynamicJarConfiguration implements Serializable {
 
     public void setDynamicJarVersion(String dynamicJarVersion) {
         this.dynamicJarVersion = dynamicJarVersion;
-    }
-
-    public String getDependencyResolutionProviderClass() {
-        return dependencyResolutionProviderClass;
-    }
-
-    public void setDependencyResolutionProviderClass(String dependencyResolutionProviderClass) {
-        this.dependencyResolutionProviderClass = dependencyResolutionProviderClass;
     }
 
     public String getMainClass() {

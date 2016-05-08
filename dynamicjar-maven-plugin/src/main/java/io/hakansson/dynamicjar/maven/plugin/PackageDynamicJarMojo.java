@@ -361,10 +361,6 @@ public class PackageDynamicJarMojo extends AbstractMojo {
             dynamicJarConfiguration.setMainClass(mainClass);
         }
 
-        if ("maven".equals(dependencyResolutionProviderString)) {
-            //dynamicJarConfiguration.setDependencyResolutionProviderClass(MAVEN_DEPENDENCY_RESOLUTION_PROVIDER_CLASS);
-        }
-
         validateProviderConfigurations();
         dynamicJarConfiguration.setProviderConfigurations(providerConfigurations);
 

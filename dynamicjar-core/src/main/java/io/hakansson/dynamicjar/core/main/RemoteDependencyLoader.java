@@ -114,7 +114,7 @@ public class RemoteDependencyLoader {
 
         Collection<DependencyResolutionProvider> dependencyResolvers =
             DependencyResolutionProviderFactory
-                .getDependencyResolvers(dynamicJarConfiguration, helperClassLoader);
+                .getDependencyResolvers(helperClassLoader);
         if (CollectionUtils.isEmpty(dependencyResolvers)) {
             throw new DependencyResolutionException("Failed to find implementations of " +
                                                     DependencyResolutionProvider.class.getName());
