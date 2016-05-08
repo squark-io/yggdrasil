@@ -22,7 +22,7 @@ public class WeldFrameworkProvider implements FrameworkProvider {
 
     @Override
     public void provide(DynamicJarConfiguration configuration) {
-        //org.jboss.weld.se.scan.classpath.entries=true med Weld.property() för att slippa beans.xml. Gör configurerbart med true som default
+        //todo: org.jboss.weld.se.scan.classpath.entries=true with Weld.property() to get rid of beans.xml. Make configurable with true as default
         logger.info("Initializing Weld container...");
         Weld weld = new Weld();
         weld.setClassLoader(WeldFrameworkProvider.class.getClassLoader());
