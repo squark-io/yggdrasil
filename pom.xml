@@ -59,6 +59,7 @@
         <module>dynamicjar-framework-provider</module>
         <module>nested-jar-classloader</module>
         <module>dynamicjar-logging-api</module>
+        <module>dynamicjar-bootstrap</module>
     </modules>
 
     <dependencyManagement>
@@ -67,6 +68,11 @@
             <dependency>
                 <groupId>io.hakansson.dynamicjar</groupId>
                 <artifactId>dynamicjar-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar</groupId>
+                <artifactId>dynamicjar-bootstrap</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

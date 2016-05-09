@@ -12,7 +12,7 @@ import io.hakansson.dynamicjar.core.api.exception.PropertyLoadException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.core.api.util.LoggingUtil;
-import io.hakansson.dynamicjar.core.main.util.LibHelper;
+import io.hakansson.dynamicjar.core.api.util.LibHelper;
 import io.hakansson.dynamicjar.logging.api.InternalLogger;
 import io.hakansson.dynamicjar.logging.api.LogLevel;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;

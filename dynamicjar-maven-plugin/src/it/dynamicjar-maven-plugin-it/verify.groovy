@@ -7,8 +7,8 @@ assert configFile.text.contains("\"mainClass\": \"mockclass\"");
 
 JarFile jarFile = new JarFile(new File(basedir, "target/dynamicjar-maven-plugin-it-${projectVersion}-dynamicjar.jar"))
 
-JarEntry configEntry = jarFile.getEntry("META-INF/dynamicjar.json");
+JarEntry configEntry = jarFile.getEntry("META-INF/dynamicjar.json") as JarEntry;
 assert configEntry != null;
 
-JarEntry classEntry = jarFile.getEntry("io/hakansson/dynamicjar/core/main/DynamicJar.class")
+JarEntry classEntry = jarFile.getEntry("io/hakansson/dynamicjar/core/main/Bootstrap.class") as JarEntry
 assert classEntry != null;

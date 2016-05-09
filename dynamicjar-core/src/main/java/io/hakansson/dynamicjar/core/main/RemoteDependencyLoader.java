@@ -121,9 +121,11 @@ public class RemoteDependencyLoader {
         }
         final Set<DynamicJarDependency> dependencies = dynamicJarConfiguration.getDependencies();
         Set<DynamicJarDependency> resolvedDependencies = new HashSet<>();
-        for (DependencyResolutionProvider provider : dependencyResolvers) {
-            resolvedDependencies.addAll(provider.resolveDependencies(dependencies,
-                dynamicJarConfiguration.isLoadTransitiveProvidedDependencies()));
+        if (dependencies != null) {
+            for (DependencyResolutionProvider provider : dependencyResolvers) {
+                resolvedDependencies.addAll(provider.resolveDependencies(dependencies,
+                    dynamicJarConfiguration.isLoadTransitiveProvidedDependencies()));
+            }
         }
         try {
             loadJars(resolvedDependencies, classLoader,
