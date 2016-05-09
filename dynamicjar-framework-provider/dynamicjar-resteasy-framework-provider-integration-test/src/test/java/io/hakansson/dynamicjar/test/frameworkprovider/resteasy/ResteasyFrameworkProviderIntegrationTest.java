@@ -34,7 +34,7 @@ public class ResteasyFrameworkProviderIntegrationTest {
         Executor executor = new DefaultExecutor();
 
         System.out.println(targetArtifact);
-        CommandLine commandLine = CommandLine.parse("java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug " + jacocoArgLine + " -jar " + targetArtifact);
+        CommandLine commandLine = CommandLine.parse("java -Ddynamicjar.logLevel=DEBUG " + jacocoArgLine + " -jar " + targetArtifact);
         executor.setExitValue(0);
         LogOutputStream logOutputStream = new LogOutputStream() {
             @Override

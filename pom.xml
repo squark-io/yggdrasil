@@ -58,6 +58,7 @@
         <module>dynamicjar-integration-tests</module>
         <module>dynamicjar-framework-provider</module>
         <module>nested-jar-classloader</module>
+        <module>dynamicjar-logging-api</module>
     </modules>
 
     <dependencyManagement>
@@ -101,6 +102,17 @@
             <dependency>
                 <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
                 <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+                <artifactId>dynamicjar-logging-module</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar</groupId>
+                <artifactId>dynamicjar-logging-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -228,11 +240,6 @@
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-slf4j-impl</artifactId>
-                <version>${version.log4j}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-to-slf4j</artifactId>
                 <version>${version.log4j}</version>
             </dependency>
             <dependency>

@@ -23,11 +23,19 @@
             <groupId>io.hakansson.dynamicjar</groupId>
             <artifactId>nested-jar-classloader</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <artifactId>dynamicjar-logging-module</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-logging-api</artifactId>
+        </dependency>
 
         <!-- EXTERNAL DEPENDENCIES -->
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -36,14 +44,6 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

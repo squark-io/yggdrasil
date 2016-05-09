@@ -3,7 +3,7 @@ package io.hakansson.dynamicjar.core.api;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
-import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassloader;
+import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -49,7 +49,7 @@ public class FrameworkProviderService {
         }
     }
 
-    public static void loadProviders(NestedJarClassloader classLoader,
+    public static void loadProviders(NestedJarClassLoader classLoader,
         DynamicJarConfiguration configuration) {
 
         try {

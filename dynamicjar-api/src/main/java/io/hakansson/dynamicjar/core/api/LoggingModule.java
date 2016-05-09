@@ -1,9 +1,11 @@
 package io.hakansson.dynamicjar.core.api;
 
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
+import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
+import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.URI;
+import java.net.URL;
 
 /**
  * dynamicjar
@@ -12,6 +14,6 @@ import java.net.URI;
  * Copyright 2016
  */
 public interface LoggingModule {
-    void initialize(@Nullable URI configuration, @Nullable String rootLogLevel)
+    void initialize(@Nullable DynamicJarConfiguration configuration, @Nullable ClassLoader classLoader, @Nullable URL jarWithConfig)
     throws DynamicJarException;
 }

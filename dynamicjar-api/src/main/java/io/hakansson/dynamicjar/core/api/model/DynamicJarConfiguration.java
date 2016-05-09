@@ -17,6 +17,8 @@ public class DynamicJarConfiguration implements Serializable {
     private String mainClass;
     private boolean loadTransitiveProvidedDependencies;
     private Set<ProviderConfiguration> providerConfigurations;
+    private LoggerConfiguration loggerConfiguration;
+    private String classesJar;
 
     public Set<DynamicJarDependency> getDependencies() {
         return dependencies;
@@ -70,5 +72,42 @@ public class DynamicJarConfiguration implements Serializable {
 
     public void setLoadTransitiveProvidedDependencies(boolean loadTransitiveProvidedDependencies) {
         this.loadTransitiveProvidedDependencies = loadTransitiveProvidedDependencies;
+    }
+
+    public LoggerConfiguration getLoggerConfiguration() {
+        return loggerConfiguration;
+    }
+
+    public void setLoggerConfiguration(LoggerConfiguration loggerConfiguration) {
+        this.loggerConfiguration = loggerConfiguration;
+    }
+
+    public String getClassesJar() {
+        return classesJar;
+    }
+
+    public void setClassesJar(String classesJar) {
+        this.classesJar = classesJar;
+    }
+
+    public class LoggerConfiguration {
+        private String configFile;
+        private String defaultLogLevel;
+
+        public String getConfigFile() {
+            return configFile;
+        }
+
+        public void setConfigFile(String configFile) {
+            this.configFile = configFile;
+        }
+
+        public String getDefaultLogLevel() {
+            return defaultLogLevel;
+        }
+
+        public void setDefaultLogLevel(String defaultLogLevel) {
+            this.defaultLogLevel = defaultLogLevel;
+        }
     }
 }

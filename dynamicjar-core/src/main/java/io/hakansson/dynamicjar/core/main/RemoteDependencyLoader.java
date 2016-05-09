@@ -7,7 +7,7 @@ import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarDependency;
 import io.hakansson.dynamicjar.core.api.util.Scopes;
 import io.hakansson.dynamicjar.core.main.factory.DependencyResolutionProviderFactory;
-import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassloader;
+import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ public class RemoteDependencyLoader {
     }
 
     private static void loadJars(final Set<DynamicJarDependency> dependencies,
-        NestedJarClassloader classLoader, boolean includeTransitive, Set<String> exclusions)
+        NestedJarClassLoader classLoader, boolean includeTransitive, Set<String> exclusions)
         throws IOException {
         Map<String, String> loadedJars = new HashMap<>();
         List<DynamicJarDependency> flatDependencies =
@@ -84,7 +84,7 @@ public class RemoteDependencyLoader {
         }
     }
 
-    private static boolean addJar(final URL jar, NestedJarClassloader classLoader)
+    private static boolean addJar(final URL jar, NestedJarClassLoader classLoader)
         throws IOException {
         try {
             File jarFile = new File(jar.toURI());
@@ -108,8 +108,8 @@ public class RemoteDependencyLoader {
         }
     }
 
-    static void loadDependencies(NestedJarClassloader classLoader,
-        NestedJarClassloader helperClassLoader, DynamicJarConfiguration dynamicJarConfiguration,
+    static void loadDependencies(NestedJarClassLoader classLoader,
+        NestedJarClassLoader helperClassLoader, DynamicJarConfiguration dynamicJarConfiguration,
         Set<String> exclusions) throws PropertyLoadException, DependencyResolutionException {
 
         Collection<DependencyResolutionProvider> dependencyResolvers =
@@ -171,7 +171,7 @@ public class RemoteDependencyLoader {
         return jars;
     }
 
-    private static boolean addJar(final File jar, NestedJarClassloader classLoader)
+    private static boolean addJar(final File jar, NestedJarClassLoader classLoader)
         throws IOException {
         return addJar(jar.toURI().toURL(), classLoader);
     }

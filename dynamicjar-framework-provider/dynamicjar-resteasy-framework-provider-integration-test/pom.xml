@@ -23,14 +23,12 @@
         <dependency>
             <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
             <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
-            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- EXTERNAL DEPENDENCIES -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <artifactId>dynamicjar-logging-module</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <!-- TEST DEPENDENCIES -->
