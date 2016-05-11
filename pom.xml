@@ -114,7 +114,6 @@
                 <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
                 <artifactId>dynamicjar-logging-module</artifactId>
                 <version>${project.version}</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>io.hakansson.dynamicjar</groupId>
