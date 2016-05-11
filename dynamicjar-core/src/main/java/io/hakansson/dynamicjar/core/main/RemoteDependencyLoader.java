@@ -49,6 +49,9 @@ public class RemoteDependencyLoader {
     private static void loadJars(final Set<DynamicJarDependency> dependencies,
         NestedJarClassLoader classLoader, boolean includeTransitive, Set<String> exclusions)
         throws IOException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Loading the following dependencies: " + dependencies);
+        }
         Map<String, String> loadedJars = new HashMap<>();
         List<DynamicJarDependency> flatDependencies =
             getFlatDependencies(dependencies, includeTransitive);
@@ -61,6 +64,7 @@ public class RemoteDependencyLoader {
                              ". Skipping.");
                 continue;
             }
+            logger.debug("Loading dependency " + dependency.toShortString());
             String identifier = dependency.toShortStringWithoutVersion();
             String loadedVersion = loadedJars.get(identifier);
             if (dependency.getFile() == null) {
