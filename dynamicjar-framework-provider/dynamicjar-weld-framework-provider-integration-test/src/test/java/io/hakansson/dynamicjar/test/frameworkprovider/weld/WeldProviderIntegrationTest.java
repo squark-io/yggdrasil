@@ -56,7 +56,7 @@ public class WeldProviderIntegrationTest {
             if (time % 2000 == 0) System.out
                 .println("[" + WeldProviderIntegrationTest.class.getSimpleName() +
                          "] Waiting for initialization");
-            if (time >= 60000L) {
+            if (time >= 120000L) {
                 throw new Exception("Failed to initialize.");
             }
             Thread.sleep(200);
