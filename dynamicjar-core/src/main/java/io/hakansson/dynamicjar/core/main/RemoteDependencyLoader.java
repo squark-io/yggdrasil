@@ -64,7 +64,6 @@ public class RemoteDependencyLoader {
                              ". Skipping.");
                 continue;
             }
-            logger.debug("Loading dependency " + dependency.toShortString());
             String identifier = dependency.toShortStringWithoutVersion();
             String loadedVersion = loadedJars.get(identifier);
             if (dependency.getFile() == null) {
