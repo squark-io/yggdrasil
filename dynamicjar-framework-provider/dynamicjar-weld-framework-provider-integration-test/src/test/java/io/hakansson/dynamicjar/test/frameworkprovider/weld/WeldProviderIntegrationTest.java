@@ -35,7 +35,7 @@ public class WeldProviderIntegrationTest {
         Executor executor = new DefaultExecutor();
 
         System.out.println(targetArtifact);
-        CommandLine commandLine = CommandLine.parse("java -Ddynamicjar.logLevel=TRACE " + jacocoArgLine + " -jar " + targetArtifact);
+        CommandLine commandLine = CommandLine.parse("java -Ddynamicjar.logLevel=DEBUG " + jacocoArgLine + " -jar " + targetArtifact);
         executor.setExitValue(0);
         LogOutputStream logOutputStream = new LogOutputStream() {
             @Override
