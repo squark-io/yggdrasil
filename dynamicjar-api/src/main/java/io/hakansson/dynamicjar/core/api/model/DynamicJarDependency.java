@@ -166,23 +166,22 @@ public class DynamicJarDependency implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(groupId).append(artifactId).append(version).append(classifier)
-            .append(extension).append(scope).toHashCode();
-    }
-
-    @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
+        if (this == o) return true;
 
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         DynamicJarDependency that = (DynamicJarDependency) o;
 
         return new EqualsBuilder().append(groupId, that.groupId).append(artifactId, that.artifactId)
-            .append(classifier, that.classifier).append(extension, that.extension).isEquals();
+            .append(extension, that.extension).append(classifier, that.classifier).append(version, that.version)
+            .append(scope, that.scope).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(groupId).append(artifactId).append(extension).append(classifier).append(version)
+            .append(scope).toHashCode();
     }
 
     @Override
