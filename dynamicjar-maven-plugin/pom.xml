@@ -32,6 +32,10 @@
             <groupId>io.hakansson.dynamicjar</groupId>
             <artifactId>dynamicjar-maven-provider-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-bootstrap</artifactId>
+        </dependency>
 
         <!-- EXTERNAL DEPENDENCIES -->
         <dependency>

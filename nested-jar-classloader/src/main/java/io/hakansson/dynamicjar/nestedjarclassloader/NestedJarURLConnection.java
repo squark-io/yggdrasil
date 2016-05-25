@@ -1,9 +1,8 @@
 package io.hakansson.dynamicjar.nestedjarclassloader;
 
+import com.google.common.io.FileBackedOutputStream;
 import sun.net.www.ParseUtil;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,9 +26,8 @@ public class NestedJarURLConnection extends URLConnection implements AutoCloseab
     private boolean connected;
     private String subEntryName;
     private String file;
-    private byte[] entryBytes;
-    private byte[] subEntryBytes;
-
+    private FileBackedOutputStream entryOutputStream;
+    private FileBackedOutputStream subEntryOutputStream;
 
     /**
      * Constructs a URL connection to the specified URL. A connection to
@@ -37,9 +35,12 @@ public class NestedJarURLConnection extends URLConnection implements AutoCloseab
      *
      * @param url the specified URL.
      */
-    public NestedJarURLConnection(URL url) throws MalformedURLException {
+    public NestedJarURLConnection(URL url, boolean connect) throws IOException {
         super(url);
         parseSpecs(url);
+        if (connect) {
+            connect();
+        }
     }
 
     /**
@@ -76,31 +77,32 @@ public class NestedJarURLConnection extends URLConnection implements AutoCloseab
             InputStream is = jarFile.getInputStream(jarFile.getEntry(entryName));
             int len;
             byte[] b = new byte[2048];
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            entryOutputStream = new FileBackedOutputStream((int) Runtime.getRuntime().freeMemory() / 2, true);
 
             while ((len = is.read(b)) > 0) {
-                byteArrayOutputStream.write(b, 0, len);
+                entryOutputStream.write(b, 0, len);
             }
-            entryBytes = byteArrayOutputStream.toByteArray();
-            byteArrayOutputStream.close();
+
             is.close();
-            if (subEntryName != null && entryBytes != null) {
-                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(entryBytes);
-                JarInputStream entryInputStream = new JarInputStream(byteArrayInputStream);
+            if (subEntryName != null) {
+                JarInputStream entryInputStream =
+                    new JarInputStream(entryOutputStream.asByteSource().openBufferedStream());
                 JarEntry subEntry;
                 while ((subEntry = entryInputStream.getNextJarEntry()) != null) {
                     if (subEntry.getName().equals(subEntryName)) {
-                        byteArrayOutputStream = new ByteArrayOutputStream();
+                        subEntryOutputStream =
+                            new FileBackedOutputStream((int) Runtime.getRuntime().freeMemory() / 2, true);
                         b = new byte[2048];
                         while ((len = entryInputStream.read(b)) > 0) {
-                            byteArrayOutputStream.write(b, 0, len);
+                            subEntryOutputStream.write(b, 0, len);
                         }
-                        subEntryBytes = byteArrayOutputStream.toByteArray();
-                        byteArrayOutputStream.close();
                         break;
                     }
                 }
                 entryInputStream.close();
+                entryOutputStream.reset();
+                entryOutputStream.close();
+                entryOutputStream = null;
             }
         }
         connected = true;
@@ -112,14 +114,14 @@ public class NestedJarURLConnection extends URLConnection implements AutoCloseab
             connect();
         }
         if (subEntryName != null) {
-            if (subEntryBytes != null) {
-                return new ByteArrayInputStream(subEntryBytes);
+            if (subEntryOutputStream != null) {
+                return subEntryOutputStream.asByteSource().openBufferedStream();
             } else {
                 throw new IOException("Failed to load " + subEntryName);
             }
         } else if (entryName != null) {
-            if (entryBytes != null) {
-                return new ByteArrayInputStream(entryBytes);
+            if (entryOutputStream != null) {
+                return entryOutputStream.asByteSource().openBufferedStream();
             } else {
                 throw new IOException("Failed to load " + entryName);
             }
@@ -129,8 +131,16 @@ public class NestedJarURLConnection extends URLConnection implements AutoCloseab
     }
 
     @Override
-    public void close() throws Exception {
-        this.subEntryBytes = null;
-        this.entryBytes = null;
+    public void close() throws IOException {
+        if (this.subEntryOutputStream != null) {
+            this.subEntryOutputStream.reset();
+            this.subEntryOutputStream.close();
+            this.subEntryOutputStream = null;
+        }
+        if (this.entryOutputStream != null) {
+            this.entryOutputStream.reset();
+            this.entryOutputStream.close();
+            this.entryOutputStream = null;
+        }
     }
 }

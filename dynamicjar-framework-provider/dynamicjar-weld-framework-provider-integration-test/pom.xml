@@ -25,11 +25,9 @@
             <artifactId>dynamicjar-weld-framework-provider</artifactId>
             <scope>provided</scope>
         </dependency>
-
-        <!-- EXTERNAL DEPENDENCIES -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <artifactId>dynamicjar-logging-module</artifactId>
         </dependency>
 
         <!-- TEST DEPENDENCIES -->

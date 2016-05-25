@@ -56,6 +56,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -309,6 +310,11 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
                 remoteRepositories.add(remoteRepository);
             }
         }
+        if (remoteRepositories.size() == 0) {
+            logger.debug("No configured remote repositories found. Using Maven central.");
+            RemoteRepository mavenCentralRepo = new RemoteRepository.Builder("central", "default", "http://repo1.maven.org/maven2").build();
+            remoteRepositories.add(mavenCentralRepo);
+        }
 
         return remoteRepositories;
     }
@@ -334,11 +340,25 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
         DependencyNode node =
             repositorySystem.collectDependencies(repositorySystemSession, collectRequest).getRoot();
 
+        if (logger.isDebugEnabled()) {
+            Map<String, Object> logMap = new HashMap<>();
+            logMap.put(node.toString(), nodeToMap(node));
+            logger.debug("Collected the following dependencies: " + logMap);
+        }
+
         DependencyRequest dependencyRequest = new DependencyRequest();
         dependencyRequest.setFilter(new ScopeDependencyFilter(null));
         dependencyRequest.setRoot(node);
         repositorySystem.resolveDependencies(repositorySystemSession, dependencyRequest);
 
         return DynamicJarDependencyMavenUtil.fromDependencyNode(node, null);
+    }
+
+    private Map<String, Object> nodeToMap(DependencyNode dependencyNode) {
+        Map<String, Object> map = new HashMap<>();
+        for (DependencyNode node : dependencyNode.getChildren()) {
+            map.put(node.toString(), nodeToMap(node));
+        }
+        return map;
     }
 }

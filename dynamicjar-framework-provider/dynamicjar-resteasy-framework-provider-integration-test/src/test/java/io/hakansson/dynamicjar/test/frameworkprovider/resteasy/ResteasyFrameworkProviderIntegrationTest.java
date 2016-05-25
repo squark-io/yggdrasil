@@ -14,6 +14,8 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+import java.util.Date;
+
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -34,7 +36,7 @@ public class ResteasyFrameworkProviderIntegrationTest {
         Executor executor = new DefaultExecutor();
 
         System.out.println(targetArtifact);
-        CommandLine commandLine = CommandLine.parse("java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug " + jacocoArgLine + " -jar " + targetArtifact);
+        CommandLine commandLine = CommandLine.parse("java -Ddynamicjar.logLevel=DEBUG " + jacocoArgLine + " -jar " + targetArtifact);
         executor.setExitValue(0);
         LogOutputStream logOutputStream = new LogOutputStream() {
             @Override
@@ -55,7 +57,7 @@ public class ResteasyFrameworkProviderIntegrationTest {
             if (time % 2000 == 0) System.out
                 .println("[" + ResteasyFrameworkProviderIntegrationTest.class.getSimpleName() +
                          "] Waiting for initialization");
-            if (time >= 60000L) {
+            if (time >= 120000L) {
                 throw new Exception("Failed to initialize.");
             }
             Thread.sleep(200);

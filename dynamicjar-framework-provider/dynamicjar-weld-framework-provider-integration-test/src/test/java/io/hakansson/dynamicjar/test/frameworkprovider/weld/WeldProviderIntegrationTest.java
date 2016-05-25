@@ -35,7 +35,7 @@ public class WeldProviderIntegrationTest {
         Executor executor = new DefaultExecutor();
 
         System.out.println(targetArtifact);
-        CommandLine commandLine = CommandLine.parse("java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug " + jacocoArgLine + " -jar " + targetArtifact);
+        CommandLine commandLine = CommandLine.parse("java -Ddynamicjar.logLevel=DEBUG " + jacocoArgLine + " -jar " + targetArtifact);
         executor.setExitValue(0);
         LogOutputStream logOutputStream = new LogOutputStream() {
             @Override
@@ -56,7 +56,7 @@ public class WeldProviderIntegrationTest {
             if (time % 2000 == 0) System.out
                 .println("[" + WeldProviderIntegrationTest.class.getSimpleName() +
                          "] Waiting for initialization");
-            if (time >= 60000L) {
+            if (time >= 120000L) {
                 throw new Exception("Failed to initialize.");
             }
             Thread.sleep(200);

@@ -3,7 +3,7 @@ package io.hakansson.dynamicjar.core.main.factory;
 import io.hakansson.dynamicjar.core.api.DependencyResolutionProvider;
 import io.hakansson.dynamicjar.core.api.exception.DependencyResolutionException;
 import io.hakansson.dynamicjar.core.main.DynamicJar;
-import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassloader;
+import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class DependencyResolutionProviderFactory {
     private static Logger logger = LoggerFactory.getLogger(DynamicJar.class);
 
     public static Collection<DependencyResolutionProvider> getDependencyResolvers(
-        NestedJarClassloader helperClassloader) throws DependencyResolutionException {
+        NestedJarClassLoader helperClassloader) throws DependencyResolutionException {
 
         ServiceLoader<DependencyResolutionProvider> loader =
             ServiceLoader.load(DependencyResolutionProvider.class, helperClassloader);

@@ -7,7 +7,7 @@ import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarDependency;
 import io.hakansson.dynamicjar.core.api.util.Scopes;
 import io.hakansson.dynamicjar.core.main.factory.DependencyResolutionProviderFactory;
-import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassloader;
+import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -47,8 +47,11 @@ public class RemoteDependencyLoader {
     }
 
     private static void loadJars(final Set<DynamicJarDependency> dependencies,
-        NestedJarClassloader classLoader, boolean includeTransitive, Set<String> exclusions)
+        NestedJarClassLoader classLoader, boolean includeTransitive, Set<String> exclusions)
         throws IOException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Loading the following dependencies: " + dependencies);
+        }
         Map<String, String> loadedJars = new HashMap<>();
         List<DynamicJarDependency> flatDependencies =
             getFlatDependencies(dependencies, includeTransitive);
@@ -84,7 +87,7 @@ public class RemoteDependencyLoader {
         }
     }
 
-    private static boolean addJar(final URL jar, NestedJarClassloader classLoader)
+    private static boolean addJar(final URL jar, NestedJarClassLoader classLoader)
         throws IOException {
         try {
             File jarFile = new File(jar.toURI());
@@ -108,8 +111,8 @@ public class RemoteDependencyLoader {
         }
     }
 
-    static void loadDependencies(NestedJarClassloader classLoader,
-        NestedJarClassloader helperClassLoader, DynamicJarConfiguration dynamicJarConfiguration,
+    static void loadDependencies(NestedJarClassLoader classLoader,
+        NestedJarClassLoader helperClassLoader, DynamicJarConfiguration dynamicJarConfiguration,
         Set<String> exclusions) throws PropertyLoadException, DependencyResolutionException {
 
         Collection<DependencyResolutionProvider> dependencyResolvers =
@@ -121,9 +124,11 @@ public class RemoteDependencyLoader {
         }
         final Set<DynamicJarDependency> dependencies = dynamicJarConfiguration.getDependencies();
         Set<DynamicJarDependency> resolvedDependencies = new HashSet<>();
-        for (DependencyResolutionProvider provider : dependencyResolvers) {
-            resolvedDependencies.addAll(provider.resolveDependencies(dependencies,
-                dynamicJarConfiguration.isLoadTransitiveProvidedDependencies()));
+        if (dependencies != null) {
+            for (DependencyResolutionProvider provider : dependencyResolvers) {
+                resolvedDependencies.addAll(provider.resolveDependencies(dependencies,
+                    dynamicJarConfiguration.isLoadTransitiveProvidedDependencies()));
+            }
         }
         try {
             loadJars(resolvedDependencies, classLoader,
@@ -171,7 +176,7 @@ public class RemoteDependencyLoader {
         return jars;
     }
 
-    private static boolean addJar(final File jar, NestedJarClassloader classLoader)
+    private static boolean addJar(final File jar, NestedJarClassLoader classLoader)
         throws IOException {
         return addJar(jar.toURI().toURL(), classLoader);
     }
