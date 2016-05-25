@@ -7,12 +7,8 @@ import org.slf4j.helpers.NOPLogger;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static java.lang.Class.forName;
 
 /**
  * Created by Erik Håkansson on 2016-05-09.
@@ -21,22 +17,15 @@ import static java.lang.Class.forName;
 public class InternalLogger {
 
     private static final String DYNAMICJAR_LOG_LEVEL = "dynamicjar.logLevel";
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     private static boolean loggingInitialized = false;
 
     private LogLevel logLevel = null;
     private String name;
     private Logger logger;
-    private Method loggerFactoryMethod;
-    private Class clazz;
-
-    private InternalLogger(String name) {
-        this.name = name;
-    }
 
     private InternalLogger(Class<?> clazz) {
         this.name = clazz.getName();
-        this.clazz = clazz;
     }
 
     public static InternalLogger getLogger(Class<?> clazz) {
@@ -104,35 +93,16 @@ public class InternalLogger {
                 combinedMessage = (message != null ? message + "\n" : "") + stringWriter.toString();
             }
 
-            String identifier =
-                dateFormat.format(new Date()) + " [" + Thread.currentThread().getName() + "] " + level.name() + " ["
-                    + name + "]";
-
-            System.out.println(identifier + " " + combinedMessage);
+            String formatted = String
+                .format("%s [%s] %s  [%s] %s", dateFormat.format(new Date()), Thread.currentThread().getName(), level.name(),
+                    name, combinedMessage);
+            System.out.println(formatted);
         }
     }
 
     private void checkIfLoggerAvailable() {
         if (isLoggingInitialized() && logger == null) {
-            if (loggerFactoryMethod == null) {
-                try {
-                    ClassLoader classLoader;
-                    if (this.clazz != null) {
-                        classLoader = clazz.getClassLoader();
-                    } else {
-                        classLoader = Thread.currentThread().getContextClassLoader();
-                    }
-                    loggerFactoryMethod =
-                        Class.forName(LoggerFactory.class.getName(), true, classLoader).getDeclaredMethod("getLogger", String.class);
-                } catch (NoSuchMethodException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-            try {
-                logger = (Logger) loggerFactoryMethod.invoke(null, name);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            logger = LoggerFactory.getLogger(name);
             if (logger instanceof NOPLogger) {
                 logger = null;
             }

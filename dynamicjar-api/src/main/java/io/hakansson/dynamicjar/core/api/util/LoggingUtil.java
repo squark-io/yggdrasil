@@ -4,9 +4,8 @@ import io.hakansson.dynamicjar.core.api.LoggingModule;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.logging.api.InternalLogger;
+import io.hakansson.dynamicjar.logging.api.LogLevel;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ServiceLoader;
@@ -17,7 +16,7 @@ import java.util.ServiceLoader;
  */
 public class LoggingUtil {
 
-    private static Logger logger = null;
+    private static InternalLogger logger = InternalLogger.getLogger(LoggingUtil.class);
 
     @SuppressWarnings("unused")
     public static void initiateLogging(byte[] configurationBytes, Object classLoader, @Nullable URL jarWithConfig)
@@ -31,10 +30,7 @@ public class LoggingUtil {
         @Nullable URL jarWithConfig, boolean internalLogging) throws DynamicJarException {
 
         if (internalLogging) {
-            if (logger == null) {
-                logger = LoggerFactory.getLogger(LoggingUtil.class);
-            }
-            logger.info("Initiating logging...");
+            logger.log(LogLevel.INFO, "Initiating logging...");
         }
 
         ServiceLoader<LoggingModule> loggingModules = ServiceLoader.load(LoggingModule.class, classLoader);
@@ -51,9 +47,9 @@ public class LoggingUtil {
 
         if (internalLogging) {
             if (loggingModule != null) {
-                logger.info("Initiated logging using " + loggingModule.getClass().getSimpleName());
+                logger.log(LogLevel.INFO, "Initiated logging using " + loggingModule.getClass().getSimpleName());
             } else {
-                logger.info("No logging module found. Using console logging.");
+                logger.log(LogLevel.INFO, "No logging module found. Using console logging.");
             }
         }
         InternalLogger.setLoggingInitialized(true);

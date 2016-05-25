@@ -25,19 +25,17 @@ public class Bootstrap {
         try {
             logger.log(LogLevel.INFO, "Bootstrapping DynamicJar");
             NestedJarClassLoader coreClassLoader =
-                new NestedJarClassLoader(LibHelper.getLibs(Constants.DYNAMICJAR_RUNTIME_LIB_PATH),
-                    null);
-            LibHelper.copyResourcesIntoClassLoader(coreClassLoader, "META-INF/", Arrays
-                .asList(Constants.LIB_PATH, Constants.DYNAMICJAR_RUNTIME_LIB_PATH));
+                new NestedJarClassLoader(LibHelper.getLibs(Constants.DYNAMICJAR_RUNTIME_LIB_PATH), null, true);
+            LibHelper.copyResourcesIntoClassLoader(coreClassLoader, "META-INF/",
+                Arrays.asList(Constants.LIB_PATH, Constants.DYNAMICJAR_RUNTIME_LIB_PATH));
             Thread.currentThread().setContextClassLoader(coreClassLoader);
             try {
-                Method internalMainMethod =
-                    Class.forName(Constants.DYNAMIC_JAR_CLASS_NAME, true, coreClassLoader)
-                        .getDeclaredMethod("internalMain", String[].class);
+                Method internalMainMethod = Class.forName(Constants.DYNAMIC_JAR_CLASS_NAME, true, coreClassLoader)
+                    .getDeclaredMethod("internalMain", String[].class);
                 internalMainMethod.setAccessible(true);
                 internalMainMethod.invoke(null, new Object[]{args});
-            } catch (NoSuchMethodException | ClassNotFoundException |
-                InvocationTargetException | IllegalAccessException e) {
+            } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException |
+                IllegalAccessException e) {
                 throw new NestedJarClassloaderException(e);
             }
 

@@ -50,12 +50,12 @@ public class Log4j2LoggingModule implements LoggingModule {
         URI configuredConfigFile = null;
         String configuredLogLevel = null;
         if (configuration != null && configuration.getLoggerConfiguration() != null) {
-            configuredConfigFile = configuration.getLoggerConfiguration().getConfigFile() != null ? URI
-                .create(configuration.getLoggerConfiguration().getConfigFile()) : null;
+            configuredConfigFile = configuration.getLoggerConfiguration().getConfigFile() != null ?
+                                   URI.create(configuration.getLoggerConfiguration().getConfigFile()) : null;
             configuredLogLevel = configuration.getLoggerConfiguration().getDefaultLogLevel();
         }
 
-        LoggerContext loggerContext = (LoggerContext) LogManager.getContext(classLoader, false);
+        LoggerContext loggerContext = (LoggerContext) LogManager.getContext();
         if (systemLogLevel != null) {
             final Configuration config = loggerContext.getConfiguration();
             config.getRootLogger().setLevel(Level.getLevel(systemLogLevel));
@@ -74,8 +74,7 @@ public class Log4j2LoggingModule implements LoggingModule {
                 JarEntry jarEntry;
 
                 while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
-                    if (jarEntry.isDirectory())
-                        continue;
+                    if (jarEntry.isDirectory()) continue;
                     String fileName = FilenameUtils.getName(jarEntry.getName());
                     if (validConfigFiles.contains(fileName)) {
                         configuredConfigFile = URI.create(jarWithConfig.getFile() + "!/" + jarEntry.getName());
