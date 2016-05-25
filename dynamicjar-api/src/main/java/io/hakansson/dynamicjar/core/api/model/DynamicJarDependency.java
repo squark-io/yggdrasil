@@ -43,8 +43,8 @@ public class DynamicJarDependency implements Serializable {
         this.file = file;
     }
 
-    public DynamicJarDependency(String groupId, String artifactId, String extension, String classifier, String version,
-        File file, String scope, @Nullable Set<DynamicJarDependency> childDependencies, @Nullable String defaultScope) {
+    public DynamicJarDependency(String groupId, String artifactId, String extension, String classifier, String version, File file,
+        String scope, @Nullable Set<DynamicJarDependency> childDependencies, @Nullable String defaultScope) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.extension = extension;
@@ -64,8 +64,8 @@ public class DynamicJarDependency implements Serializable {
         }
     }
 
-    public DynamicJarDependency(String groupId, String artifactId, String extension, String classifier, String version,
-        File file, String scope, Set<DynamicJarDependency> children, String provided, Boolean optional) {
+    public DynamicJarDependency(String groupId, String artifactId, String extension, String classifier, String version, File file,
+        String scope, Set<DynamicJarDependency> children, String provided, Boolean optional) {
         this(groupId, artifactId, extension, classifier, version, file, scope, children, provided);
         this.optional = optional;
     }
@@ -166,6 +166,12 @@ public class DynamicJarDependency implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(groupId).append(artifactId).append(extension).append(classifier).append(version)
+            .append(scope).toHashCode();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
 
@@ -179,25 +185,12 @@ public class DynamicJarDependency implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(groupId).append(artifactId).append(extension).append(classifier).append(version)
-            .append(scope).toHashCode();
-    }
-
-    @Override
     public String toString() {
-        return "DynamicJarDependency{" +
-            "groupId='" + groupId + '\'' +
-            ", artifactId='" + artifactId + '\'' +
-            ", extension='" + extension + '\'' +
-            ", classifier='" + classifier + '\'' +
-            ", version='" + version + '\'' +
-            ", file=" + file +
-            ", scope='" + scope + '\'' +
-            ", optional'" + optional + '\'' +
-            ", parent='" + (getParent().isPresent() ? getParent().get().toShortString() : null) +
-            ", childDependencies=" + childDependencies +
-            '}';
+        return "DynamicJarDependency{" + "groupId='" + groupId + '\'' + ", artifactId='" + artifactId + '\'' + ", extension='" +
+               extension + '\'' + ", classifier='" + classifier + '\'' + ", version='" + version + '\'' + ", file=" + file +
+               ", scope='" + scope + '\'' + ", optional'" + optional + '\'' + ", parent='" +
+               (getParent().isPresent() ? getParent().get().toShortString() : null) + ", childDependencies=" + childDependencies +
+               '}';
     }
 
     public String toShortString() {

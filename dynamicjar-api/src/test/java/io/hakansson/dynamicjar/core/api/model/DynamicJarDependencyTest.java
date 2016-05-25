@@ -38,7 +38,7 @@ public class DynamicJarDependencyTest {
         compare.setArtifactId("artifactId");
         compare.setVersion("1.0");
         compare.setClassifier("jar");
-        compare.setScope("otherScope"); //Scope should not be compared
+        compare.setScope("provided");
         Assert.assertEquals(compare, dynamicJarDependency);
     }
 
