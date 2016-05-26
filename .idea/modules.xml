@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar.iml" filepath="$PROJECT_DIR$/dynamicjar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-api/dynamicjar-api.iml" filepath="$PROJECT_DIR$/dynamicjar-api/dynamicjar-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-core/dynamicjar-core.iml" filepath="$PROJECT_DIR$/dynamicjar-core/dynamicjar-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-framework-provider.iml" filepath="$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-framework-provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-integration-tests/dynamicjar-integration-tests.iml" filepath="$PROJECT_DIR$/dynamicjar-integration-tests/dynamicjar-integration-tests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-maven-plugin/dynamicjar-maven-plugin.iml" filepath="$PROJECT_DIR$/dynamicjar-maven-plugin/dynamicjar-maven-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-maven-provider/dynamicjar-maven-provider.iml" filepath="$PROJECT_DIR$/dynamicjar-maven-provider/dynamicjar-maven-provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-maven-provider-api/dynamicjar-maven-provider-api.iml" filepath="$PROJECT_DIR$/dynamicjar-maven-provider-api/dynamicjar-maven-provider-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-resteasy-framework-provider/dynamicjar-resteasy-framework-provider.iml" filepath="$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-resteasy-framework-provider/dynamicjar-resteasy-framework-provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-resteasy-framework-provider-integration-test/dynamicjar-resteasy-framework-provider-integration-test.iml" filepath="$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-resteasy-framework-provider-integration-test/dynamicjar-resteasy-framework-provider-integration-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-weld-framework-provider/dynamicjar-weld-framework-provider.iml" filepath="$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-weld-framework-provider/dynamicjar-weld-framework-provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-weld-framework-provider-integration-test/dynamicjar-weld-framework-provider-integration-test.iml" filepath="$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-weld-framework-provider-integration-test/dynamicjar-weld-framework-provider-integration-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-integration-tests/dynamicjar-core-it-jsonconfigfile/jsonconfigfile-test.iml" filepath="$PROJECT_DIR$/dynamicjar-integration-tests/dynamicjar-core-it-jsonconfigfile/jsonconfigfile-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nested-jar-classloader/nested-jar-classloader.iml" filepath="$PROJECT_DIR$/nested-jar-classloader/nested-jar-classloader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dynamicjar-integration-tests/dynamicjar-core-it-yamlconfigfile/yamlconfigfile-test.iml" filepath="$PROJECT_DIR$/dynamicjar-integration-tests/dynamicjar-core-it-yamlconfigfile/yamlconfigfile-test.iml" />
+    </modules>
+  </component>
+</project>
