@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <option name="DEFAULT_COMPILER" value="Javac" />
+    <resourceExtensions />
+    <wildcardResourcePatterns>
+      <entry name="!?*.java" />
+      <entry name="!?*.form" />
+      <entry name="!?*.class" />
+      <entry name="!?*.groovy" />
+      <entry name="!?*.scala" />
+      <entry name="!?*.flex" />
+      <entry name="!?*.kt" />
+      <entry name="!?*.clj" />
+      <entry name="!?*.aj" />
+    </wildcardResourcePatterns>
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="false">
+        <processorPath useClasspath="true" />
+      </profile>
+      <profile default="false" name="Annotation profile for dynamicjar-resteasy-framework-provider-integration-test" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="dynamicjar-resteasy-framework-provider-integration-test" />
+      </profile>
+      <profile default="false" name="Annotation profile for dynamicjar-weld-framework-provider-integration-test" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="dynamicjar-weld-framework-provider-integration-test" />
+      </profile>
+      <profile default="false" name="Annotation profile for dynamicjar-resteasy-framework-provider" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="dynamicjar-resteasy-framework-provider" />
+      </profile>
+      <profile default="false" name="Annotation profile for yamlconfigfile-test" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="yamlconfigfile-test" />
+      </profile>
+      <profile default="false" name="Annotation profile for dynamicjar-weld-framework-provider" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="dynamicjar-weld-framework-provider" />
+      </profile>
+      <profile default="false" name="Annotation profile for nested-jar-classloader" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="nested-jar-classloader" />
+      </profile>
+      <profile default="false" name="Annotation profile for jsonconfigfile-test" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="jsonconfigfile-test" />
+      </profile>
+      <profile default="false" name="Annotation profile for dynamicjar-api" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="dynamicjar-api" />
+      </profile>
+      <profile default="false" name="Annotation profile for dynamicjar-maven-plugin" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="dynamicjar-maven-plugin" />
+      </profile>
+      <profile default="false" name="Annotation profile for dynamicjar-maven-provider-api" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="dynamicjar-maven-provider-api" />
+      </profile>
+      <profile default="false" name="Annotation profile for dynamicjar-core" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="dynamicjar-core" />
+      </profile>
+      <profile default="false" name="Annotation profile for dynamicjar-maven-provider" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="dynamicjar-maven-provider" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="dynamicjar" target="1.8" />
+      <module name="dynamicjar-api" target="1.8" />
+      <module name="dynamicjar-core" target="1.8" />
+      <module name="dynamicjar-framework-provider" target="1.8" />
+      <module name="dynamicjar-integration-tests" target="1.8" />
+      <module name="dynamicjar-maven-plugin" target="1.8" />
+      <module name="dynamicjar-maven-provider" target="1.8" />
+      <module name="dynamicjar-maven-provider-api" target="1.8" />
+      <module name="dynamicjar-resteasy-framework-provider" target="1.8" />
+      <module name="dynamicjar-resteasy-framework-provider-integration-test" target="1.8" />
+      <module name="dynamicjar-weld-framework-provider" target="1.8" />
+      <module name="dynamicjar-weld-framework-provider-integration-test" target="1.8" />
+      <module name="jsonconfigfile-test" target="1.8" />
+      <module name="nested-jar-classloader" target="1.8" />
+      <module name="yamlconfigfile-test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
