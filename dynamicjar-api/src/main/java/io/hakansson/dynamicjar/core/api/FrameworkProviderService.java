@@ -3,12 +3,14 @@ package io.hakansson.dynamicjar.core.api;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
+import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
-import java.lang.reflect.Method;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
@@ -23,15 +25,14 @@ public class FrameworkProviderService {
 
     private static final Logger logger = LoggerFactory.getLogger(FrameworkProviderService.class);
 
+    @SuppressWarnings("unused")
     private static void loadProviders(byte[] configurationAsBytes) throws DynamicJarException {
 
-        Thread.currentThread()
-            .setContextClassLoader(FrameworkProviderService.class.getClassLoader());
-        DynamicJarConfiguration configuration =
-            ConfigurationSerializer.deserializeConfig(configurationAsBytes);
+        Thread.currentThread().setContextClassLoader(FrameworkProviderService.class.getClassLoader());
+        DynamicJarConfiguration configuration = ConfigurationSerializer.deserializeConfig(configurationAsBytes);
 
-        final ServiceLoader<FrameworkProvider> loader = ServiceLoader
-            .load(FrameworkProvider.class, FrameworkProviderService.class.getClassLoader());
+        final ServiceLoader<FrameworkProvider> loader = ServiceLoader.load(FrameworkProvider.class,
+                FrameworkProviderService.class.getClassLoader());
 
         try {
             Iterator<FrameworkProvider> providerIterator = loader.iterator();
@@ -49,17 +50,14 @@ public class FrameworkProviderService {
         }
     }
 
-    public static void loadProviders(NestedJarClassLoader classLoader,
-        DynamicJarConfiguration configuration) {
+    public static void loadProviders(NestedJarClassLoader classLoader, DynamicJarConfiguration configuration) {
 
         try {
             byte[] serializedConfig = ConfigurationSerializer.serializeConfig(configuration);
 
             Class<?> selfClass = classLoader.loadClass(FrameworkProviderService.class.getName());
-            Method loadProvidersMethod = selfClass.getDeclaredMethod("loadProviders", byte[].class);
-            loadProvidersMethod.setAccessible(true);
-            loadProvidersMethod.invoke(null, (Object) serializedConfig);
-        } catch (Exception e) {
+            ReflectionUtil.invokeMethod("loadProviders", selfClass, null, new Object[]{serializedConfig}, null);
+        } catch (IOException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
             logger.error(Marker.ANY_MARKER, e);
         }
     }
