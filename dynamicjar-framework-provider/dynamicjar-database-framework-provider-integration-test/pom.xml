@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>dynamicjar-framework-provider</artifactId>
+        <groupId>io.hakansson.dynamicjar</groupId>
+        <version>0.0.1-ALPHA-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider.it</groupId>
+    <artifactId>dynamicjar-database-framework-provider-integration-test</artifactId>
+    <dependencies>
+        <!-- INTERNAL DEPENDENCIES -->
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.frameworkprovider</groupId>
+            <artifactId>dynamicjar-database-framework-provider</artifactId>
+            <version>0.0.1-ALPHA-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-weld-framework-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <artifactId>dynamicjar-logging-module</artifactId>
+        </dependency>
+
+        <!-- EXTERNAL DEPENDENCIES -->
+        <!-- http://mvnrepository.com/artifact/com.h2database/h2 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.192</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.hakansson.dynamicjar</groupId>
+                <artifactId>dynamicjar-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package-dynamicjar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

@@ -24,7 +24,7 @@ public abstract class DynamicJarException extends Exception {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public DynamicJarException() {
+    private DynamicJarException() {
 
     }
 }

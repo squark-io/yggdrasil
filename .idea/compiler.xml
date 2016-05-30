@@ -26,6 +26,9 @@
         <module name="dynamicjar-api" />
         <module name="dynamicjar-bootstrap" />
         <module name="dynamicjar-core" />
+        <module name="dynamicjar-database-framework-provder-integration-test" />
+        <module name="dynamicjar-database-framework-provider" />
+        <module name="dynamicjar-database-framework-provider-integration-test" />
         <module name="dynamicjar-logging-api" />
         <module name="dynamicjar-logging-module" />
         <module name="dynamicjar-maven-plugin" />
@@ -45,6 +48,9 @@
       <module name="dynamicjar-api" target="1.8" />
       <module name="dynamicjar-bootstrap" target="1.8" />
       <module name="dynamicjar-core" target="1.8" />
+      <module name="dynamicjar-database-framework-provder-integration-test" target="1.8" />
+      <module name="dynamicjar-database-framework-provider" target="1.8" />
+      <module name="dynamicjar-database-framework-provider-integration-test" target="1.8" />
       <module name="dynamicjar-framework-provider" target="1.8" />
       <module name="dynamicjar-integration-tests" target="1.8" />
       <module name="dynamicjar-logging-api" target="1.8" />
