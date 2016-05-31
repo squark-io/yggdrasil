@@ -25,7 +25,4 @@ public class DynamicJarMultipleResourceException extends DynamicJarException {
         boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
-
-    public DynamicJarMultipleResourceException() {
-    }
 }

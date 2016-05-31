@@ -30,4 +30,9 @@ public class WeldFrameworkProvider implements FrameworkProvider {
         DynamicJarContext.registerObject(BeanManager.class.getName(), container.getBeanManager());
         logger.info(WeldFrameworkProvider.class.getSimpleName() + " initialized.");
     }
+
+    @Override
+    public String getName() {
+        return WeldFrameworkProvider.class.getSimpleName();
+    }
 }
