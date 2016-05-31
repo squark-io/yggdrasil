@@ -24,6 +24,4 @@ public class NestedJarClassloaderException extends DynamicJarException {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public NestedJarClassloaderException() {
-    }
 }

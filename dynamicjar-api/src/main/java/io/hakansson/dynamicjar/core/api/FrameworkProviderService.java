@@ -3,17 +3,18 @@ package io.hakansson.dynamicjar.core.api;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
+import io.hakansson.dynamicjar.core.api.util.FrameworkProviderComparator;
+import io.hakansson.dynamicjar.core.api.util.FrameworkProviderUtil;
 import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
+import org.apache.commons.collections4.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
-import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
+import java.util.*;
 
 /**
  * dynamicjar
@@ -39,8 +40,11 @@ public class FrameworkProviderService {
             if (!providerIterator.hasNext()) {
                 logger.info("No FrameworkProviders found");
             } else {
-                while (providerIterator.hasNext()) {
-                    FrameworkProvider provider = providerIterator.next();
+                List<FrameworkProvider> providerList = IteratorUtils.toList(providerIterator);
+                FrameworkProviderUtil.validateDependencies(providerList);
+                Collections.sort(providerList, new FrameworkProviderComparator());
+
+                for (FrameworkProvider provider : providerList) {
                     logger.info("Loading FrameworkProvider " + provider.getClass().getSimpleName());
                     provider.provide(configuration);
                 }
