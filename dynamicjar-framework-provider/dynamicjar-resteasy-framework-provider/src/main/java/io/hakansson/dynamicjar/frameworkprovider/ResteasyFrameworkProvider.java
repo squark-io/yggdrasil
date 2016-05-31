@@ -21,6 +21,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -113,6 +114,11 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
         logger.info(ResteasyFrameworkProvider.class.getSimpleName() + " initialized.");
     }
 
+    @Override
+    public String getName() {
+        return ResteasyFrameworkProvider.class.getSimpleName();
+    }
+
     private <T extends Object> T getBean(BeanManager manager, Class<T> type) {
         Set<Bean<?>> beans = manager.getBeans(type);
         Bean<?> bean = manager.resolve(beans);
@@ -137,4 +143,8 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
         return builder.toString();
     }
 
+    @Override
+    public List<ProviderDependency> runAfter() {
+        return Collections.singletonList(new ProviderDependency("WeldFrameworkProvider", true));
+    }
 }

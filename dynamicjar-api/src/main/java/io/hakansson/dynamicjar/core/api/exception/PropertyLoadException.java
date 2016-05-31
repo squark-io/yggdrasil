@@ -7,9 +7,6 @@ package io.hakansson.dynamicjar.core.api.exception;
  * Copyright 2016
  */
 public class PropertyLoadException extends DynamicJarException {
-    public PropertyLoadException() {
-        super();
-    }
 
     public PropertyLoadException(String message) {
         super(message);

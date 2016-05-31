@@ -4,8 +4,6 @@ import io.hakansson.dynamicjar.core.api.DynamicJarContext;
 import io.hakansson.dynamicjar.core.api.FrameworkProvider;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.frameworkprovider.exception.CDIException;
-import org.jboss.weld.context.RequestContext;
-import org.jboss.weld.context.unbound.UnboundLiteral;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.slf4j.Logger;
@@ -31,6 +29,17 @@ public class WeldFrameworkProvider implements FrameworkProvider {
         weld.setClassLoader(WeldFrameworkProvider.class.getClassLoader());
         WeldContainer container = weld.initialize();
         DynamicJarContext.registerObject(BeanManager.class.getName(), container.getBeanManager());
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                container.shutdown();
+            }
+        });
         logger.info(WeldFrameworkProvider.class.getSimpleName() + " initialized.");
+    }
+
+    @Override
+    public String getName() {
+        return WeldFrameworkProvider.class.getSimpleName();
     }
 }

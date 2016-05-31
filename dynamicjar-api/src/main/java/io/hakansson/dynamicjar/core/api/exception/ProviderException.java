@@ -24,7 +24,4 @@ public class ProviderException extends DynamicJarException {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public ProviderException() {
-        super();
-    }
 }
