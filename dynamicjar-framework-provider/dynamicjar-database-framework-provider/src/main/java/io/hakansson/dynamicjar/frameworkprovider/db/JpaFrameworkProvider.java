@@ -16,29 +16,25 @@ import java.util.List;
  * Created by Erik Håkansson on 2016-05-28.
  * Copyright 2016
  */
-public class DatabaseFrameworkProvider implements FrameworkProvider {
+public class JpaFrameworkProvider implements FrameworkProvider {
 
-    private final Logger logger = LoggerFactory.getLogger(DatabaseFrameworkProvider.class);
+    private final Logger logger = LoggerFactory.getLogger(JpaFrameworkProvider.class);
 
     @Override
     public void provide(@Nullable DynamicJarConfiguration configuration) throws DynamicJarException {
-
-        //TODO: Rename provider to JPA provider.
-        //TODO: Add logging everywhere.
-
-        logger.info("Initializing " + DatabaseFrameworkProvider.class.getSimpleName() + "...");
+        logger.info("Initializing " + JpaFrameworkProvider.class.getSimpleName() + "...");
 
         //The only thing we need to to is add some properties.
         System.setProperty(org.hibernate.cfg.AvailableSettings.SCANNER_ARCHIVE_INTERPRETER,
                 CustomArchiveDescriptorFactory.class.getName());
         System.setProperty(org.hibernate.jpa.AvailableSettings.TRANSACTION_TYPE, "RESOURCE_LOCAL");
 
-        logger.info(DatabaseFrameworkProvider.class.getSimpleName() + " initialized.");
+        logger.info(JpaFrameworkProvider.class.getSimpleName() + " initialized.");
     }
 
     @Override
     public String getName() {
-        return DatabaseFrameworkProvider.class.getSimpleName();
+        return JpaFrameworkProvider.class.getSimpleName();
     }
 
     @Override

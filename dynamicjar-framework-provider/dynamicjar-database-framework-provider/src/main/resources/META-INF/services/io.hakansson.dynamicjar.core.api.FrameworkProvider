@@ -1,1 +1,1 @@
-io.hakansson.dynamicjar.frameworkprovider.db.DatabaseFrameworkProvider
+io.hakansson.dynamicjar.frameworkprovider.db.JpaFrameworkProvider

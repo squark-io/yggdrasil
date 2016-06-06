@@ -28,7 +28,6 @@
         <module name="dynamicjar-core" />
         <module name="dynamicjar-database-framework-provder-integration-test" />
         <module name="dynamicjar-database-framework-provider" />
-        <module name="dynamicjar-database-framework-provider-integration-test" />
         <module name="dynamicjar-logging-api" />
         <module name="dynamicjar-logging-module" />
         <module name="dynamicjar-maven-plugin" />

@@ -1,4 +1,4 @@
-package io.hakansson.dynamicjar.frameworkprovider;
+package io.hakansson.dynamicjar.frameworkprovider.db;
 
 import org.hibernate.annotations.GenericGenerator;
 

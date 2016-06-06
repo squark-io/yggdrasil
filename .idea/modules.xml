@@ -7,7 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/dynamicjar-bootstrap/dynamicjar-bootstrap.iml" filepath="$PROJECT_DIR$/dynamicjar-bootstrap/dynamicjar-bootstrap.iml" />
       <module fileurl="file://$PROJECT_DIR$/dynamicjar-core/dynamicjar-core.iml" filepath="$PROJECT_DIR$/dynamicjar-core/dynamicjar-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-database-framework-provider/dynamicjar-database-framework-provider.iml" filepath="$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-database-framework-provider/dynamicjar-database-framework-provider.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-database-framework-provider-integration-test/dynamicjar-database-framework-provider-integration-test.iml" filepath="$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-database-framework-provider-integration-test/dynamicjar-database-framework-provider-integration-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-framework-provider.iml" filepath="$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-framework-provider.iml" />
       <module fileurl="file://$PROJECT_DIR$/dynamicjar-integration-tests/dynamicjar-integration-tests.iml" filepath="$PROJECT_DIR$/dynamicjar-integration-tests/dynamicjar-integration-tests.iml" />
       <module fileurl="file://$PROJECT_DIR$/dynamicjar-logging-api/dynamicjar-logging-api.iml" filepath="$PROJECT_DIR$/dynamicjar-logging-api/dynamicjar-logging-api.iml" />

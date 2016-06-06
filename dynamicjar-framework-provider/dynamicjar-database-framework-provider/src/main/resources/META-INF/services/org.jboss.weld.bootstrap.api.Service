@@ -1,1 +1,1 @@
-io.hakansson.dynamicjar.frameworkprovider.db.PersistenceInjectionExtension
+io.hakansson.dynamicjar.frameworkprovider.db.JpaCDIServices
