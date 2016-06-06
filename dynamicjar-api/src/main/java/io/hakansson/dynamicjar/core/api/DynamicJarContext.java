@@ -13,10 +13,14 @@ public class DynamicJarContext {
     private static Map<String, Object> registeredObjects = new HashMap<>();
 
     public static void registerObject(String name, Object object) {
-        registeredObjects.put(object.getClass().getName(), object);
+        registeredObjects.put(name, object);
     }
 
     public static Object getObject(String name) {
         return registeredObjects.get(name);
+    }
+
+    public static <T> T getObject(Class<T> type) {
+        return type.cast(registeredObjects.get(type.getName()));
     }
 }

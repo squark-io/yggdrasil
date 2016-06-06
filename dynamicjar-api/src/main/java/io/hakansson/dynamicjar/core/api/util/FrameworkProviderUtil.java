@@ -19,7 +19,7 @@ public class FrameworkProviderUtil {
             flatDependencies.addAll(provider.runAfter());
             for (FrameworkProvider.ProviderDependency dependency : flatDependencies) {
                 if (dependency.optional) {
-                    break;
+                    continue;
                 }
                 boolean found = false;
                 for (FrameworkProvider dependencyProvider : providerList) {

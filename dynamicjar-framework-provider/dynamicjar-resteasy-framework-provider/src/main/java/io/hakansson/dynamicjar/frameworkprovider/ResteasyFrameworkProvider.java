@@ -21,6 +21,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -142,4 +143,8 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
         return builder.toString();
     }
 
+    @Override
+    public List<ProviderDependency> runAfter() {
+        return Collections.singletonList(new ProviderDependency("WeldFrameworkProvider", true));
+    }
 }

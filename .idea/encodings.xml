@@ -6,6 +6,7 @@
     <file url="file://$PROJECT_DIR$/dynamicjar-bootstrap" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dynamicjar-core" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dynamicjar-framework-provider" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-database-framework-provider" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-logging-module" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-resteasy-framework-provider" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dynamicjar-framework-provider/dynamicjar-resteasy-framework-provider-integration-test" charset="UTF-8" />
