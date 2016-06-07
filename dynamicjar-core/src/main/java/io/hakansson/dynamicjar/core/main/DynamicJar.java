@@ -8,7 +8,7 @@ import io.hakansson.dynamicjar.core.api.exception.*;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.core.api.util.LibHelper;
-import io.hakansson.dynamicjar.core.api.util.LoggingUtil;
+import io.hakansson.dynamicjar.core.api.logging.LogHelper;
 import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
 import io.hakansson.dynamicjar.logging.api.InternalLogger;
 import io.hakansson.dynamicjar.logging.api.LogLevel;
@@ -53,7 +53,7 @@ public final class DynamicJar {
         logger.log(LogLevel.INFO, "Initiating DynamicJar");
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            LoggingUtil.initiateLogging(null, classLoader, null, false);
+            LogHelper.initiateLogging(null, classLoader, null, false);
             DynamicJarConfiguration configuration = getConfiguration();
             NestedJarClassLoader isolatedClassLoader = initiate(classLoader, configuration);
             loadMainClass(isolatedClassLoader, configuration, args);
@@ -142,7 +142,7 @@ public final class DynamicJar {
 
         NestedJarClassLoader isolatedClassLoader = new NestedJarClassLoader(libs, null, true);
         try {
-            ReflectionUtil.invokeMethod("initiateLogging", Class.forName(LoggingUtil.class.getName(), true, isolatedClassLoader),
+            ReflectionUtil.invokeMethod("initiateLogging", Class.forName(LogHelper.class.getName(), true, isolatedClassLoader),
                     null, new Object[]{configurationBytes, isolatedClassLoader, classesJar},
                     new Class[]{byte[].class, Object.class, URL.class});
         } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {

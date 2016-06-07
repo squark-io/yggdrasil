@@ -1,8 +1,7 @@
-package io.hakansson.dynamicjar.core.api;
+package io.hakansson.dynamicjar.core.api.logging;
 
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
-import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URL;

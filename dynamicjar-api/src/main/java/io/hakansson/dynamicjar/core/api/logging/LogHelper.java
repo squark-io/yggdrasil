@@ -1,8 +1,8 @@
-package io.hakansson.dynamicjar.core.api.util;
+package io.hakansson.dynamicjar.core.api.logging;
 
-import io.hakansson.dynamicjar.core.api.LoggingModule;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
+import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.logging.api.InternalLogger;
 import io.hakansson.dynamicjar.logging.api.LogLevel;
 import org.jetbrains.annotations.Nullable;
@@ -14,9 +14,9 @@ import java.util.ServiceLoader;
  * Created by Erik Håkansson on 2016-05-09.
  * WirelessCar
  */
-public class LoggingUtil {
+public class LogHelper {
 
-    private static InternalLogger logger = InternalLogger.getLogger(LoggingUtil.class);
+    private static InternalLogger logger = InternalLogger.getLogger(LogHelper.class);
 
     @SuppressWarnings("unused")
     public static void initiateLogging(byte[] configurationBytes, Object classLoader, @Nullable URL jarWithConfig)

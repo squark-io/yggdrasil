@@ -1,7 +1,7 @@
 package io.hakansson.dynamicjar.module.logging;
 
 import io.hakansson.dynamicjar.core.api.Constants;
-import io.hakansson.dynamicjar.core.api.LoggingModule;
+import io.hakansson.dynamicjar.core.api.logging.LoggingModule;
 import io.hakansson.dynamicjar.core.api.exception.DependencyResolutionException;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
