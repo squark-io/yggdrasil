@@ -8,4 +8,5 @@ package io.hakansson.dynamicjar.logging.api;
  */
 public interface ReplaceableLoggerBinder {
     void register(CrappyLoggerFactory.CrappyLogger logger);
+    void notifyLoggingInitialized();
 }

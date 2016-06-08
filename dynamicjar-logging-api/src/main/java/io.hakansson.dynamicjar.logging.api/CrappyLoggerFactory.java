@@ -47,6 +47,14 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
             }
         }
 
+        public Logger getDelegate() {
+            return delegate;
+        }
+
+        public void setDelegate(Logger delegate) {
+            this.delegate = delegate;
+        }
+
         @Override
         public String getName() {
             if (delegate != null) {
