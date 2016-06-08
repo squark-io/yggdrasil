@@ -3,9 +3,9 @@ package io.hakansson.dynamicjar.core.main.factory;
 import io.hakansson.dynamicjar.core.api.DependencyResolutionProvider;
 import io.hakansson.dynamicjar.core.api.exception.DependencyResolutionException;
 import io.hakansson.dynamicjar.core.main.DynamicJar;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,13 +20,14 @@ import java.util.ServiceLoader;
  */
 public class DependencyResolutionProviderFactory {
 
-    private static Logger logger = LoggerFactory.getLogger(DynamicJar.class);
+    private static Logger logger = InternalLoggerBinder.getLogger(DynamicJar.class);
 
-    public static Collection<DependencyResolutionProvider> getDependencyResolvers(
-        NestedJarClassLoader helperClassloader) throws DependencyResolutionException {
+    public static Collection<DependencyResolutionProvider> getDependencyResolvers(NestedJarClassLoader helperClassloader) throws
+            DependencyResolutionException
+    {
 
-        ServiceLoader<DependencyResolutionProvider> loader =
-            ServiceLoader.load(DependencyResolutionProvider.class, helperClassloader);
+        ServiceLoader<DependencyResolutionProvider> loader = ServiceLoader.load(DependencyResolutionProvider.class,
+                helperClassloader);
         Collection<DependencyResolutionProvider> providers = new ArrayList<>();
         List<String> providerNames = null;
         boolean isDebug = logger.isDebugEnabled();

@@ -6,6 +6,7 @@ import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.model.ProviderConfiguration;
 import io.hakansson.dynamicjar.frameworkprovider.exception.DynamicJarMultipleResourceException;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.undertow.Undertow;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
@@ -15,7 +16,6 @@ import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
@@ -33,13 +33,16 @@ import java.util.Set;
  */
 public class ResteasyFrameworkProvider implements FrameworkProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(ResteasyFrameworkProvider.class);
+    private static final Logger logger = InternalLoggerBinder.getLogger(ResteasyFrameworkProvider.class);
     private static final String DEFAULT_PORT = "8080";
     private static final String PROPERTY_PORT = "port";
     private int port = Integer.valueOf(DEFAULT_PORT);
 
     @Override
     public void provide(DynamicJarConfiguration configuration) throws DynamicJarException {
+
+        logger.info("Initializing Resteasy ...");
+        System.setProperty("org.jboss.logging.provider", "slf4j");
 
         configuration.getProviderConfigurations().ifPresent(providerConfigurations -> {
             for (ProviderConfiguration providerConfiguration : providerConfigurations) {

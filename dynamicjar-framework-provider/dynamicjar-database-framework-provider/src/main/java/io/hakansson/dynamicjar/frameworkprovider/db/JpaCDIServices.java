@@ -1,11 +1,11 @@
 package io.hakansson.dynamicjar.frameworkprovider.db;
 
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceReference;
 import org.jboss.weld.injection.spi.ResourceReferenceFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.persistence.*;
@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class JpaCDIServices implements JpaInjectionServices {
 
-    private static final Logger logger = LoggerFactory.getLogger(JpaCDIServices.class);
+    private static final Logger logger = InternalLoggerBinder.getLogger(JpaCDIServices.class);
 
     private static Map<String, ResourceReference<EntityManagerFactory>> entityManagerFactories = new HashMap<>();
 

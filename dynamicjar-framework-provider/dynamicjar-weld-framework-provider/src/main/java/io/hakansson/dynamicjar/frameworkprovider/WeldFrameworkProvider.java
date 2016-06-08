@@ -4,10 +4,10 @@ import io.hakansson.dynamicjar.core.api.DynamicJarContext;
 import io.hakansson.dynamicjar.core.api.FrameworkProvider;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.frameworkprovider.exception.CDIException;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.inject.spi.BeanManager;
 
@@ -19,12 +19,12 @@ import javax.enterprise.inject.spi.BeanManager;
  */
 public class WeldFrameworkProvider implements FrameworkProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(WeldFrameworkProvider.class);
+    private static final Logger logger = InternalLoggerBinder.getLogger(WeldFrameworkProvider.class);
 
     @Override
     public void provide(DynamicJarConfiguration configuration) throws CDIException {
-        //todo: org.jboss.weld.se.scan.classpath.entries=true with Weld.property() to get rid of beans.xml. Make configurable with true as default
         logger.info("Initializing Weld container...");
+        System.setProperty("org.jboss.logging.provider", "slf4j");
         Weld weld = new Weld();
         weld.setClassLoader(WeldFrameworkProvider.class.getClassLoader());
         WeldContainer container = weld.initialize();

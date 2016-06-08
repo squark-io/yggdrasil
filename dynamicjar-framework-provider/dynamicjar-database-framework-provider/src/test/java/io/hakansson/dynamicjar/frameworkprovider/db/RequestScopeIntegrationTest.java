@@ -3,6 +3,7 @@ package io.hakansson.dynamicjar.frameworkprovider.db;
 import com.jayway.restassured.http.ContentType;
 import io.hakansson.dynamicjar.core.api.Constants;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
+import io.hakansson.dynamicjar.core.api.logging.LogHelper;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.frameworkprovider.ResteasyFrameworkProvider;
 import io.hakansson.dynamicjar.frameworkprovider.WeldFrameworkProvider;
@@ -32,6 +33,7 @@ public class RequestScopeIntegrationTest {
         System.setProperty(Constants.DYNAMICJAR_LOG_LEVEL, "DEBUG");
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "DEBUG");
         DynamicJarConfiguration configuration = new DynamicJarConfiguration();
+        LogHelper.initiateLogging(configuration, this.getClass().getClassLoader(), null, true);
         new JpaFrameworkProvider().provide(configuration);
         Weld weld = new Weld();
         weld.setClassLoader(WeldFrameworkProvider.class.getClassLoader());

@@ -84,6 +84,11 @@
             <artifactId>dynamicjar-weld-framework-provider</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <artifactId>dynamicjar-logging-module</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!--<dependency>-->
             <!--<groupId>org.slf4j</groupId>-->
             <!--<artifactId>slf4j-simple</artifactId>-->

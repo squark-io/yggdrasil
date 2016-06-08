@@ -3,9 +3,9 @@ package io.hakansson.dynamicjar.frameworkprovider.db;
 import io.hakansson.dynamicjar.core.api.FrameworkProvider;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class JpaFrameworkProvider implements FrameworkProvider {
 
-    private final Logger logger = LoggerFactory.getLogger(JpaFrameworkProvider.class);
+    private final Logger logger = InternalLoggerBinder.getLogger(JpaFrameworkProvider.class);
 
     @Override
     public void provide(@Nullable DynamicJarConfiguration configuration) throws DynamicJarException {

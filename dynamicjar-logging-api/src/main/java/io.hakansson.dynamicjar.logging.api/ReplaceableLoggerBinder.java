@@ -1,5 +1,7 @@
 package io.hakansson.dynamicjar.logging.api;
 
+import org.slf4j.ILoggerFactory;
+
 /**
  * dynamicjar
  * <p>
@@ -8,5 +10,5 @@ package io.hakansson.dynamicjar.logging.api;
  */
 public interface ReplaceableLoggerBinder {
     void register(CrappyLoggerFactory.CrappyLogger logger);
-    void notifyLoggingInitialized();
+    void notifyLoggingInitialized(ILoggerFactory loggerFactory);
 }

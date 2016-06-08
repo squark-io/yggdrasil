@@ -6,10 +6,10 @@ import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.core.api.util.FrameworkProviderComparator;
 import io.hakansson.dynamicjar.core.api.util.FrameworkProviderUtil;
 import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.collections4.IteratorUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.util.*;
  */
 public class FrameworkProviderService {
 
-    private static final Logger logger = LoggerFactory.getLogger(FrameworkProviderService.class);
+    private static final Logger logger = InternalLoggerBinder.getLogger(FrameworkProviderService.class);
 
     @SuppressWarnings("unused")
     private static void loadProviders(byte[] configurationAsBytes) throws DynamicJarException {

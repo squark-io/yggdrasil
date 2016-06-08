@@ -3,9 +3,9 @@ package io.hakansson.dynamicjar.core.api.logging;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
-import io.hakansson.dynamicjar.logging.api.InternalLogger;
-import io.hakansson.dynamicjar.logging.api.LogLevel;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.net.URL;
 import java.util.ServiceLoader;
@@ -16,21 +16,23 @@ import java.util.ServiceLoader;
  */
 public class LogHelper {
 
-    private static InternalLogger logger = InternalLogger.getLogger(LogHelper.class);
+    private static Logger logger = InternalLoggerBinder.getLogger(LogHelper.class);
 
     @SuppressWarnings("unused")
-    public static void initiateLogging(byte[] configurationBytes, Object classLoader, @Nullable URL jarWithConfig)
-        throws DynamicJarException {
+    public static void initiateLogging(byte[] configurationBytes, Object classLoader, @Nullable URL jarWithConfig) throws
+            DynamicJarException
+    {
 
         DynamicJarConfiguration configuration = ConfigurationSerializer.deserializeConfig(configurationBytes);
         initiateLogging(configuration, (ClassLoader) classLoader, jarWithConfig, true);
     }
 
     public static void initiateLogging(@Nullable DynamicJarConfiguration configuration, ClassLoader classLoader,
-        @Nullable URL jarWithConfig, boolean internalLogging) throws DynamicJarException {
+                                       @Nullable URL jarWithConfig, boolean internalLogging) throws DynamicJarException
+    {
 
         if (internalLogging) {
-            logger.log(LogLevel.INFO, "Initiating logging...");
+            logger.info("Initiating logging...");
         }
 
         ServiceLoader<LoggingModule> loggingModules = ServiceLoader.load(LoggingModule.class, classLoader);
@@ -47,11 +49,10 @@ public class LogHelper {
 
         if (internalLogging) {
             if (loggingModule != null) {
-                logger.log(LogLevel.INFO, "Initiated logging using " + loggingModule.getClass().getSimpleName());
+                logger.info("Initiated logging using " + loggingModule.getClass().getSimpleName());
             } else {
-                logger.log(LogLevel.INFO, "No logging module found. Using console logging.");
+                logger.info("No logging module found. Using console logging.");
             }
         }
-        InternalLogger.setLoggingInitialized(true);
     }
 }

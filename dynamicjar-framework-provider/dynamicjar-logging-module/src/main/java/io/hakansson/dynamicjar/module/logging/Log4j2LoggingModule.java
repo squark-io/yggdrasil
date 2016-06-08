@@ -11,7 +11,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.slf4j.Log4jLoggerFactory;
 import org.jetbrains.annotations.Nullable;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,5 +88,6 @@ public class Log4j2LoggingModule implements LoggingModule {
                 throw new DependencyResolutionException(e);
             }
         }
+        InternalLoggerBinder.getSingleton().notifyLoggingInitialized(new Log4jLoggerFactory());
     }
 }

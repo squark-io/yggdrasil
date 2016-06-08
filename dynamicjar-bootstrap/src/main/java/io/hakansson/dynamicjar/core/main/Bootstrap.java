@@ -5,9 +5,9 @@ import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.exception.NestedJarClassloaderException;
 import io.hakansson.dynamicjar.core.api.util.LibHelper;
 import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
-import io.hakansson.dynamicjar.logging.api.InternalLogger;
-import io.hakansson.dynamicjar.logging.api.LogLevel;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
+import org.slf4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -18,12 +18,12 @@ import java.util.Arrays;
  */
 public class Bootstrap {
 
-    private static InternalLogger logger = InternalLogger.getLogger(Bootstrap.class);
+    private static Logger logger = InternalLoggerBinder.getLogger(Bootstrap.class);
 
     public static void main(String[] args) {
         //Run main in correct classloader
         try {
-            logger.log(LogLevel.INFO, "Bootstrapping DynamicJar");
+            logger.info("Bootstrapping DynamicJar");
             NestedJarClassLoader coreClassLoader = new NestedJarClassLoader(
                     LibHelper.getLibs(Constants.DYNAMICJAR_RUNTIME_LIB_PATH), null, true);
             LibHelper.copyResourcesIntoClassLoader(coreClassLoader, "META-INF/",
@@ -37,7 +37,7 @@ public class Bootstrap {
             }
 
         } catch (DynamicJarException e) {
-            logger.log(LogLevel.ERROR, e);
+            logger.error(null, e);
         }
 
     }

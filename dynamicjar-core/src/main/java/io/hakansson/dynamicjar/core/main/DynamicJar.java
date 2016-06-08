@@ -5,17 +5,17 @@ import com.google.gson.JsonParseException;
 import io.hakansson.dynamicjar.core.api.Constants;
 import io.hakansson.dynamicjar.core.api.FrameworkProviderService;
 import io.hakansson.dynamicjar.core.api.exception.*;
+import io.hakansson.dynamicjar.core.api.logging.LogHelper;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.core.api.util.LibHelper;
-import io.hakansson.dynamicjar.core.api.logging.LogHelper;
 import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
-import io.hakansson.dynamicjar.logging.api.InternalLogger;
-import io.hakansson.dynamicjar.logging.api.LogLevel;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarURLStreamHandler;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 
@@ -41,7 +41,7 @@ import java.util.jar.JarFile;
  */
 public final class DynamicJar {
 
-    private static InternalLogger logger = InternalLogger.getLogger(DynamicJar.class);
+    private static Logger logger = InternalLoggerBinder.getLogger(DynamicJar.class);
 
     static { //runs when the main class is loaded.
         //This is necessary for some modules when not using Log4J2:
@@ -50,7 +50,7 @@ public final class DynamicJar {
 
     @SuppressWarnings("unused")
     static void internalMain(String[] args) {
-        logger.log(LogLevel.INFO, "Initiating DynamicJar");
+        logger.info("Initiating DynamicJar");
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             LogHelper.initiateLogging(null, classLoader, null, false);
@@ -58,7 +58,7 @@ public final class DynamicJar {
             NestedJarClassLoader isolatedClassLoader = initiate(classLoader, configuration);
             loadMainClass(isolatedClassLoader, configuration, args);
         } catch (DynamicJarException e) {
-            logger.log(LogLevel.ERROR, e);
+            logger.error(null, e);
         }
     }
 
@@ -70,7 +70,7 @@ public final class DynamicJar {
         if (inputStream == null) {
             inputStream = DynamicJar.class.getResourceAsStream(Constants.JSON_PROPERTIES_FILE);
             if (inputStream != null) {
-                logger.log(LogLevel.INFO, "Found JSON configuration");
+                logger.info("Found JSON configuration");
                 Gson gson = new Gson();
                 try {
                     dynamicJarConfiguration = gson.fromJson(new InputStreamReader(inputStream), DynamicJarConfiguration.class);
@@ -79,7 +79,7 @@ public final class DynamicJar {
                 }
             }
         } else {
-            logger.log(LogLevel.INFO, "Found YAML configuration");
+            logger.info("Found YAML configuration");
             Yaml yaml = new Yaml();
             try {
                 dynamicJarConfiguration = yaml.loadAs(inputStream, DynamicJarConfiguration.class);
@@ -103,11 +103,11 @@ public final class DynamicJar {
     {
         //Load main class:
         if (StringUtils.isNotEmpty(configuration.getMainClass())) {
-            logger.log(LogLevel.DEBUG, "Loading main class " + configuration.getMainClass());
+            logger.debug("Loading main class " + configuration.getMainClass());
             try {
                 Class<?> mainClass = Class.forName(configuration.getMainClass(), true, forClassLoader);
                 ReflectionUtil.invokeMethod("main", mainClass, null, new Object[]{args}, null);
-                logger.log(LogLevel.DEBUG, "Main class loaded");
+                logger.debug("Main class loaded");
             } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 throw new MainClassLoadException(e);
             }
@@ -158,7 +158,7 @@ public final class DynamicJar {
                 loadedLibs);
 
         FrameworkProviderService.loadProviders(isolatedClassLoader, configuration);
-        logger.log(LogLevel.INFO, "DynamicJar initiated");
+        logger.info("DynamicJar initiated");
         return isolatedClassLoader;
     }
 
