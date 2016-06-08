@@ -50,7 +50,7 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public String getName() {
             if (delegate != null) {
-                return delegate.
+                return delegate.getName();
             }
             return name;
         }
@@ -58,7 +58,7 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public boolean isTraceEnabled() {
             if (delegate != null) {
-                return delegate.
+                return delegate.isTraceEnabled();
             }
             return (logLevel.intLevel() >= LogLevel.TRACE.intLevel());
         }
@@ -66,7 +66,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void trace(String msg) {
             if (delegate != null) {
-                return delegate.
+                delegate.trace(msg);
+                return;
             }
             log(LogLevel.TRACE, msg, null);
         }
@@ -74,7 +75,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void trace(String format, Object arg) {
             if (delegate != null) {
-                return delegate.
+                delegate.trace(format, arg);
+                return;
             }
             log(LogLevel.TRACE, String.format(format, arg), null);
         }
@@ -82,7 +84,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void trace(String format, Object arg1, Object arg2) {
             if (delegate != null) {
-                return delegate.
+                delegate.trace(format, arg1, arg2);
+                return;
             }
             log(LogLevel.TRACE, String.format(format, arg1, arg2), null);
         }
@@ -90,7 +93,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void trace(String format, Object... arguments) {
             if (delegate != null) {
-                return delegate.
+                delegate.trace(format, arguments);
+                return;
             }
             log(LogLevel.TRACE, String.format(format, arguments), null);
         }
@@ -98,7 +102,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void trace(String msg, Throwable t) {
             if (delegate != null) {
-                return delegate.
+                delegate.trace(msg, t);
+                return;
             }
             log(LogLevel.TRACE, null, t);
         }
@@ -106,7 +111,7 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public boolean isTraceEnabled(Marker marker) {
             if (delegate != null) {
-                return delegate.
+                return delegate.isTraceEnabled(marker);
             }
             return isTraceEnabled();
         }
@@ -114,7 +119,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void trace(Marker marker, String msg) {
             if (delegate != null) {
-                return delegate.
+                delegate.trace(marker, msg);
+                return;
             }
             trace(msg);
         }
@@ -122,7 +128,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void trace(Marker marker, String format, Object arg) {
             if (delegate != null) {
-                return delegate.
+                delegate.trace(marker, format, arg);
+                return;
             }
             trace(format, arg);
         }
@@ -130,7 +137,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void trace(Marker marker, String format, Object arg1, Object arg2) {
             if (delegate != null) {
-                return delegate.
+                delegate.trace(marker, format, arg1, arg2);
+                return;
             }
             trace(format, arg1, arg2);
         }
@@ -138,7 +146,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void trace(Marker marker, String format, Object... argArray) {
             if (delegate != null) {
-                return delegate.
+                delegate.trace(marker, format, argArray);
+                return;
             }
             trace(format, argArray);
         }
@@ -146,7 +155,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void trace(Marker marker, String msg, Throwable t) {
             if (delegate != null) {
-                return delegate.
+                delegate.trace(marker, msg, t);
+                return;
             }
             trace(msg, t);
         }
@@ -154,7 +164,7 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public boolean isDebugEnabled() {
             if (delegate != null) {
-                return delegate.
+                return delegate.isDebugEnabled();
             }
             return (logLevel.intLevel() >= LogLevel.DEBUG.intLevel());
         }
@@ -162,7 +172,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void debug(String msg) {
             if (delegate != null) {
-                return delegate.
+                delegate.debug(msg);
+                return;
             }
             log(LogLevel.DEBUG, msg, null);
         }
@@ -170,7 +181,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void debug(String format, Object arg) {
             if (delegate != null) {
-                return delegate.
+                delegate.debug(format, arg);
+                return;
             }
             log(LogLevel.DEBUG, String.format(format, arg), null);
         }
@@ -178,7 +190,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void debug(String format, Object arg1, Object arg2) {
             if (delegate != null) {
-                return delegate.
+                delegate.debug(format, arg1, arg2);
+                return;
             }
             log(LogLevel.DEBUG, String.format(format, arg1, arg2), null);
         }
@@ -186,7 +199,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void debug(String format, Object... arguments) {
             if (delegate != null) {
-                return delegate.
+                delegate.debug(format, arguments);
+                return;
             }
             log(LogLevel.DEBUG, String.format(format, arguments), null);
         }
@@ -194,7 +208,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void debug(String msg, Throwable t) {
             if (delegate != null) {
-                return delegate.
+                delegate.debug(msg, t);
+                return;
             }
             log(LogLevel.DEBUG, msg, t);
         }
@@ -202,7 +217,7 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public boolean isDebugEnabled(Marker marker) {
             if (delegate != null) {
-                return delegate.
+                return delegate.isDebugEnabled(marker);
             }
             return isDebugEnabled();
         }
@@ -210,7 +225,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void debug(Marker marker, String msg) {
             if (delegate != null) {
-                return delegate.
+                delegate.debug(marker, msg);
+                return;
             }
             debug(msg);
         }
@@ -218,7 +234,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void debug(Marker marker, String format, Object arg) {
             if (delegate != null) {
-                return delegate.
+                delegate.debug(marker, format, arg);
+                return;
             }
             debug(format, arg);
         }
@@ -226,7 +243,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void debug(Marker marker, String format, Object arg1, Object arg2) {
             if (delegate != null) {
-                return delegate.
+                delegate.debug(marker, format, arg1, arg2);
+                return;
             }
             debug(format, arg1, arg2);
         }
@@ -234,7 +252,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void debug(Marker marker, String format, Object... arguments) {
             if (delegate != null) {
-                return delegate.
+                delegate.debug(marker, format, arguments);
+                return;
             }
             debug(format, arguments);
         }
@@ -242,7 +261,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void debug(Marker marker, String msg, Throwable t) {
             if (delegate != null) {
-                return delegate.
+                delegate.debug(marker, msg, t);
+                return;
             }
             debug(msg, t);
         }
@@ -250,7 +270,7 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public boolean isInfoEnabled() {
             if (delegate != null) {
-                return delegate.
+                return delegate.isInfoEnabled();
             }
             return (logLevel.intLevel() >= LogLevel.INFO.intLevel());
         }
@@ -258,7 +278,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void info(String msg) {
             if (delegate != null) {
-                return delegate.
+                delegate.info(msg);
+                return;
             }
             log(LogLevel.INFO, msg, null);
         }
@@ -266,7 +287,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void info(String format, Object arg) {
             if (delegate != null) {
-                return delegate.
+                delegate.info(format, arg);
+                return;
             }
             log(LogLevel.INFO, String.format(format, arg), null);
         }
@@ -274,7 +296,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void info(String format, Object arg1, Object arg2) {
             if (delegate != null) {
-                return delegate.
+                delegate.info(format, arg1, arg2);
+                return;
             }
             log(LogLevel.INFO, String.format(format, arg1, arg2), null);
         }
@@ -282,7 +305,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void info(String format, Object... arguments) {
             if (delegate != null) {
-                return delegate.
+                delegate.info(format, arguments);
+                return;
             }
             log(LogLevel.INFO, String.format(format, arguments), null);
         }
@@ -290,7 +314,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void info(String msg, Throwable t) {
             if (delegate != null) {
-                return delegate.
+                delegate.info(msg, t);
+                return;
             }
             log(LogLevel.INFO, msg, t);
         }
@@ -298,7 +323,7 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public boolean isInfoEnabled(Marker marker) {
             if (delegate != null) {
-                return delegate.
+                return delegate.isInfoEnabled(marker);
             }
             return isInfoEnabled();
         }
@@ -306,7 +331,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void info(Marker marker, String msg) {
             if (delegate != null) {
-                return delegate.
+                delegate.info(marker, msg);
+                return;
             }
             info(msg);
         }
@@ -314,7 +340,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void info(Marker marker, String format, Object arg) {
             if (delegate != null) {
-                return delegate.
+                delegate.info(marker, format, arg);
+                return;
             }
             info(format, arg);
         }
@@ -322,7 +349,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void info(Marker marker, String format, Object arg1, Object arg2) {
             if (delegate != null) {
-                return delegate.
+                delegate.info(marker, format, arg1, arg2);
+                return;
             }
             info(format, arg1, arg2);
         }
@@ -330,7 +358,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void info(Marker marker, String format, Object... arguments) {
             if (delegate != null) {
-                return delegate.
+                delegate.info(marker, format, arguments);
+                return;
             }
             info(format, arguments);
         }
@@ -338,7 +367,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void info(Marker marker, String msg, Throwable t) {
             if (delegate != null) {
-                return delegate.
+                delegate.info(marker, msg, t);
+                return;
             }
             info(msg, t);
         }
@@ -346,7 +376,7 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public boolean isWarnEnabled() {
             if (delegate != null) {
-                return delegate.
+                return delegate.isWarnEnabled();
             }
             return (logLevel.intLevel() >= LogLevel.WARN.intLevel());
         }
@@ -354,7 +384,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void warn(String msg) {
             if (delegate != null) {
-                return delegate.
+                delegate.warn(msg);
+                return;
             }
             log(LogLevel.WARN, msg, null);
         }
@@ -362,7 +393,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void warn(String format, Object arg) {
             if (delegate != null) {
-                return delegate.
+                delegate.warn(format, arg);
+                return;
             }
             log(LogLevel.WARN, String.format(format, arg), null);
         }
@@ -370,7 +402,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void warn(String format, Object... arguments) {
             if (delegate != null) {
-                return delegate.
+                delegate.warn(format, arguments);
+                return;
             }
             log(LogLevel.WARN, String.format(format, arguments), null);
         }
@@ -378,7 +411,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void warn(String format, Object arg1, Object arg2) {
             if (delegate != null) {
-                return delegate.
+                delegate.warn(format, arg1, arg2);
+                return;
             }
             log(LogLevel.WARN, String.format(format, arg1, arg2), null);
         }
@@ -386,7 +420,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void warn(String msg, Throwable t) {
             if (delegate != null) {
-                return delegate.
+                delegate.warn(msg, t);
+                return;
             }
             log(LogLevel.WARN, msg, t);
         }
@@ -394,7 +429,7 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public boolean isWarnEnabled(Marker marker) {
             if (delegate != null) {
-                return delegate.
+                return delegate.isWarnEnabled(marker);
             }
             return isWarnEnabled();
         }
@@ -402,7 +437,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void warn(Marker marker, String msg) {
             if (delegate != null) {
-                return delegate.
+                delegate.warn(marker, msg);
+                return;
             }
             warn(msg);
         }
@@ -410,7 +446,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void warn(Marker marker, String format, Object arg) {
             if (delegate != null) {
-                return delegate.
+                delegate.warn(marker, format, arg);
+                return;
             }
             warn(format, arg);
         }
@@ -418,7 +455,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void warn(Marker marker, String format, Object arg1, Object arg2) {
             if (delegate != null) {
-                return delegate.
+                delegate.warn(marker, format, arg1, arg2);
+                return;
             }
             warn(format, arg1, arg2);
         }
@@ -426,7 +464,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void warn(Marker marker, String format, Object... arguments) {
             if (delegate != null) {
-                return delegate.
+                delegate.warn(marker, format, arguments);
+                return;
             }
             warn(format, arguments);
         }
@@ -434,7 +473,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void warn(Marker marker, String msg, Throwable t) {
             if (delegate != null) {
-                return delegate.
+                delegate.warn(marker, msg, t);
+                return;
             }
             warn(msg, t);
         }
@@ -442,7 +482,7 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public boolean isErrorEnabled() {
             if (delegate != null) {
-                return delegate.
+                return delegate.isErrorEnabled();
             }
             return (logLevel.intLevel() >= LogLevel.ERROR.intLevel());
         }
@@ -450,7 +490,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void error(String msg) {
             if (delegate != null) {
-                return delegate.
+                delegate.error(msg);
+                return;
             }
             log(LogLevel.ERROR, msg, null);
         }
@@ -458,7 +499,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void error(String format, Object arg) {
             if (delegate != null) {
-                return delegate.
+                delegate.error(format, arg);
+                return;
             }
             log(LogLevel.ERROR, String.format(format, arg), null);
         }
@@ -466,7 +508,8 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
         @Override
         public void error(String format, Object arg1, Object arg2) {
             if (delegate != null) {
-                return delegate.error(format, arg1, arg2);
+                delegate.error(format, arg1, arg2);
+                return;
             }
             log(LogLevel.ERROR, String.format(format, arg1, arg2), null);
         }
@@ -543,7 +586,7 @@ public final class CrappyLoggerFactory implements ILoggerFactory {
             error(msg, t);
         }
 
-        public void log(LogLevel level, @Nullable String message, @Nullable Throwable throwable) {
+        private void log(LogLevel level, @Nullable String message, @Nullable Throwable throwable) {
             if (logLevel == null) {
                 logLevel = LogLevel.INFO;
                 if (System.getProperty(DYNAMICJAR_LOG_LEVEL) != null) {
