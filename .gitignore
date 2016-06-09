@@ -1,7 +1,4 @@
-.idea/workspace.xml
-.idea/tasks.xml
-datasources.xml
-dataSources.ids
-.idea/libraries/*.xml
+.idea/
+!.idea/codeStyleSettings.xml
 target/
 *.iml

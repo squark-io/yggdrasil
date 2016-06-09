@@ -23,4 +23,35 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <includes>
+                        <include>**/io/hakansson/**</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>fallback</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>fallback</classifier>
+                            <excludes/>
+                            <includes>
+                                <include>**/org/slf4j/impl/StaticLoggerBinder.class</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

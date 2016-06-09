@@ -9,6 +9,7 @@ import io.hakansson.dynamicjar.frameworkprovider.ResteasyFrameworkProvider;
 import io.hakansson.dynamicjar.frameworkprovider.WeldFrameworkProvider;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
+import org.testng.*;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
@@ -24,7 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
  * Copyright 2016
  */
 @Test
-public class RequestScopeIntegrationTest {
+public class RequestScopeIntegrationTest implements ITestClass {
 
     EntityManager entityManager;
 
@@ -54,6 +55,4 @@ public class RequestScopeIntegrationTest {
         entityManager.close();
         given().contentType(ContentType.JSON).port(8080).get("/").then().assertThat().body("testColumn", equalTo("test value"));
     }
-
-
 }

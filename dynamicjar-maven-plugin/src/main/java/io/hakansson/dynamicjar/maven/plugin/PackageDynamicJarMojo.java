@@ -42,6 +42,7 @@ import org.eclipse.aether.util.graph.selector.AndDependencySelector;
 import org.eclipse.aether.util.graph.selector.ExclusionDependencySelector;
 import org.eclipse.aether.util.graph.selector.OptionalDependencySelector;
 import org.eclipse.aether.util.graph.selector.ScopeDependencySelector;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -419,7 +420,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         List<org.apache.maven.model.Dependency> dependencies = project.getDependencies();
 
         for (org.apache.maven.model.Dependency dependency : dependencies) {
-            addDependency(dependency, jarOutputStream, true, false, Constants.LIB_PATH);
+            addDependency(dependency, jarOutputStream, true, false, Constants.LIB_PATH, null);
         }
     }
 
@@ -448,13 +449,13 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     }
 
     private DependencyNode addDependency(org.apache.maven.model.Dependency dependency,
-        JarOutputStream jarOutputStream, boolean asJar, boolean addAsRef, String pathIfJar)
+        JarOutputStream jarOutputStream, boolean asJar, boolean addAsRef, String pathIfJar, @Nullable String jarOverrideName)
         throws MojoExecutionException {
         try {
             DependencyNode node = resolveDependency(dependency);
 
             if (asJar) {
-                addNodeAsJar(node, jarOutputStream, addAsRef, pathIfJar);
+                addNodeAsJar(node, jarOutputStream, addAsRef, pathIfJar, jarOverrideName);
             } else {
                 addNodeAsClasses(node, jarOutputStream);
             }
@@ -467,14 +468,16 @@ public class PackageDynamicJarMojo extends AbstractMojo {
 
     private void addSelfDependencies(JarOutputStream targetJarOutputStream)
         throws MojoFailureException, MojoExecutionException {
-        addDependency(getApiDependency(), targetJarOutputStream, true, false, Constants.LIB_PATH);
+        addDependency(getApiDependency(), targetJarOutputStream, true, false, Constants.LIB_PATH, null);
         addDependency(getCoreDependency(), targetJarOutputStream, true, true,
-            Constants.DYNAMICJAR_RUNTIME_LIB_PATH);
+            Constants.DYNAMICJAR_RUNTIME_LIB_PATH, null);
         addDependency(getDependencyResolutionProvider(), targetJarOutputStream, true, true,
-            Constants.DYNAMICJAR_RUNTIME_LIB_PATH);
+            Constants.DYNAMICJAR_RUNTIME_LIB_PATH, null);
         addDependency(getLoggingModule(), targetJarOutputStream, true, true,
-            Constants.DYNAMICJAR_RUNTIME_LIB_PATH);
-        addDependency(getBootstrapDependency(), targetJarOutputStream, false, false, null);
+            Constants.DYNAMICJAR_RUNTIME_LIB_PATH, null);
+        String fallbackName = Constants.DYNAMIC_JAR_LOGGING_API_ARTIFACT_ID + "-fallback.jar";
+        addDependency(getLoggingFallback(), targetJarOutputStream, true, false, Constants.DYNAMICJAR_RUNTIME_OPTIONAL_LIB_PATH, fallbackName);
+        addDependency(getBootstrapDependency(), targetJarOutputStream, false, false, null, null);
     }
 
     private org.apache.maven.model.Dependency getBootstrapDependency() {
@@ -540,6 +543,18 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         dependencyResolutionProviderDependency.setVersion(version);
         dependencyResolutionProviderDependency.setScope(Scopes.COMPILE);
         return dependencyResolutionProviderDependency;
+    }
+
+    private org.apache.maven.model.Dependency getLoggingFallback() {
+        org.apache.maven.model.Dependency loggingFallbackDependency =
+                new org.apache.maven.model.Dependency();
+        String dynamicJarVersion = pluginDescriptor.getVersion();
+        loggingFallbackDependency.setGroupId(Constants.DYNAMIC_JAR_LOGGING_API_GROUP_ID);
+        loggingFallbackDependency.setArtifactId(Constants.DYNAMIC_JAR_LOGGING_API_ARTIFACT_ID);
+        loggingFallbackDependency.setClassifier("fallback");
+        loggingFallbackDependency.setVersion(dynamicJarVersion);
+        loggingFallbackDependency.setScope(Scopes.COMPILE);
+        return loggingFallbackDependency;
     }
 
     private org.apache.maven.model.Dependency getLoggingModule() {
@@ -633,7 +648,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     }
 
     private void addNodeAsJar(DependencyNode node, JarOutputStream targetJarOutputStream,
-        boolean addAsRef, String path) throws MojoExecutionException {
+        boolean addAsRef, String path, String jarOverrideName) throws MojoExecutionException {
         if (!Scopes.COMPILE.equals(node.getDependency().getScope()) ||
             node.getDependency().getOptional()) {
             return;
@@ -643,7 +658,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         }
         getLog().debug("Including dependency jar " + node.getArtifact().getFile().getPath());
         File file = node.getArtifact().getFile();
-        String target = path + file.getName();
+        String target = path + (jarOverrideName != null ? jarOverrideName : file.getName());
         if (addAsRef && addedJars.containsKey(file.getName())) {
             String refName = target.replace(".jar", ".ref");
             if (addedResources.contains(refName)) {
@@ -664,7 +679,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
             addedJars.put(file.getName(), new AddedTarget(path, file.getName()));
         }
         for (DependencyNode child : node.getChildren()) {
-            addNodeAsJar(child, targetJarOutputStream, addAsRef, path);
+            addNodeAsJar(child, targetJarOutputStream, addAsRef, path, null);
         }
     }
 

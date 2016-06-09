@@ -16,7 +16,7 @@ import java.util.Date;
  * Created by Erik Håkansson on 2016-06-07.
  * Copyright 2016
  */
-final class CrappyLoggerFactory implements ILoggerFactory {
+public final class CrappyLoggerFactory implements ILoggerFactory {
 
     private static final String DYNAMICJAR_LOG_LEVEL = "dynamicjar.logLevel";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
