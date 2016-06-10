@@ -27,7 +27,8 @@ public class Bootstrap {
             NestedJarClassLoader coreClassLoader = new NestedJarClassLoader(
                     LibHelper.getLibs(Constants.DYNAMICJAR_RUNTIME_LIB_PATH), null, true);
             LibHelper.copyResourcesIntoClassLoader(coreClassLoader, "META-INF/",
-                    Arrays.asList(Constants.LIB_PATH, Constants.DYNAMICJAR_RUNTIME_LIB_PATH));
+                    Arrays.asList(Constants.LIB_PATH, Constants.DYNAMICJAR_RUNTIME_LIB_PATH,
+                            Constants.DYNAMICJAR_RUNTIME_OPTIONAL_LIB_PATH));
             Thread.currentThread().setContextClassLoader(coreClassLoader);
             try {
                 ReflectionUtil.invokeMethod("internalMain",

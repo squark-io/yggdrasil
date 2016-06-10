@@ -22,11 +22,15 @@
         <version.commons-lang>3.4</version.commons-lang>
         <version.guava>19.0</version.guava>
         <version.gson>2.6.1</version.gson>
+        <version.h2>1.4.192</version.h2>
+        <version.hibernate>5.0.0.Final</version.hibernate>
+        <version.hibernate-jpa-2.1-api>1.0.0.Final</version.hibernate-jpa-2.1-api>
         <version.intellij.annotations>12.0</version.intellij.annotations>
         <version.jacoco.plugin>0.7.6.201602180812</version.jacoco.plugin>
         <version.jboss.servlet.api>1.0.0.Final</version.jboss.servlet.api>
         <version.jboss.jaxrs.api>1.0.1.Alpha1-jbosswscxf</version.jboss.jaxrs.api>
         <version.log4j>2.5</version.log4j>
+        <version.junit>4.12</version.junit>
         <version.maven>3.3.9</version.maven>
         <version.maven.clean.plugin>3.0.0</version.maven.clean.plugin>
         <version.maven.compiler.plugin>3.5.1</version.maven.compiler.plugin>
@@ -46,6 +50,8 @@
         <version.testng>6.9.10</version.testng>
         <version.undertow>1.3.0.Beta1</version.undertow>
         <version.weld>2.3.4.Final</version.weld>
+        <version.weld-api>2.3.SP2</version.weld-api>
+        <version.weld-spi>2.3.SP2</version.weld-spi>
         <version.xnio>3.3.1.Final</version.xnio>
     </properties>
 
@@ -118,6 +124,12 @@
             <dependency>
                 <groupId>io.hakansson.dynamicjar</groupId>
                 <artifactId>dynamicjar-logging-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar</groupId>
+                <artifactId>dynamicjar-logging-api</artifactId>
+                <classifier>fallback</classifier>
                 <version>${project.version}</version>
             </dependency>
 
@@ -278,6 +290,21 @@
                 <version>${version.snakeyaml}</version>
             </dependency>
             <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${version.hibernate}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${version.hibernate}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.javax.persistence</groupId>
+                <artifactId>hibernate-jpa-2.1-api</artifactId>
+                <version>${version.hibernate-jpa-2.1-api}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.jboss.weld.se</groupId>
                 <artifactId>weld-se-core</artifactId>
                 <version>${version.weld}</version>
@@ -286,6 +313,16 @@
                 <groupId>org.jboss.weld.servlet</groupId>
                 <artifactId>weld-servlet-core</artifactId>
                 <version>${version.weld}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-api</artifactId>
+                <version>${version.weld-api}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.weld</groupId>
+                <artifactId>weld-spi</artifactId>
+                <version>${version.weld-spi}</version>
             </dependency>
             <dependency>
                 <groupId>javax.enterprise</groupId>
@@ -320,9 +357,21 @@
 
             <!-- TEST DEPENDENCIES -->
             <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${version.h2}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
                 <version>${version.testng}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -366,6 +415,11 @@
         </plugins>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>${version.maven.clean.plugin}</version>

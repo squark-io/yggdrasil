@@ -25,7 +25,7 @@ public class LibHelper {
 
     public static URL[] getLibs(String path) throws DynamicJarException {
         try {
-            if (!path.endsWith("/")) {
+            if (!path.endsWith(".jar") && !path.endsWith(".ref") && !path.endsWith("/")) {
                 path = path + "/";
             }
             Set<URL> libs = new HashSet<>();
@@ -59,7 +59,7 @@ public class LibHelper {
     }
 
     public static void copyResourcesIntoClassLoader(NestedJarClassLoader coreClassLoader, String path,
-                                                    List<String> blacklist) throws NestedJarClassloaderException
+            List<String> blacklist) throws NestedJarClassloaderException
     {
         try {
 
@@ -79,7 +79,7 @@ public class LibHelper {
                 for (String illegal : blacklist) {
                     if (entry.getName().startsWith(illegal)) {
                         skip = true;
-                        continue;
+                        break;
                     }
                 }
                 if (skip) continue;

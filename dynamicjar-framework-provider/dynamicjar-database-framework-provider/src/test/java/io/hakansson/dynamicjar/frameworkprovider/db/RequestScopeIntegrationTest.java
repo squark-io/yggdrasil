@@ -9,9 +9,8 @@ import io.hakansson.dynamicjar.frameworkprovider.ResteasyFrameworkProvider;
 import io.hakansson.dynamicjar.frameworkprovider.WeldFrameworkProvider;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
-import org.testng.*;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import javax.persistence.EntityManager;
 
@@ -24,18 +23,18 @@ import static org.hamcrest.Matchers.equalTo;
  * Created by Erik Håkansson on 2016-06-04.
  * Copyright 2016
  */
-@Test
-public class RequestScopeIntegrationTest implements ITestClass {
+public class RequestScopeIntegrationTest {
 
-    EntityManager entityManager;
+    private static EntityManager entityManager;
 
-    @BeforeSuite
-    public void setup() throws DynamicJarException {
+    @BeforeClass
+    public static void setup() throws DynamicJarException {
         System.setProperty(Constants.DYNAMICJAR_LOG_LEVEL, "DEBUG");
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "DEBUG");
         DynamicJarConfiguration configuration = new DynamicJarConfiguration();
-        LogHelper.initiateLogging(configuration, this.getClass().getClassLoader(), null, true);
+        LogHelper.initiateLogging(configuration, RequestScopeIntegrationTest.class.getClassLoader(), null, true);
         new JpaFrameworkProvider().provide(configuration);
+        System.setProperty("org.jboss.logging.provider", "slf4j");
         Weld weld = new Weld();
         weld.setClassLoader(WeldFrameworkProvider.class.getClassLoader());
         WeldContainer container = weld.initialize();

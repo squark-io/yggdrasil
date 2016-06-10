@@ -16,11 +16,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.util.IOUtil;
@@ -44,27 +40,11 @@ import org.eclipse.aether.util.graph.selector.OptionalDependencySelector;
 import org.eclipse.aether.util.graph.selector.ScopeDependencySelector;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.attribute.FileTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.jar.Attributes;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
+import java.util.jar.*;
 import java.util.stream.Collectors;
 
 /**
@@ -73,16 +53,14 @@ import java.util.stream.Collectors;
  * Created by Erik Håkansson on 2016-03-03.
  * Copyright 2016
  */
-@Mojo(name = "package-dynamicjar", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true,
-      requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
+@Mojo(name = "package-dynamicjar", defaultPhase = LifecyclePhase.PACKAGE, requiresProject = true, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class PackageDynamicJarMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${plugin}", readonly = true)
     private PluginDescriptor pluginDescriptor;
     @Parameter(property = "dynamicjar.classesDir", defaultValue = "classes")
     private String classesDir;
-    @Parameter(property = "dynamicjar.configFile",
-               defaultValue = "classes/META-INF/dynamicjar.json")
+    @Parameter(property = "dynamicjar.configFile", defaultValue = "classes/META-INF/dynamicjar.json")
     private String configFile;
     @Parameter(property = "dynamicjar.dependencyResolutionProvider", defaultValue = "maven")
     private String dependencyResolutionProviderString;
@@ -159,34 +137,30 @@ public class PackageDynamicJarMojo extends AbstractMojo {
             addSelfDependencies(targetJarOutputStream);
             targetJarOutputStream.close();
             logDuplicates();
-            mavenProjectHelper
-                .attachArtifact(project, project.getArtifact().getType(), "dynamicjar",
+            mavenProjectHelper.attachArtifact(project, project.getArtifact().getType(), "dynamicjar",
                     new File(outputDirectory + "/" + getTargetJarName()));
         } catch (IOException e) {
             throw new MojoExecutionException("Failed to create target jar", e);
         }
     }
 
-    private void addProjectArtifactAndConfig(JarOutputStream targetJarOutputStream, File configFile)
-        throws MojoExecutionException {
+    private void addProjectArtifactAndConfig(JarOutputStream targetJarOutputStream, File configFile) throws
+            MojoExecutionException
+    {
         File baseDir = new File(outputDirectory, classesDir);
         if (baseDir.exists()) {
             try {
                 File artifactFile;
                 if ((artifactFile = project.getArtifact().getFile()) == null) {
-                    throw new MojoExecutionException(
-                        "Could not find project artifact. Ran goal before package phase?");
+                    throw new MojoExecutionException("Could not find project artifact. Ran goal before package phase?");
                 }
                 String name = project.getArtifactId() + "-" + project.getVersion();
                 JarEntry localJarEntry = new JarEntry(Constants.LIB_PATH + name + "-classes.jar");
                 localJarEntry.setLastModifiedTime(FileTime.fromMillis(artifactFile.lastModified()));
-                addResource(new FileInputStream(artifactFile), localJarEntry,
-                    targetJarOutputStream);
+                addResource(new FileInputStream(artifactFile), localJarEntry, targetJarOutputStream);
                 JarEntry configFileEntry = new JarEntry("META-INF/" + configFile.getName());
-                configFileEntry
-                    .setLastModifiedTime(FileTime.fromMillis(artifactFile.lastModified()));
-                addResource(new FileInputStream(configFile), configFileEntry,
-                    targetJarOutputStream);
+                configFileEntry.setLastModifiedTime(FileTime.fromMillis(artifactFile.lastModified()));
+                addResource(new FileInputStream(configFile), configFileEntry, targetJarOutputStream);
             } catch (IOException e) {
                 throw new MojoExecutionException("Failed to build local dependency jar", e);
             }
@@ -194,8 +168,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     }
 
     private String getTargetJarName() {
-        return project.getArtifactId() + "-" + project.getVersion() + "-dynamicjar." +
-               project.getPackaging();
+        return project.getArtifactId() + "-" + project.getVersion() + "-dynamicjar." + project.getPackaging();
     }
 
     private JarOutputStream createTargetJar(Manifest manifest) throws IOException {
@@ -206,8 +179,9 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     /**
      * modified from http://stackoverflow.com/a/1281295/961395
      */
-    private void add(JarFile sourceJarFile, JarEntry sourceJarEntry,
-        JarOutputStream targetJarOutputStream, String sourceName) throws MojoExecutionException {
+    private void add(JarFile sourceJarFile, JarEntry sourceJarEntry, JarOutputStream targetJarOutputStream,
+            String sourceName) throws MojoExecutionException
+    {
         if (sourceJarEntry.isDirectory()) {
             addDirectory(sourceJarEntry.getName(), targetJarOutputStream);
         } else {
@@ -231,9 +205,8 @@ public class PackageDynamicJarMojo extends AbstractMojo {
             }
         }
 
-        getLog().warn(
-            "Some resources are contained in two or more JARs. This is usually safe put may cause" +
-            " undefined behaviour if different versions of resources are expected");
+        getLog().warn("Some resources are contained in two or more JARs. This is usually safe put may cause" +
+                " undefined behaviour if different versions of resources are expected");
         for (Collection<String> jarz : overlapping.keySet()) {
             List<String> jarzStrings = new LinkedList<>();
 
@@ -241,12 +214,10 @@ public class PackageDynamicJarMojo extends AbstractMojo {
                 jarzStrings.add(file);
             }
 
-            List<String> classes =
-                overlapping.get(jarz).stream().map(clazz -> clazz.replace(".class", ""))
-                    .collect(Collectors.toCollection(LinkedList::new));
+            List<String> classes = overlapping.get(jarz).stream().map(clazz -> clazz.replace(".class", "")).collect(
+                    Collectors.toCollection(LinkedList::new));
 
-            getLog().warn(Joiner.on(", ").join(jarzStrings) + " define " + classes.size() +
-                          " overlapping resource(s): ");
+            getLog().warn(Joiner.on(", ").join(jarzStrings) + " define " + classes.size() + " overlapping resource(s): ");
             int max = 10;
             for (int i = 0; i < Math.min(max, classes.size()); i++) {
                 getLog().warn("  - " + classes.get(i));
@@ -259,8 +230,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         }
     }
 
-    private void addResource(File file, JarOutputStream targetJarOutputStream, String targetName)
-        throws MojoExecutionException {
+    private void addResource(File file, JarOutputStream targetJarOutputStream, String targetName) throws MojoExecutionException {
         if (addedResources.contains(file.getName())) {
             return;
         }
@@ -274,8 +244,9 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         }
     }
 
-    private void addResource(JarFile sourceJarFile, JarEntry sourceJarEntry,
-        JarOutputStream targetJarOutputStream, String sourceName) throws MojoExecutionException {
+    private void addResource(JarFile sourceJarFile, JarEntry sourceJarEntry, JarOutputStream targetJarOutputStream,
+            String sourceName) throws MojoExecutionException
+    {
         String name = sourceJarEntry.getName();
         duplicates.put(name, sourceName);
         if (addedResources.contains(name)) {
@@ -290,21 +261,18 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         try (InputStream in = sourceJarFile.getInputStream(sourceJarEntry)) {
             addResource(in, targetJarEntry, targetJarOutputStream);
         } catch (IOException e) {
-            throw new MojoExecutionException("Failed to copy jar entry " + name + " from jar " +
-                                             sourceJarFile.getName(), e);
+            throw new MojoExecutionException("Failed to copy jar entry " + name + " from jar " + sourceJarFile.getName(), e);
         }
         addedResources.add(name);
     }
 
-    private void addResource(InputStream in, JarEntry targetJarEntry,
-        JarOutputStream targetJarOutputStream) throws IOException {
+    private void addResource(InputStream in, JarEntry targetJarEntry, JarOutputStream targetJarOutputStream) throws IOException {
         targetJarOutputStream.putNextEntry(targetJarEntry);
         IOUtil.copy(in, targetJarOutputStream);
         targetJarOutputStream.closeEntry();
     }
 
-    private void addDirectory(String name, JarOutputStream targetJarOutputStream)
-        throws MojoExecutionException {
+    private void addDirectory(String name, JarOutputStream targetJarOutputStream) throws MojoExecutionException {
         if (name.lastIndexOf('/') > 0) {
             String parent = name.substring(0, name.lastIndexOf('/'));
 
@@ -344,13 +312,10 @@ public class PackageDynamicJarMojo extends AbstractMojo {
             manifest = new Manifest();
             manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 
-            manifest.getMainAttributes()
-                .put(new Attributes.Name("Build-Jdk"), System.getProperty("java.version"));
+            manifest.getMainAttributes().put(new Attributes.Name("Build-Jdk"), System.getProperty("java.version"));
         }
-        manifest.getMainAttributes()
-            .put(Attributes.Name.MAIN_CLASS, Constants.DYNAMIC_JAR_BOOTSTRAP_CLASS_NAME);
-        manifest.getMainAttributes()
-            .put(new Attributes.Name("DynamicJar-Version"), pluginDescriptor.getVersion());
+        manifest.getMainAttributes().put(Attributes.Name.MAIN_CLASS, Constants.DYNAMIC_JAR_BOOTSTRAP_CLASS_NAME);
+        manifest.getMainAttributes().put(new Attributes.Name("DynamicJar-Version"), pluginDescriptor.getVersion());
         return manifest;
     }
 
@@ -360,12 +325,9 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         DynamicJarDependency dynamicJarDependency = getProjectProvidedDependencies();
         dynamicJarConfiguration.setDependencies(dynamicJarDependency.getChildDependencies());
         dynamicJarConfiguration.setDynamicJarVersion(pluginDescriptor.getVersion());
-        dynamicJarConfiguration
-            .setLoadTransitiveProvidedDependencies(loadTransitiveProvidedDependencies);
+        dynamicJarConfiguration.setLoadTransitiveProvidedDependencies(loadTransitiveProvidedDependencies);
 
-        String classesJar =
-            Constants.LIB_PATH + project.getArtifactId() + "-" + project.getVersion() +
-            "-classes.jar";
+        String classesJar = Constants.LIB_PATH + project.getArtifactId() + "-" + project.getVersion() + "-classes.jar";
         dynamicJarConfiguration.setClassesJar(classesJar);
 
         if (StringUtils.isNotEmpty(mainClass)) {
@@ -403,19 +365,18 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         if (providerConfigurations != null) {
             for (ProviderConfiguration providerConfiguration : providerConfigurations) {
                 if (providerConfiguration.getIdentifier() == null) {
-                    throw new MojoExecutionException(
-                        "ProviderConfiguration must supply identifier");
+                    throw new MojoExecutionException("ProviderConfiguration must supply identifier");
                 }
                 if (providerConfiguration.getProperties() == null) {
-                    throw new MojoExecutionException(
-                        "ProviderConfiguration must supply properties");
+                    throw new MojoExecutionException("ProviderConfiguration must supply properties");
                 }
             }
         }
     }
 
-    private void addCompileDependencies(JarOutputStream jarOutputStream)
-        throws MojoExecutionException, MojoFailureException, IOException {
+    private void addCompileDependencies(JarOutputStream jarOutputStream) throws MojoExecutionException, MojoFailureException,
+            IOException
+    {
 
         List<org.apache.maven.model.Dependency> dependencies = project.getDependencies();
 
@@ -424,17 +385,14 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         }
     }
 
-    private DependencyNode resolveDependency(org.apache.maven.model.Dependency dependency)
-        throws MojoExecutionException {
+    private DependencyNode resolveDependency(org.apache.maven.model.Dependency dependency) throws MojoExecutionException {
         CollectRequest collectRequest = new CollectRequest();
         collectRequest.setRoot(new Dependency(
-            new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
-                dependency.getClassifier(), null, dependency.getVersion(),
-                new DefaultArtifactType(dependency.getType())), dependency.getScope()));
+                new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(), dependency.getClassifier(), null,
+                        dependency.getVersion(), new DefaultArtifactType(dependency.getType())), dependency.getScope()));
         collectRequest.setRepositories(remoteRepositories);
         try {
-            CollectResult collectResult =
-                repositorySystem.collectDependencies(repositorySystemSession, collectRequest);
+            CollectResult collectResult = repositorySystem.collectDependencies(repositorySystemSession, collectRequest);
             DependencyNode node = collectResult.getRoot();
 
             DependencyRequest dependencyRequest = new DependencyRequest();
@@ -448,9 +406,9 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         }
     }
 
-    private DependencyNode addDependency(org.apache.maven.model.Dependency dependency,
-        JarOutputStream jarOutputStream, boolean asJar, boolean addAsRef, String pathIfJar, @Nullable String jarOverrideName)
-        throws MojoExecutionException {
+    private DependencyNode addDependency(org.apache.maven.model.Dependency dependency, JarOutputStream jarOutputStream,
+            boolean asJar, boolean addAsRef, String pathIfJar, @Nullable String jarOverrideName) throws MojoExecutionException
+    {
         try {
             DependencyNode node = resolveDependency(dependency);
 
@@ -466,17 +424,14 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         }
     }
 
-    private void addSelfDependencies(JarOutputStream targetJarOutputStream)
-        throws MojoFailureException, MojoExecutionException {
+    private void addSelfDependencies(JarOutputStream targetJarOutputStream) throws MojoFailureException, MojoExecutionException {
         addDependency(getApiDependency(), targetJarOutputStream, true, false, Constants.LIB_PATH, null);
-        addDependency(getCoreDependency(), targetJarOutputStream, true, true,
-            Constants.DYNAMICJAR_RUNTIME_LIB_PATH, null);
-        addDependency(getDependencyResolutionProvider(), targetJarOutputStream, true, true,
-            Constants.DYNAMICJAR_RUNTIME_LIB_PATH, null);
-        addDependency(getLoggingModule(), targetJarOutputStream, true, true,
-            Constants.DYNAMICJAR_RUNTIME_LIB_PATH, null);
+        addDependency(getCoreDependency(), targetJarOutputStream, true, true, Constants.DYNAMICJAR_RUNTIME_LIB_PATH, null);
+        addDependency(getDependencyResolutionProvider(), targetJarOutputStream, true, true, Constants.DYNAMICJAR_RUNTIME_LIB_PATH,
+                null);
         String fallbackName = Constants.DYNAMIC_JAR_LOGGING_API_ARTIFACT_ID + "-fallback.jar";
-        addDependency(getLoggingFallback(), targetJarOutputStream, true, false, Constants.DYNAMICJAR_RUNTIME_OPTIONAL_LIB_PATH, fallbackName);
+        addDependency(getLoggingFallback(), targetJarOutputStream, true, false, Constants.DYNAMICJAR_RUNTIME_OPTIONAL_LIB_PATH,
+                fallbackName);
         addDependency(getBootstrapDependency(), targetJarOutputStream, false, false, null, null);
     }
 
@@ -512,8 +467,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         return apiDependency;
     }
 
-    private org.apache.maven.model.Dependency getDependencyResolutionProvider()
-        throws MojoFailureException {
+    private org.apache.maven.model.Dependency getDependencyResolutionProvider() throws MojoFailureException {
         String groupId;
         String artifactId;
         String version;
@@ -527,17 +481,15 @@ public class PackageDynamicJarMojo extends AbstractMojo {
                 String[] descriptor = dependencyResolutionProviderString.split(":");
                 if (descriptor.length != 3) {
                     throw new MojoFailureException(
-                        "Bad format dependencyResolutionProvider. Expected " +
-                        "\"groupId:artifactId:version\". Got " +
-                        dependencyResolutionProviderString);
+                            "Bad format dependencyResolutionProvider. Expected " + "\"groupId:artifactId:version\". Got " +
+                                    dependencyResolutionProviderString);
                 }
                 groupId = descriptor[0];
                 artifactId = descriptor[1];
                 version = descriptor[2];
                 break;
         }
-        org.apache.maven.model.Dependency dependencyResolutionProviderDependency =
-            new org.apache.maven.model.Dependency();
+        org.apache.maven.model.Dependency dependencyResolutionProviderDependency = new org.apache.maven.model.Dependency();
         dependencyResolutionProviderDependency.setGroupId(groupId);
         dependencyResolutionProviderDependency.setArtifactId(artifactId);
         dependencyResolutionProviderDependency.setVersion(version);
@@ -546,8 +498,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     }
 
     private org.apache.maven.model.Dependency getLoggingFallback() {
-        org.apache.maven.model.Dependency loggingFallbackDependency =
-                new org.apache.maven.model.Dependency();
+        org.apache.maven.model.Dependency loggingFallbackDependency = new org.apache.maven.model.Dependency();
         String dynamicJarVersion = pluginDescriptor.getVersion();
         loggingFallbackDependency.setGroupId(Constants.DYNAMIC_JAR_LOGGING_API_GROUP_ID);
         loggingFallbackDependency.setArtifactId(Constants.DYNAMIC_JAR_LOGGING_API_ARTIFACT_ID);
@@ -558,8 +509,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
     }
 
     private org.apache.maven.model.Dependency getLoggingModule() {
-        org.apache.maven.model.Dependency loggingModuleDependency =
-            new org.apache.maven.model.Dependency();
+        org.apache.maven.model.Dependency loggingModuleDependency = new org.apache.maven.model.Dependency();
         String dynamicJarVersion = pluginDescriptor.getVersion();
         loggingModuleDependency.setGroupId(Constants.DYNAMIC_JAR_LOGGING_MODULE_GROUP_ID);
         loggingModuleDependency.setArtifactId(Constants.DYNAMIC_JAR_LOGGING_MODULE_ARTIFACT_ID);
@@ -575,25 +525,21 @@ public class PackageDynamicJarMojo extends AbstractMojo {
             exclusions = new ArrayList<>();
         }
 
-        DynamicJarDependency rootDependency =
-            new DynamicJarDependency(project.getGroupId(), project.getArtifactId(), null,
+        DynamicJarDependency rootDependency = new DynamicJarDependency(project.getGroupId(), project.getArtifactId(), null,
                 project.getVersion(), null);
 
         Map<Artifact, String> dependencyArtifacts = new ConcurrentHashMap<>();
         for (org.apache.maven.model.Dependency dependency : mavenDependencies) {
-            if (Scopes.PROVIDED.equals(dependency.getScope()) &&
-                !Boolean.parseBoolean(dependency.getOptional())) {
+            if (Scopes.PROVIDED.equals(dependency.getScope()) && !Boolean.parseBoolean(dependency.getOptional())) {
                 dependencyArtifacts.put(
-                    new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
-                        dependency.getClassifier(), null, dependency.getVersion(),
-                        new DefaultArtifactType(dependency.getType())), dependency.getScope());
+                        new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(), dependency.getClassifier(), null,
+                                dependency.getVersion(), new DefaultArtifactType(dependency.getType())), dependency.getScope());
             }
         }
-        DefaultRepositorySystemSession repositorySystemSession =
-            new DefaultRepositorySystemSession(this.repositorySystemSession);
+        DefaultRepositorySystemSession repositorySystemSession = new DefaultRepositorySystemSession(this.repositorySystemSession);
         DependencySelector depFilter = new AndDependencySelector(
-            new ScopeDependencySelector(Scopes.TEST, Scopes.COMPILE, Scopes.RUNTIME, Scopes.SYSTEM),
-            new OptionalDependencySelector(), new ExclusionDependencySelector());
+                new ScopeDependencySelector(Scopes.TEST, Scopes.COMPILE, Scopes.RUNTIME, Scopes.SYSTEM),
+                new OptionalDependencySelector(), new ExclusionDependencySelector());
         repositorySystemSession.setDependencySelector(depFilter);
         for (Map.Entry<Artifact, String> entry : dependencyArtifacts.entrySet()) {
             CollectRequest collectRequest = new CollectRequest();
@@ -601,12 +547,10 @@ public class PackageDynamicJarMojo extends AbstractMojo {
             collectRequest.setRepositories(remoteRepositories);
             DynamicJarDependency dynamicJarDependency;
             try {
-                CollectResult collectResult =
-                    repositorySystem.collectDependencies(repositorySystemSession, collectRequest);
+                CollectResult collectResult = repositorySystem.collectDependencies(repositorySystemSession, collectRequest);
                 DependencyNode node = collectResult.getRoot();
 
-                dynamicJarDependency =
-                    DynamicJarDependencyMavenUtil.fromDependencyNode(node, exclusions);
+                dynamicJarDependency = DynamicJarDependencyMavenUtil.fromDependencyNode(node, exclusions);
 
             } catch (Exception e) {
                 getLog().error(e);
@@ -618,26 +562,23 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         return rootDependency;
     }
 
-    private void addNodeAsClasses(DependencyNode node, JarOutputStream targetJarOutputStream)
-        throws MojoExecutionException {
+    private void addNodeAsClasses(DependencyNode node, JarOutputStream targetJarOutputStream) throws MojoExecutionException {
         JarFile jar;
-        if (!Scopes.COMPILE.equals(node.getDependency().getScope()) ||
-            node.getDependency().getOptional()) {
+        if (!Scopes.COMPILE.equals(node.getDependency().getScope()) || node.getDependency().getOptional()) {
             return;
         }
         try {
             jar = new JarFile(node.getArtifact().getFile());
         } catch (IOException e) {
-            throw new MojoExecutionException(
-                "Failed to get jar " + node.getArtifact().getFile().getPath(), e);
+            throw new MojoExecutionException("Failed to get jar " + node.getArtifact().getFile().getPath(), e);
         }
         Enumeration enumEntries = jar.entries();
         while (enumEntries.hasMoreElements()) {
             JarEntry sourceEntry = (JarEntry) enumEntries.nextElement();
             String name = sourceEntry.getName();
-            if (name.startsWith("java/") || name.startsWith("com/sun/") ||
-                name.startsWith("javax/") || "META-INF/INDEX.LIST".equals(name) ||
-                "META-INF/MANIFEST.MF".equals(name)) {
+            if (name.startsWith("java/") || name.startsWith("com/sun/") || name.startsWith("javax/") ||
+                    "META-INF/INDEX.LIST".equals(name) || "META-INF/MANIFEST.MF".equals(name))
+            {
                 continue;
             }
             add(jar, sourceEntry, targetJarOutputStream, node.getArtifact().getFile().getName());
@@ -647,10 +588,10 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         }
     }
 
-    private void addNodeAsJar(DependencyNode node, JarOutputStream targetJarOutputStream,
-        boolean addAsRef, String path, String jarOverrideName) throws MojoExecutionException {
-        if (!Scopes.COMPILE.equals(node.getDependency().getScope()) ||
-            node.getDependency().getOptional()) {
+    private void addNodeAsJar(DependencyNode node, JarOutputStream targetJarOutputStream, boolean addAsRef, String path,
+            String jarOverrideName) throws MojoExecutionException
+    {
+        if (!Scopes.COMPILE.equals(node.getDependency().getScope()) || node.getDependency().getOptional()) {
             return;
         }
         if (!path.endsWith("/")) {

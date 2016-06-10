@@ -19,7 +19,7 @@ public class InternalLoggerBinder implements ReplaceableLoggerBinder {
 
     private static InternalLoggerBinder INSTANCE = new InternalLoggerBinder();
 
-    private final Set<CrappyLoggerFactory.CrappyLogger> loggers = new HashSet<>();
+    private final Set<CrappyLogger> loggers = new HashSet<>();
     private boolean replaced;
 
     private InternalLoggerBinder() {
@@ -43,7 +43,7 @@ public class InternalLoggerBinder implements ReplaceableLoggerBinder {
     }
 
     @Override
-    public void register(CrappyLoggerFactory.CrappyLogger logger) {
+    public void register(CrappyLogger logger) {
         synchronized (loggers) {
             loggers.add(logger);
         }
@@ -54,8 +54,8 @@ public class InternalLoggerBinder implements ReplaceableLoggerBinder {
         synchronized (loggers) {
             this.delegateLoggerFactory = loggerFactory;
             this.crappyLoggerFactory = null;
-            Set<CrappyLoggerFactory.CrappyLogger> loggersToRemove = new HashSet<>();
-            for (CrappyLoggerFactory.CrappyLogger logger : loggers) {
+            Set<CrappyLogger> loggersToRemove = new HashSet<>();
+            for (CrappyLogger logger : loggers) {
                 if (!logger.isReplaced()) {
                     logger.setDelegate(loggerFactory.getLogger(logger.getName()));
                 }

@@ -24,10 +24,6 @@
             <artifactId>nested-jar-classloader</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
-            <artifactId>dynamicjar-logging-module</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.hakansson.dynamicjar</groupId>
             <artifactId>dynamicjar-logging-api</artifactId>
         </dependency>

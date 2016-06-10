@@ -2,6 +2,7 @@ package io.hakansson.dynamicjar.core.api.logging;
 
 import io.hakansson.dynamicjar.core.api.Constants;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
+import io.hakansson.dynamicjar.core.api.exception.NestedJarClassloaderException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.core.api.util.LibHelper;
@@ -10,6 +11,8 @@ import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ServiceLoader;
 
@@ -50,23 +53,27 @@ public class LogHelper {
             }
         }
 
-        if (internalLogging) {
-            if (loggingModule != null) {
-                logger.info("Initiated logging using " + loggingModule.getClass().getSimpleName());
-            } else {
-                if (classLoader instanceof NestedJarClassLoader) {
-                    logger.info("No logging module found. Trying to load fallback console logger...");
-                    URL[] loggerFallbackURLs = LibHelper.getLibs(
-                            Constants.DYNAMICJAR_RUNTIME_OPTIONAL_LIB_PATH + Constants.DYNAMIC_JAR_LOGGING_API_ARTIFACT_ID +
-                                    "-fallback.jar");
-                    if (loggerFallbackURLs.length >= 1) {
-                        logger.info("Found fallback logger. Loading...");
-                        ((NestedJarClassLoader) classLoader).addURLs(loggerFallbackURLs);
+        if (loggingModule != null) {
+            if (internalLogging) logger.info("Initiated logging using " + loggingModule.getClass().getSimpleName());
+        } else {
+            if (classLoader.getClass().getName().equals(NestedJarClassLoader.class.getName())) {
+                if (internalLogging) logger.info("No logging module found. Trying to load fallback console logger...");
+                URL[] loggerFallbackURLs = LibHelper.getLibs(
+                        Constants.DYNAMICJAR_RUNTIME_OPTIONAL_LIB_PATH + Constants.DYNAMIC_JAR_LOGGING_API_ARTIFACT_ID +
+                                "-fallback.jar");
+                if (loggerFallbackURLs.length >= 1) {
+                    if (internalLogging) logger.info("Found fallback logger. Loading...");
+                    try {
+                        Method addURLs = classLoader.getClass().getDeclaredMethod("addURLs", URL[].class);
+                        addURLs.invoke(classLoader, (Object) loggerFallbackURLs);
+                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        throw new NestedJarClassloaderException(e);
                     }
-                } else {
-                    logger.info("No logging module found. May not get logging in thirdparty libraries");
                 }
+            } else if (internalLogging) {
+                logger.info("No logging module found. May not get logging in thirdparty libraries");
             }
         }
     }
+
 }

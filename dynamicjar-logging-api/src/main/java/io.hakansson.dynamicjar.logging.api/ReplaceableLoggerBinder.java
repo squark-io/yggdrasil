@@ -9,6 +9,6 @@ import org.slf4j.ILoggerFactory;
  * Copyright 2016
  */
 public interface ReplaceableLoggerBinder {
-    void register(CrappyLoggerFactory.CrappyLogger logger);
+    void register(CrappyLogger logger);
     void notifyLoggingInitialized(ILoggerFactory loggerFactory);
 }

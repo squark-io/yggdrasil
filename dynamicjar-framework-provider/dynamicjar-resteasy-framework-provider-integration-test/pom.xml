@@ -25,11 +25,6 @@
             <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
-            <artifactId>dynamicjar-logging-module</artifactId>
-            <scope>compile</scope>
-        </dependency>
 
         <!-- TEST DEPENDENCIES -->
         <dependency>
