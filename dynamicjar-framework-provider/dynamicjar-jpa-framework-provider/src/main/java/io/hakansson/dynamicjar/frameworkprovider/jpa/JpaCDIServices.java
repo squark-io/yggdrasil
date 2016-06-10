@@ -11,6 +11,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by Erik Håkansson on 2016-05-31.
@@ -36,14 +37,33 @@ public class JpaCDIServices implements JpaInjectionServices {
         return persistenceUnitName;
     }
 
+    private static Properties getPropertiesFromPersistenceContext(InjectionPoint injectionPoint) {
+        PersistenceContext persistenceContext = injectionPoint.getAnnotated().getAnnotation(PersistenceContext.class);
+        if (persistenceContext != null) {
+            Properties properties = new Properties();
+            for (PersistenceProperty property : persistenceContext.properties()) {
+                properties.put(property.name(), property.value());
+            }
+            return properties;
+        }
+        return null;
+    }
+
     @Override
     public ResourceReferenceFactory<EntityManager> registerPersistenceContextInjectionPoint(InjectionPoint injectionPoint) {
         return () -> {
             String persistenceUnitName = getPersistenceUnitNameFromPersistenceContext(injectionPoint);
+
             logger.info("Getting EntityManager for Persistence Unit with name " + persistenceUnitName);
             ResourceReference<EntityManagerFactory> entityManagerFactoryRef = getEntityManagerFactoryRef(persistenceUnitName);
-            return new EntityManagerResourceReference(entityManagerFactoryRef.getInstance().createEntityManager(),
-                    persistenceUnitName);
+            Map properties = getPropertiesFromPersistenceContext(injectionPoint);
+            if (properties != null) {
+                return new EntityManagerResourceReference(entityManagerFactoryRef.getInstance().createEntityManager(properties),
+                        persistenceUnitName);
+            } else {
+                return new EntityManagerResourceReference(entityManagerFactoryRef.getInstance().createEntityManager(),
+                        persistenceUnitName);
+            }
         };
     }
 
