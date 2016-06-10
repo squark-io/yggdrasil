@@ -1,4 +1,4 @@
-package io.hakansson.dynamicjar.frameworkprovider.db;
+package io.hakansson.dynamicjar.frameworkprovider.jpa;
 
 import org.hibernate.boot.archive.internal.*;
 import org.hibernate.boot.archive.spi.ArchiveDescriptor;

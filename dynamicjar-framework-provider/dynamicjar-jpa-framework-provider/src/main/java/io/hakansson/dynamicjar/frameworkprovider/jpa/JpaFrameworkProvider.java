@@ -1,4 +1,4 @@
-package io.hakansson.dynamicjar.frameworkprovider.db;
+package io.hakansson.dynamicjar.frameworkprovider.jpa;
 
 import io.hakansson.dynamicjar.core.api.FrameworkProvider;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;

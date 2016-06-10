@@ -1,4 +1,4 @@
-package io.hakansson.dynamicjar.frameworkprovider.db;
+package io.hakansson.dynamicjar.frameworkprovider.jpa;
 
 import com.jayway.restassured.http.ContentType;
 import io.hakansson.dynamicjar.core.api.Constants;

@@ -1,4 +1,4 @@
-package io.hakansson.dynamicjar.frameworkprovider.db;
+package io.hakansson.dynamicjar.frameworkprovider.jpa;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
