@@ -45,7 +45,7 @@
                             <classifier>fallback</classifier>
                             <excludes/>
                             <includes>
-                                <include>**/org/slf4j/impl/StaticLoggerBinder.class</include>
+                                <include>**/org/slf4j/impl/**</include>
                             </includes>
                         </configuration>
                     </execution>
