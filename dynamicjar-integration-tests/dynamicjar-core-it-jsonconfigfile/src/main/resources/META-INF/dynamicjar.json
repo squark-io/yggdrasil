@@ -12,6 +12,5 @@
       "version": 2.5,
       "scope": "provided"
     }
-  ],
-  "dependencyResolutionProviderClass": "io.hakansson.dynamicjar.maven.provider.MavenDependencyResolutionProvider"
+  ]
 }

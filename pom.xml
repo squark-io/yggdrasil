@@ -140,7 +140,7 @@
             </dependency>
             <dependency>
                 <groupId>io.hakansson.dynamicjar.it</groupId>
-                <artifactId>yamlconfigfile-test</artifactId>
+                <artifactId>jsonconfigfile-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -149,23 +149,8 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
-                <artifactId>dynamicjar-logging-module</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
-                <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider.it</groupId>
                 <artifactId>dynamicjar-resteasy-framework-provider-integration-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.hakansson.dynamicjar</groupId>
-                <artifactId>dynamicjar-weld-framework-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -488,7 +473,7 @@
                                 <goal>report</goal>
                             </goals>
                             <configuration>
-                                <!--<dataFile>${project.build.directory}/jacoco-it.exec</dataFile>-->
+                                <dataFile>${project.build.directory}/jacoco-it.exec</dataFile>
                                 <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
                             </configuration>
                         </execution>
@@ -528,10 +513,15 @@
                                 <goal>verify</goal>
                             </goals>
                             <configuration>
-                                <argLine>${invoker.mavenOpts}</argLine>
+                                <argLine>${jacoco.argLine}</argLine>
                             </configuration>
                         </execution>
                     </executions>
+                    <configuration>
+                        <includes>
+                            <include>**/*IntegrationTest.java</include>
+                        </includes>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

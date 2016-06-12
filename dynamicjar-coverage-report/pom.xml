@@ -21,10 +21,6 @@
         </dependency>
         <dependency>
             <groupId>io.hakansson.dynamicjar</groupId>
-            <artifactId>dynamicjar-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
             <artifactId>dynamicjar-bootstrap</artifactId>
         </dependency>
         <dependency>
@@ -50,32 +46,17 @@
         </dependency>
         <dependency>
             <groupId>io.hakansson.dynamicjar</groupId>
-            <artifactId>dynamicjar-weld-framework-provider</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
-            <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
-            <artifactId>dynamicjar-logging-module</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
             <artifactId>dynamicjar-logging-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
-            <artifactId>dynamicjar-logging-api</artifactId>
-            <classifier>fallback</classifier>
         </dependency>
         <dependency>
             <groupId>io.hakansson.dynamicjar.it</groupId>
             <artifactId>yamlconfigfile-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.hakansson.dynamicjar.it</groupId>
-            <artifactId>yamlconfigfile-test</artifactId>
+            <artifactId>jsonconfigfile-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.hakansson.dynamicjar.frameworkprovider</groupId>
@@ -92,6 +73,7 @@
         <dependency>
             <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider.it</groupId>
             <artifactId>dynamicjar-resteasy-framework-provider-integration-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.hakansson.dynamicjar</groupId>
@@ -100,6 +82,7 @@
         <dependency>
             <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider.it</groupId>
             <artifactId>dynamicjar-weld-framework-provider-integration-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
@@ -114,6 +97,12 @@
                             <goal>report-aggregate</goal>
                         </goals>
                         <configuration>
+                            <dataFileIncludes>
+                                <dataFileInclude>**/jacoco-it.exec</dataFileInclude>
+                            </dataFileIncludes>
+                            <excludes>
+                                <exclude>**/HelpMojo*</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>
