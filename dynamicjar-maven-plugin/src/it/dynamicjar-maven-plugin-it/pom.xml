@@ -17,6 +17,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!-- need a dependency for coverage -->
+    <dependencies>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <artifactId>dynamicjar-logging-module</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

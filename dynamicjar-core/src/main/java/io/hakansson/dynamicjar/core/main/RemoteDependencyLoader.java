@@ -156,7 +156,7 @@ public class RemoteDependencyLoader {
                 {
                     jars.add(dependency);
                 }
-                jars.addAll(getFlatDependencies(dependency.getChildDependencies(), includeTransitive, depth++));
+                jars.addAll(getFlatDependencies(dependency.getChildDependencies(), includeTransitive, depth + 1));
             }
         }
         return jars;

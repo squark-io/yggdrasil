@@ -102,6 +102,7 @@
                             </dataFileIncludes>
                             <excludes>
                                 <exclude>**/HelpMojo*</exclude>
+                                <exclude>**/org/slf4j/impl/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>
