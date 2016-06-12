@@ -71,7 +71,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- LOCAL DEPENDENCIES -->
+            <!-- INTERNAL DEPENDENCIES -->
             <dependency>
                 <groupId>io.hakansson.dynamicjar</groupId>
                 <artifactId>dynamicjar-api</artifactId>
@@ -131,6 +131,46 @@
                 <groupId>io.hakansson.dynamicjar</groupId>
                 <artifactId>dynamicjar-logging-api</artifactId>
                 <classifier>fallback</classifier>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar.it</groupId>
+                <artifactId>yamlconfigfile-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar.it</groupId>
+                <artifactId>yamlconfigfile-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar.frameworkprovider</groupId>
+                <artifactId>dynamicjar-jpa-framework-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+                <artifactId>dynamicjar-logging-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+                <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider.it</groupId>
+                <artifactId>dynamicjar-resteasy-framework-provider-integration-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar</groupId>
+                <artifactId>dynamicjar-weld-framework-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider.it</groupId>
+                <artifactId>dynamicjar-weld-framework-provider-integration-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

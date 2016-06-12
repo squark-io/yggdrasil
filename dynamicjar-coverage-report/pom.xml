@@ -19,6 +19,88 @@
             <groupId>io.hakansson.dynamicjar</groupId>
             <artifactId>dynamicjar-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-bootstrap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>nested-jar-classloader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-maven-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-maven-provider-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-maven-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-weld-framework-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <artifactId>dynamicjar-logging-module</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-logging-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-logging-api</artifactId>
+            <classifier>fallback</classifier>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.it</groupId>
+            <artifactId>yamlconfigfile-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.it</groupId>
+            <artifactId>yamlconfigfile-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.frameworkprovider</groupId>
+            <artifactId>dynamicjar-jpa-framework-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <artifactId>dynamicjar-logging-module</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider.it</groupId>
+            <artifactId>dynamicjar-resteasy-framework-provider-integration-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-weld-framework-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider.it</groupId>
+            <artifactId>dynamicjar-weld-framework-provider-integration-test</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -32,7 +114,6 @@
                             <goal>report-aggregate</goal>
                         </goals>
                         <configuration>
-
                         </configuration>
                     </execution>
                 </executions>

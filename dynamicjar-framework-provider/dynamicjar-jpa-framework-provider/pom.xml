@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.hakansson.dynamicjar.frameworkprovider</groupId>
-    <artifactId>dynamicjar-database-framework-provider</artifactId>
+    <artifactId>dynamicjar-jpa-framework-provider</artifactId>
     <dependencies>
         <!-- INTERNAL DEPENDENCIES -->
         <dependency>
