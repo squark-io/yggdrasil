@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.hakansson.dynamicjar.it</groupId>
-    <artifactId>dynamicjar-maven-plugin-it</artifactId>
+    <artifactId>dynamicjar-maven-plugin-it-2</artifactId>
     <parent>
         <groupId>io.hakansson</groupId>
         <artifactId>dynamicjar</artifactId>
@@ -16,14 +16,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <!-- need a dependency for coverage -->
-    <dependencies>
-        <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
-            <artifactId>dynamicjar-logging-module</artifactId>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>

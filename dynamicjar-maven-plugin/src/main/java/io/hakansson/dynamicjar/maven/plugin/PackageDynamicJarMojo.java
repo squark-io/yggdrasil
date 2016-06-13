@@ -508,16 +508,6 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         return loggingFallbackDependency;
     }
 
-    private org.apache.maven.model.Dependency getLoggingModule() {
-        org.apache.maven.model.Dependency loggingModuleDependency = new org.apache.maven.model.Dependency();
-        String dynamicJarVersion = pluginDescriptor.getVersion();
-        loggingModuleDependency.setGroupId(Constants.DYNAMIC_JAR_LOGGING_MODULE_GROUP_ID);
-        loggingModuleDependency.setArtifactId(Constants.DYNAMIC_JAR_LOGGING_MODULE_ARTIFACT_ID);
-        loggingModuleDependency.setVersion(dynamicJarVersion);
-        loggingModuleDependency.setScope(Scopes.COMPILE);
-        return loggingModuleDependency;
-    }
-
     private DynamicJarDependency getProjectProvidedDependencies() throws MojoExecutionException {
 
         List<org.apache.maven.model.Dependency> mavenDependencies = project.getDependencies();
