@@ -4,8 +4,6 @@ import io.hakansson.dynamicjar.core.api.FrameworkProvider;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.exception.FrameworkProviderException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
-import io.hakansson.dynamicjar.frameworkprovider.ResteasyFrameworkProvider;
-import io.hakansson.dynamicjar.frameworkprovider.WeldFrameworkProvider;
 import org.jetbrains.annotations.Nullable;
 import org.testng.annotations.Test;
 
@@ -22,7 +20,7 @@ import java.util.List;
 public class FrameworkProviderUtilTest {
     @Test
     public void testValidateDependencies() throws Exception {
-        List<FrameworkProvider> frameworkProviders = Arrays.asList(new ResteasyFrameworkProvider(), new WeldFrameworkProvider(), new FrameworkProviderWithNonOptionalDep());
+        List<FrameworkProvider> frameworkProviders = Arrays.asList(new DummyFrameworkProvider(), new FrameworkProviderWithNonOptionalDep());
 
         FrameworkProviderUtil.validateDependencies(frameworkProviders);
     }
@@ -34,7 +32,15 @@ public class FrameworkProviderUtilTest {
         FrameworkProviderUtil.validateDependencies(frameworkProviders);
     }
 
-    public class FrameworkProviderWithNonOptionalDep implements FrameworkProvider {
+    private class DummyFrameworkProvider implements FrameworkProvider {
+
+        @Override
+        public void provide(@Nullable DynamicJarConfiguration configuration) throws DynamicJarException {
+
+        }
+    }
+
+    private class FrameworkProviderWithNonOptionalDep implements FrameworkProvider {
 
         @Override
         public void provide(@Nullable DynamicJarConfiguration configuration) throws DynamicJarException {
@@ -43,11 +49,11 @@ public class FrameworkProviderUtilTest {
 
         @Override
         public List<ProviderDependency> runAfter() {
-            return Collections.singletonList(new ProviderDependency(WeldFrameworkProvider.class.getSimpleName(), false));
+            return Collections.singletonList(new ProviderDependency(DummyFrameworkProvider.class.getSimpleName(), false));
         }
     }
 
-    public class FrameworkProviderWithNonExistingDep implements FrameworkProvider {
+    private class FrameworkProviderWithNonExistingDep implements FrameworkProvider {
 
         @Override
         public void provide(@Nullable DynamicJarConfiguration configuration) throws DynamicJarException {

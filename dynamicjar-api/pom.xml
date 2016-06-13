@@ -47,14 +47,6 @@
             <artifactId>testng</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
-            <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
-            <artifactId>dynamicjar-weld-framework-provider</artifactId>
-        </dependency>
 
     </dependencies>
 
