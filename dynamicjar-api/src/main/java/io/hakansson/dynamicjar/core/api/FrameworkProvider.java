@@ -16,7 +16,9 @@ import java.util.List;
 public interface FrameworkProvider {
     void provide(@Nullable DynamicJarConfiguration configuration) throws DynamicJarException;
 
-    String getName();
+    default String getName() {
+        return this.getClass().getSimpleName();
+    }
 
     default List<ProviderDependency> runBefore() {
         return Collections.emptyList();

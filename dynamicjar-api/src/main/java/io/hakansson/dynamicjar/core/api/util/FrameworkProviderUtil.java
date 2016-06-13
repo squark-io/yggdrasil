@@ -12,6 +12,7 @@ import java.util.Set;
  * WirelessCar
  */
 public class FrameworkProviderUtil {
+
     public static void validateDependencies(List<FrameworkProvider> providerList) throws FrameworkProviderException {
         for (FrameworkProvider provider : providerList) {
             Set<FrameworkProvider.ProviderDependency> flatDependencies = new HashSet<>();
