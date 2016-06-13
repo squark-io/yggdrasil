@@ -28,7 +28,7 @@
         <dependency>
             <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
             <artifactId>dynamicjar-logging-module</artifactId>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <!-- TEST DEPENDENCIES -->
