@@ -104,6 +104,7 @@
                                 <exclude>**/HelpMojo*</exclude>
                                 <exclude>**/org/slf4j/impl/**</exclude>
                                 <exclude>**/io/hakansson/dynamicjar/logging/api/CrappyLogger*</exclude>
+                                <exclude>**/io/hakansson/dynamicjar/core/api/exception/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>

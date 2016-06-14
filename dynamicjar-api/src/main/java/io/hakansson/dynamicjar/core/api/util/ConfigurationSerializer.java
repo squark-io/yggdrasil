@@ -3,11 +3,7 @@ package io.hakansson.dynamicjar.core.api.util;
 import io.hakansson.dynamicjar.core.api.exception.ProviderException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 /**
  * dynamicjar
@@ -17,17 +13,16 @@ import java.io.ObjectOutputStream;
  */
 public class ConfigurationSerializer {
     public static byte[] serializeConfig(DynamicJarConfiguration configuration) throws IOException {
-        try (
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        ) {
-            objectOutputStream.writeObject(configuration);
-            return byteArrayOutputStream.toByteArray();
-        }
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(configuration);
+        objectOutputStream.close();
+        byteArrayOutputStream.close();
+        return byteArrayOutputStream.toByteArray();
     }
 
-    public static DynamicJarConfiguration deserializeConfig(byte[] buffer)
-        throws ProviderException {
+    public static DynamicJarConfiguration deserializeConfig(byte[] buffer) throws ProviderException {
         try {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer);
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);

@@ -63,33 +63,6 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
     private ArrayList<RemoteRepository> remoteRepositories;
 
     @Override
-    public DynamicJarDependency resolveDependency(DynamicJarDependency dependency,
-            boolean loadTransitiveProvidedDependencies) throws DependencyResolutionException
-    {
-
-        Artifact aetherArtifact = new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
-                dependency.getClassifier(), dependency.getExtension(), dependency.getVersion());
-
-        RepositorySystem repositorySystem = getNewRepositorySystem();
-        Settings mavenSettings;
-        try {
-            mavenSettings = getMavenSettings();
-        } catch (SettingsBuildingException e) {
-            throw new DependencyResolutionException(e);
-        }
-        RepositorySystemSession repositorySystemSession = newRepositorySystemSession(repositorySystem,
-                getLocalRepository(mavenSettings), mavenSettings, loadTransitiveProvidedDependencies);
-        List<RemoteRepository> remoteRepositories = getRemoteRepositories(mavenSettings);
-        if (logger.isDebugEnabled())
-            logger.debug("Using remote repositories: " + Collections.synchronizedList(remoteRepositories));
-        try {
-            return resolveDependencies(aetherArtifact, null, repositorySystem, repositorySystemSession, remoteRepositories);
-        } catch (DependencyCollectionException | org.eclipse.aether.resolution.DependencyResolutionException e) {
-            throw new DependencyResolutionException(e);
-        }
-    }
-
-    @Override
     public Set<DynamicJarDependency> resolveDependencies(Set<DynamicJarDependency> dependencies,
             boolean loadTransitiveProvidedDependencies) throws DependencyResolutionException
     {

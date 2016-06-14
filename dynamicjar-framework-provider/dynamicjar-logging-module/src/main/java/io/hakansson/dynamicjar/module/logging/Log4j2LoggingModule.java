@@ -49,25 +49,13 @@ public class Log4j2LoggingModule implements LoggingModule {
 
         String systemLogLevel = System.getProperty(Constants.DYNAMICJAR_LOG_LEVEL);
         String systemConfigFile = System.getProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        URI configuredConfigFile = null;
-        String configuredLogLevel = null;
-        if (configuration != null && configuration.getLoggerConfiguration() != null) {
-            configuredConfigFile = configuration.getLoggerConfiguration().getConfigFile() != null ?
-                                   URI.create(configuration.getLoggerConfiguration().getConfigFile()) : null;
-            configuredLogLevel = configuration.getLoggerConfiguration().getDefaultLogLevel();
-        }
 
         LoggerContext loggerContext = (LoggerContext) LogManager.getContext();
         if (systemLogLevel != null) {
             final Configuration config = loggerContext.getConfiguration();
             config.getRootLogger().setLevel(Level.getLevel(systemLogLevel));
         } else if (systemConfigFile != null) {
-            configuredConfigFile = URI.create(systemConfigFile);
-            loggerContext.setConfigLocation(configuredConfigFile);
-        } else if (configuredLogLevel != null) {
-            final Configuration config = loggerContext.getConfiguration();
-            config.getRootLogger().setLevel(Level.getLevel(configuredLogLevel));
-        } else if (configuredConfigFile != null) {
+            URI configuredConfigFile = URI.create(systemConfigFile);
             loggerContext.setConfigLocation(configuredConfigFile);
         } else if (jarWithConfig != null) {
             try {
@@ -79,7 +67,7 @@ public class Log4j2LoggingModule implements LoggingModule {
                     if (jarEntry.isDirectory()) continue;
                     String fileName = FilenameUtils.getName(jarEntry.getName());
                     if (validConfigFiles.contains(fileName)) {
-                        configuredConfigFile = URI.create(jarWithConfig.getFile() + "!/" + jarEntry.getName());
+                        URI configuredConfigFile = URI.create(jarWithConfig.getFile() + "!/" + jarEntry.getName());
                         loggerContext.setConfigLocation(configuredConfigFile);
                         break;
                     }

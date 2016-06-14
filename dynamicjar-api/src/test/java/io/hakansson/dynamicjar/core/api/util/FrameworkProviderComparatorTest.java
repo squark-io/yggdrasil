@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.testng.Assert.*;
-
 /**
  * Created by Erik Håkansson on 2016-05-31.
  * WirelessCar
@@ -35,6 +33,11 @@ public class FrameworkProviderComparatorTest {
             @Override
             public List<ProviderDependency> runAfter() {
                 return Collections.singletonList(new ProviderDependency("frameworkProvider2", false));
+            }
+
+            @Override
+            public List<ProviderDependency> runBefore() {
+                return Collections.singletonList(new ProviderDependency("frameworkProvider4", false));
             }
         };
 
@@ -68,20 +71,40 @@ public class FrameworkProviderComparatorTest {
             }
         };
 
+        FrameworkProvider frameworkProvider4 = new FrameworkProvider() {
+            @Override
+            public void provide(@Nullable DynamicJarConfiguration configuration) throws DynamicJarException {
+
+            }
+
+            @Override
+            public String getName() {
+                return "frameworkProvider4";
+            }
+
+            @Override
+            public List<ProviderDependency> runAfter() {
+                return Collections.singletonList(new ProviderDependency("frameworkProvider2", false));
+            }
+        };
+
         List<FrameworkProvider> list = new ArrayList<>();
         list.add(frameworkProvider1);
         list.add(frameworkProvider2);
         list.add(frameworkProvider3);
+        list.add(frameworkProvider4);
 
         Assert.assertTrue(list.get(0) == frameworkProvider1);
         Assert.assertTrue(list.get(1) == frameworkProvider2);
         Assert.assertTrue(list.get(2) == frameworkProvider3);
+        Assert.assertTrue(list.get(3) == frameworkProvider4);
 
         Collections.sort(list, new FrameworkProviderComparator());
 
         Assert.assertTrue(list.get(0) == frameworkProvider3);
         Assert.assertTrue(list.get(1) == frameworkProvider2);
         Assert.assertTrue(list.get(2) == frameworkProvider1);
+        Assert.assertTrue(list.get(3) == frameworkProvider4);
     }
 
 }
