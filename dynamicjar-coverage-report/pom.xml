@@ -38,7 +38,6 @@
         <dependency>
             <groupId>io.hakansson.dynamicjar</groupId>
             <artifactId>dynamicjar-maven-provider-api</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.hakansson.dynamicjar</groupId>

@@ -130,7 +130,7 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
         return mavenSettings;
     }
 
-    private synchronized RepositorySystemSession newRepositorySystemSession(final RepositorySystem repositorySystem,
+    synchronized RepositorySystemSession newRepositorySystemSession(final RepositorySystem repositorySystem,
             final LocalRepository localRepository, Settings mavenSettings, boolean loadTransitiveProvidedDependencies) throws
             DependencyResolutionException
     {
@@ -157,15 +157,15 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
                     proxySelector.add(aetherProxy, proxy.getNonProxyHosts());
                 }
             } else {
-                String httpProxy = System.getenv("http_proxy");
-                String httpsProxy = System.getenv("https_proxy");
+                String httpProxy = getEnv("http_proxy");
+                String httpsProxy = getEnv("https_proxy");
                 if (httpProxy != null) {
                     Proxy proxy = toAetherProxy(httpProxy);
-                    proxySelector.add(proxy, System.getenv("no_proxy"));
+                    proxySelector.add(proxy, getEnv("no_proxy"));
                 }
                 if (httpsProxy != null) {
                     Proxy proxy = toAetherProxy(httpsProxy);
-                    proxySelector.add(proxy, System.getenv("no_proxy"));
+                    proxySelector.add(proxy, getEnv("no_proxy"));
                 }
             }
             repositorySystemSession.setProxySelector(proxySelector);
@@ -298,5 +298,9 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
             map.put(node.toString(), nodeToMap(node));
         }
         return map;
+    }
+
+    protected String getEnv(String key) {
+        return System.getenv(key);
     }
 }
