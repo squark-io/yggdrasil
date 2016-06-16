@@ -83,6 +83,13 @@
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-util</artifactId>
         </dependency>
+
+        <!-- TEST DEPENDENCIES -->
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <artifactId>dynamicjar-logging-module</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
