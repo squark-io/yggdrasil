@@ -8,6 +8,7 @@ import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.maven.provider.api.DynamicJarDependencyMavenUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.Settings;
@@ -37,6 +38,7 @@ import org.eclipse.aether.util.graph.selector.OptionalDependencySelector;
 import org.eclipse.aether.util.graph.selector.ScopeDependencySelector;
 import org.eclipse.aether.util.graph.traverser.StaticDependencyTraverser;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
+import org.eclipse.aether.util.repository.DefaultMirrorSelector;
 import org.eclipse.aether.util.repository.DefaultProxySelector;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -85,6 +87,7 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
         RepositorySystemSession repositorySystemSession = newRepositorySystemSession(repositorySystem,
                 getLocalRepository(mavenSettings), mavenSettings, loadTransitiveProvidedDependencies);
         List<RemoteRepository> remoteRepositories = getRemoteRepositories(mavenSettings);
+
         if (logger.isDebugEnabled())
             logger.debug("Using remote repositories: " + Collections.synchronizedList(remoteRepositories));
         try {
@@ -147,6 +150,11 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
             repositorySystemSession.setDependencySelector(depFilter);
             repositorySystemSession.setDependencyTraverser(new StaticDependencyTraverser(true));
             repositorySystemSession.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN);
+            DefaultMirrorSelector mirrorSelector = new DefaultMirrorSelector();
+            for (Mirror mirror : mavenSettings.getMirrors()) {mirrorSelector.add(mirror.getId(), mirror.getUrl(),
+                    mirror.getLayout(), false, mirror.getMirrorOf(), mirror.getMirrorOfLayouts());
+            }
+            repositorySystemSession.setMirrorSelector(mirrorSelector);
             DefaultProxySelector proxySelector = new DefaultProxySelector();
             if (mavenSettings.getActiveProxy() != null) {
                 Proxy aetherProxy = toAetherProxy(mavenSettings.getActiveProxy());
