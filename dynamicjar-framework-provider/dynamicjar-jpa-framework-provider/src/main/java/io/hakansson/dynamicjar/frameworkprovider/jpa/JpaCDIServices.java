@@ -113,7 +113,7 @@ public class JpaCDIServices implements JpaInjectionServices {
         return entityManagerFactoryRef;
     }
 
-    private static class EntityManagerFactoryResourceReference implements ResourceReference<EntityManagerFactory> {
+    static class EntityManagerFactoryResourceReference implements ResourceReference<EntityManagerFactory> {
 
         private EntityManagerFactory entityManagerFactory;
         private String name;
