@@ -9,8 +9,6 @@ build:
     - "chmod a+w /cache/m2-repository"
     - "export MAVEN_OPTS='-Xmx1024m'"
   script: "mvn clean install verify -U -B"
-  after_script:
-    - "compgen -c | grep xml"
   cache:
       paths:
       - m2-repository/

@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 public class ReflectionUtil {
     public static <T> Object invokeMethod(@NotNull String methodName, Class<T> type, @Nullable T instance,
                                           @Nullable Object[] args, @Nullable Class[] argsTypeOverrides) throws
-            ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException
+            ClassNotFoundException, NoSuchMethodException, IllegalAccessException
     {
         if (args != null && argsTypeOverrides != null && args.length != argsTypeOverrides.length) {
             throw new IllegalStateException("Type override must be same size as arguments array");
@@ -43,6 +43,13 @@ public class ReflectionUtil {
         if (!method.isAccessible()) {
             method.setAccessible(true);
         }
-        return method.invoke(instance, argsObjects);
+        try {
+            return method.invoke(instance, argsObjects);
+        } catch (Throwable e) {
+            if (e instanceof InvocationTargetException) {
+                e = e.getCause();
+            }
+            throw new RuntimeException(e);
+        }
     }
 }

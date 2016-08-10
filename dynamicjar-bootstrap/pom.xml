@@ -19,6 +19,10 @@
         </dependency>
         <dependency>
             <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>nested-jar-classloader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
             <artifactId>dynamicjar-core</artifactId>
             <scope>provided</scope>
         </dependency>

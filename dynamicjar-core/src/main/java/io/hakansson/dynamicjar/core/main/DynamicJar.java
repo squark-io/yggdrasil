@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import io.hakansson.dynamicjar.core.api.Constants;
 import io.hakansson.dynamicjar.core.api.FrameworkProviderService;
-import io.hakansson.dynamicjar.core.api.exception.*;
+import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
+import io.hakansson.dynamicjar.core.api.exception.MainClassLoadException;
+import io.hakansson.dynamicjar.core.api.exception.PropertyLoadException;
 import io.hakansson.dynamicjar.core.api.logging.LogHelper;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
@@ -13,6 +15,7 @@ import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
 import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarURLStreamHandler;
+import io.hakansson.dynamicjar.nestedjarclassloader.exception.NestedJarClassLoaderException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -49,7 +51,7 @@ public final class DynamicJar {
     }
 
     @SuppressWarnings("unused")
-    static void internalMain(String[] args) {
+    public static void internalMain(String[] args) {
         logger.info("Initiating DynamicJar");
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -57,7 +59,7 @@ public final class DynamicJar {
             DynamicJarConfiguration configuration = getConfiguration();
             NestedJarClassLoader isolatedClassLoader = initiate(classLoader, configuration);
             loadMainClass(isolatedClassLoader, configuration, args);
-        } catch (DynamicJarException e) {
+        } catch (DynamicJarException | NestedJarClassLoaderException e) {
             logger.error(null, e);
         }
     }
@@ -108,17 +110,17 @@ public final class DynamicJar {
                 Class<?> mainClass = Class.forName(configuration.getMainClass(), true, forClassLoader);
                 ReflectionUtil.invokeMethod("main", mainClass, null, new Object[]{args}, null);
                 logger.debug("Main class loaded");
-            } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException e) {
                 throw new MainClassLoadException(e);
             }
         }
     }
 
     public static NestedJarClassLoader initiate(ClassLoader classLoader, DynamicJarConfiguration configuration) throws
-            NestedJarClassloaderException
+            NestedJarClassLoaderException
     {
         if (!(classLoader instanceof NestedJarClassLoader)) {
-            classLoader = new NestedJarClassLoader(new URL[]{}, classLoader, true);
+            classLoader = new NestedJarClassLoader(classLoader);
         }
 
         try {
@@ -126,8 +128,8 @@ public final class DynamicJar {
             return (NestedJarClassLoader) ReflectionUtil.invokeMethod("initiate", dynamicJarClass, null,
                     new Object[]{ConfigurationSerializer.serializeConfig(configuration), classLoader},
                     new Class[]{byte[].class, Object.class});
-        } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | IOException e) {
-            throw new NestedJarClassloaderException(e);
+        } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException | IOException e) {
+            throw new NestedJarClassLoaderException(e);
         }
     }
 
@@ -137,16 +139,22 @@ public final class DynamicJar {
         Thread.currentThread().setContextClassLoader((ClassLoader) helperClassLoader);
         DynamicJarConfiguration configuration = ConfigurationSerializer.deserializeConfig(configurationBytes);
 
-        URL libs[] = LibHelper.getLibs(Constants.LIB_PATH);
+        URL libs[] = LibHelper.getLibs(DynamicJar.class, Constants.LIB_PATH);
         URL classesJar = getClassesJar(configuration);
 
-        NestedJarClassLoader isolatedClassLoader = new NestedJarClassLoader(libs, null, true);
+        NestedJarClassLoader isolatedClassLoader;
+        try {
+            isolatedClassLoader = new NestedJarClassLoader(null);
+            isolatedClassLoader.addURLs(libs);
+        } catch (IOException e) {
+            throw new DynamicJarException(e);
+        }
         try {
             ReflectionUtil.invokeMethod("initiateLogging", Class.forName(LogHelper.class.getName(), true, isolatedClassLoader),
                     null, new Object[]{configurationBytes, isolatedClassLoader, classesJar},
                     new Class[]{byte[].class, Object.class, URL.class});
-        } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
-            throw new DependencyResolutionException(e);
+        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException e) {
+            throw new DynamicJarException(e);
         }
 
         Set<String> loadedLibs = new HashSet<>();
@@ -162,7 +170,7 @@ public final class DynamicJar {
         return isolatedClassLoader;
     }
 
-    private static URL getClassesJar(DynamicJarConfiguration configuration) throws DependencyResolutionException {
+    private static URL getClassesJar(DynamicJarConfiguration configuration) throws DynamicJarException {
         try {
             File ownFile = new File(DynamicJar.class.getProtectionDomain().getCodeSource().getLocation().toURI());
             JarFile ownJar = new JarFile(ownFile);
@@ -175,14 +183,9 @@ public final class DynamicJar {
                 }
             }
         } catch (URISyntaxException | IOException e) {
-            throw new DependencyResolutionException(e);
+            throw new DynamicJarException(e);
         }
         return null;
-    }
-
-    public static NestedJarClassLoader initiate(Class forClass, DynamicJarConfiguration configuration) throws DynamicJarException
-    {
-        return initiate(forClass.getClassLoader(), configuration);
     }
 
 }

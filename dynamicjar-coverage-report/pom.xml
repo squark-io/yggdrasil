@@ -132,9 +132,10 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <skip>${skipTests}</skip>
                     <mainClass>Parser</mainClass>
                     <arguments>
-                        dynamicjar-coverage-report/target/site/jacoco-aggregate/jacoco.xml
+                        <argument>dynamicjar-coverage-report/target/site/jacoco-aggregate/jacoco.xml</argument>
                     </arguments>
                 </configuration>
             </plugin>

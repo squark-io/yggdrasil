@@ -22,4 +22,5 @@ public interface Constants {
     String YAML_PROPERTIES_FILE = "/META-INF/dynamicjar.yaml";
     String JSON_PROPERTIES_FILE = "/META-INF/dynamicjar.json";
     String DYNAMICJAR_LOG_LEVEL = "dynamicjar.logLevel";
+    String NESTED_JAR_CLASSLOADER_ARTIFACT_ID = "nested-jar-classloader";
 }

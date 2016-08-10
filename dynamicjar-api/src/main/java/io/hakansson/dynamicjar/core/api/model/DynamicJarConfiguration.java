@@ -1,7 +1,6 @@
 package io.hakansson.dynamicjar.core.api.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,13 +24,6 @@ public class DynamicJarConfiguration implements Serializable {
 
     public void setDependencies(Set<DynamicJarDependency> dependencies) {
         this.dependencies = dependencies;
-    }
-
-    public void addDependency(DynamicJarDependency dependency) {
-        if (dependencies == null) {
-            dependencies = new HashSet<>();
-        }
-        dependencies.add(dependency);
     }
 
     public String getDynamicJarVersion() {
@@ -58,13 +50,6 @@ public class DynamicJarConfiguration implements Serializable {
         this.providerConfigurations = providerConfigurations;
     }
 
-    public void addProviderConfiguration(ProviderConfiguration providerConfiguration) {
-        if (this.providerConfigurations == null) {
-            this.providerConfigurations = new HashSet<>();
-        }
-        this.providerConfigurations.add(providerConfiguration);
-    }
-
     public boolean isLoadTransitiveProvidedDependencies() {
         return loadTransitiveProvidedDependencies;
     }
@@ -81,24 +66,4 @@ public class DynamicJarConfiguration implements Serializable {
         this.classesJar = classesJar;
     }
 
-    public class LoggerConfiguration {
-        private String configFile;
-        private String defaultLogLevel;
-
-        public String getConfigFile() {
-            return configFile;
-        }
-
-        public void setConfigFile(String configFile) {
-            this.configFile = configFile;
-        }
-
-        public String getDefaultLogLevel() {
-            return defaultLogLevel;
-        }
-
-        public void setDefaultLogLevel(String defaultLogLevel) {
-            this.defaultLogLevel = defaultLogLevel;
-        }
-    }
 }

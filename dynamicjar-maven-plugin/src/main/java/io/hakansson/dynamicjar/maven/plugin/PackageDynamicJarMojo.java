@@ -433,6 +433,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         addDependency(getLoggingFallback(), targetJarOutputStream, true, false, Constants.DYNAMICJAR_RUNTIME_OPTIONAL_LIB_PATH,
                 fallbackName);
         addDependency(getBootstrapDependency(), targetJarOutputStream, false, false, null, null);
+        addDependency(getClassLoaderDependency(), targetJarOutputStream, false, false, null, null);
     }
 
     private org.apache.maven.model.Dependency getBootstrapDependency() {
@@ -440,6 +441,17 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         org.apache.maven.model.Dependency coreDependency = new org.apache.maven.model.Dependency();
         coreDependency.setGroupId(Constants.DYNAMIC_JAR_BOOTSTRAP_GROUP_ID);
         coreDependency.setArtifactId(Constants.DYNAMIC_JAR_BOOTSTRAP_ARTIFACT_ID);
+        coreDependency.setVersion(dynamicJarVersion);
+        coreDependency.setScope(Scopes.COMPILE);
+        return coreDependency;
+    }
+
+    @SuppressWarnings("Duplicates")
+    private org.apache.maven.model.Dependency getClassLoaderDependency() {
+        String dynamicJarVersion = pluginDescriptor.getVersion();
+        org.apache.maven.model.Dependency coreDependency = new org.apache.maven.model.Dependency();
+        coreDependency.setGroupId(Constants.DYNAMIC_JAR_GROUP_ID);
+        coreDependency.setArtifactId(Constants.NESTED_JAR_CLASSLOADER_ARTIFACT_ID);
         coreDependency.setVersion(dynamicJarVersion);
         coreDependency.setScope(Scopes.COMPILE);
         return coreDependency;

@@ -61,7 +61,7 @@ public class FrameworkProviderService {
 
             Class<?> selfClass = classLoader.loadClass(FrameworkProviderService.class.getName());
             ReflectionUtil.invokeMethod("loadProviders", selfClass, null, new Object[]{serializedConfig}, null);
-        } catch (IOException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
+        } catch (IOException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
             logger.error(Marker.ANY_MARKER, e);
         }
     }

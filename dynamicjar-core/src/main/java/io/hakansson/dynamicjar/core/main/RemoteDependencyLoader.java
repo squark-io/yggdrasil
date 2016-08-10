@@ -90,7 +90,7 @@ public class RemoteDependencyLoader {
             throw new IOException(e);
         }
         try {
-            classLoader.addURL(jar);
+            classLoader.addURLs(jar);
             return true;
         } catch (Throwable t) {
             logger.error("Failed to load JAR", t);

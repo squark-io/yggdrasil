@@ -1,9 +1,8 @@
 package io.hakansson.dynamicjar.core.api.util;
 
+import io.hakansson.dynamicjar.core.api.exception.DependencyResolutionException;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
-import io.hakansson.dynamicjar.core.api.exception.NestedJarClassloaderException;
 import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
-import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -11,7 +10,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Scanner;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -23,13 +26,17 @@ public class LibHelper {
 
     private static Logger logger = InternalLoggerBinder.getLogger(LibHelper.class);
 
-    public static URL[] getLibs(String path) throws DynamicJarException {
+    public static URL getOwnJar() {
+        return LibHelper.class.getProtectionDomain().getCodeSource().getLocation();
+    }
+
+    public static URL[] getLibs(Class<?> caller, String path) throws DynamicJarException {
         try {
             if (!path.endsWith(".jar") && !path.endsWith(".ref") && !path.endsWith("/")) {
                 path = path + "/";
             }
-            Set<URL> libs = new HashSet<>();
-            File ownFile = new File(LibHelper.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            List<URL> libs = new ArrayList<>();
+            File ownFile = new File(caller.getProtectionDomain().getCodeSource().getLocation().toURI());
             JarFile ownJar = new JarFile(ownFile);
 
             Enumeration<JarEntry> entries = ownJar.entries();
@@ -52,42 +59,15 @@ public class LibHelper {
                     }
                 }
             }
+            Collections.sort(libs, (o1, o2) -> {
+                if (o1.getPath().contains("nested-jar-classloader")) {
+                    return -1;
+                }
+                return 0;
+            });
             return libs.toArray(new URL[libs.size()]);
         } catch (IOException | URISyntaxException e) {
-            throw new NestedJarClassloaderException(e);
-        }
-    }
-
-    public static void copyResourcesIntoClassLoader(NestedJarClassLoader coreClassLoader, String path,
-            List<String> blacklist) throws NestedJarClassloaderException
-    {
-        try {
-
-            if (!path.endsWith("/")) {
-                path = path + "/";
-            }
-            File ownFile = new File(LibHelper.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            JarFile ownJar = new JarFile(ownFile);
-
-            Enumeration<JarEntry> entries = ownJar.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                if (!entry.getName().startsWith(path) || entry.getName().endsWith("/")) {
-                    continue;
-                }
-                boolean skip = false;
-                for (String illegal : blacklist) {
-                    if (entry.getName().startsWith(illegal)) {
-                        skip = true;
-                        break;
-                    }
-                }
-                if (skip) continue;
-                URL url = new URL("jar", "", ownFile.toURI().toString() + "!/" + entry.getName());
-                coreClassLoader.addURL(url);
-            }
-        } catch (IOException | URISyntaxException e) {
-            throw new NestedJarClassloaderException(e);
+            throw new DependencyResolutionException(e);
         }
     }
 }

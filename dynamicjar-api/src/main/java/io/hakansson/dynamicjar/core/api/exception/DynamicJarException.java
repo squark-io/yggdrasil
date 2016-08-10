@@ -6,7 +6,7 @@ package io.hakansson.dynamicjar.core.api.exception;
  * Created by Erik Håkansson on 2016-03-11.
  * Copyright 2016
  */
-public abstract class DynamicJarException extends Exception {
+public class DynamicJarException extends Exception {
     public DynamicJarException(String message) {
         super(message);
     }

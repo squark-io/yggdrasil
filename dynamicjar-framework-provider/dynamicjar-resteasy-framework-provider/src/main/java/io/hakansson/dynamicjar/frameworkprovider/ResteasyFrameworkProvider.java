@@ -87,6 +87,9 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
         undertowJaxrsServer.start(serverBuilder);
 
         JaxRsCDIExtension jaxRsCDIExtension = getBean(beanManager, JaxRsCDIExtension.class);
+        if (jaxRsCDIExtension == null) {
+            throw new DynamicJarException("Failed to get JaxRsCDIExtension bean");
+        }
         List<String> applications;
         if ((applications = jaxRsCDIExtension.getApplications()) != null && applications.size() > 0) {
             if (applications.size() > 1) {
@@ -122,14 +125,14 @@ public class ResteasyFrameworkProvider implements FrameworkProvider {
         return ResteasyFrameworkProvider.class.getSimpleName();
     }
 
-    private <T extends Object> T getBean(BeanManager manager, Class<T> type) {
+    private <T> T getBean(BeanManager manager, Class<T> type) {
         Set<Bean<?>> beans = manager.getBeans(type);
         Bean<?> bean = manager.resolve(beans);
         if (bean == null) {
             return null;
         }
         CreationalContext<?> context = manager.createCreationalContext(bean);
-        return (T) manager.getReference(bean, type, context);
+        return type.cast(manager.getReference(bean, type, context));
     }
 
     private String concatListOfStrings(List<String> list, int max) {

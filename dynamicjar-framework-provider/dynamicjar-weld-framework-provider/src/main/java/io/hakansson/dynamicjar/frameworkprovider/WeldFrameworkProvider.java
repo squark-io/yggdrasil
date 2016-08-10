@@ -2,8 +2,8 @@ package io.hakansson.dynamicjar.frameworkprovider;
 
 import io.hakansson.dynamicjar.core.api.DynamicJarContext;
 import io.hakansson.dynamicjar.core.api.FrameworkProvider;
+import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
-import io.hakansson.dynamicjar.frameworkprovider.exception.CDIException;
 import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
@@ -22,7 +22,7 @@ public class WeldFrameworkProvider implements FrameworkProvider {
     private static final Logger logger = InternalLoggerBinder.getLogger(WeldFrameworkProvider.class);
 
     @Override
-    public void provide(DynamicJarConfiguration configuration) throws CDIException {
+    public void provide(DynamicJarConfiguration configuration) throws DynamicJarException {
         logger.info("Initializing Weld container...");
         System.setProperty("org.jboss.logging.provider", "slf4j");
         Weld weld = new Weld();

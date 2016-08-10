@@ -2,7 +2,6 @@ package io.hakansson.dynamicjar.core.api.logging;
 
 import io.hakansson.dynamicjar.core.api.Constants;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
-import io.hakansson.dynamicjar.core.api.exception.NestedJarClassloaderException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.core.api.util.LibHelper;
@@ -23,6 +22,7 @@ import java.util.ServiceLoader;
 public class LogHelper {
 
     private static Logger logger = InternalLoggerBinder.getLogger(LogHelper.class);
+    private static String LOGGING_MODULE_NAME = "logger";
 
     @SuppressWarnings("unused")
     public static void initiateLogging(byte[] configurationBytes, Object classLoader, @Nullable URL jarWithConfig) throws
@@ -58,16 +58,16 @@ public class LogHelper {
         } else {
             if (classLoader.getClass().getName().equals(NestedJarClassLoader.class.getName())) {
                 if (internalLogging) logger.info("No logging module found. Trying to load fallback console logger...");
-                URL[] loggerFallbackURLs = LibHelper.getLibs(
+                URL[] loggerFallbackURLs = LibHelper.getLibs(LogHelper.class,
                         Constants.DYNAMICJAR_RUNTIME_OPTIONAL_LIB_PATH + Constants.DYNAMIC_JAR_LOGGING_API_ARTIFACT_ID +
                                 "-fallback.jar");
                 if (loggerFallbackURLs.length >= 1) {
                     if (internalLogging) logger.info("Found fallback logger. Loading...");
                     try {
-                        Method addURLs = classLoader.getClass().getDeclaredMethod("addURLs", URL[].class);
-                        addURLs.invoke(classLoader, (Object) loggerFallbackURLs);
+                        Method addURLs = classLoader.getClass().getDeclaredMethod("addURLs", String.class, URL[].class);
+                        addURLs.invoke(classLoader, LOGGING_MODULE_NAME, loggerFallbackURLs);
                     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                        throw new NestedJarClassloaderException(e);
+                        throw new DynamicJarException(e);
                     }
                 }
             } else if (internalLogging) {
