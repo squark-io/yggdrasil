@@ -8,6 +8,7 @@ import io.hakansson.dynamicjar.core.api.util.LibHelper;
 import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -46,7 +47,6 @@ public class LogHelper {
         LoggingModule loggingModule = null;
         for (LoggingModule module : loggingModules) {
             if (loggingModule == null) {
-                module.initialize(configuration, classLoader, jarWithConfig);
                 loggingModule = module;
             } else {
                 throw new IllegalStateException("Found multiple LoggingModules. Only one can be deployed!");
@@ -54,6 +54,8 @@ public class LogHelper {
         }
 
         if (loggingModule != null) {
+            ILoggerFactory iLoggerFactory = loggingModule.initialize(configuration, classLoader, jarWithConfig);
+            InternalLoggerBinder.getSingleton().notifyLoggingInitialized(iLoggerFactory);
             if (internalLogging) logger.info("Initiated logging using " + loggingModule.getClass().getSimpleName());
         } else {
             if (classLoader.getClass().getName().equals(NestedJarClassLoader.class.getName())) {

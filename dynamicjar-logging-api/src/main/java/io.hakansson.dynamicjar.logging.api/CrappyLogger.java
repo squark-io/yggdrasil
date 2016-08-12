@@ -597,8 +597,7 @@ class CrappyLogger implements Logger {
                 throwable.printStackTrace(printWriter);
                 combinedMessage = (message != null ? message + "\n" : "") + stringWriter.toString();
             }
-
-            String formatted = String.format("%s [%s] %s\t[%s] - %s", DATE_FORMAT.format(new Date()),
+            String formatted = String.format("%s [%s] %-5s %s - %s", DATE_FORMAT.format(new Date()),
                     Thread.currentThread().getName(), level.name(), name, combinedMessage);
             System.out.println(formatted);
         }
