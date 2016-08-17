@@ -36,8 +36,8 @@ public class Bootstrap {
             addURLs.invoke(coreClassLoader, (Object) LibHelper.getLibs(Bootstrap.class, Constants.DYNAMICJAR_RUNTIME_LIB_PATH));
 
             Thread.currentThread().setContextClassLoader(coreClassLoader);
-            Class<?> dynamicJarClass = Class.forName(Constants.DYNAMIC_JAR_CLASS_NAME, true, coreClassLoader);
-            ReflectionUtil.invokeMethod("internalMain", dynamicJarClass, null, new Object[]{args}, null);
+            ReflectionUtil.invokeMethod("internalMain", Constants.DYNAMIC_JAR_CLASS_NAME, null, new Object[]{args}, null,
+                    coreClassLoader, null);
         } catch (Throwable e) {
             if (e instanceof InvocationTargetException) {
                 e = e.getCause();

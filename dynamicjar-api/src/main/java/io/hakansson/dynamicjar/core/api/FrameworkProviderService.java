@@ -12,9 +12,11 @@ import org.apache.commons.collections4.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 
 /**
  * dynamicjar
@@ -59,9 +61,9 @@ public class FrameworkProviderService {
         try {
             byte[] serializedConfig = ConfigurationSerializer.serializeConfig(configuration);
 
-            Class<?> selfClass = classLoader.loadClass(FrameworkProviderService.class.getName());
-            ReflectionUtil.invokeMethod("loadProviders", selfClass, null, new Object[]{serializedConfig}, null);
-        } catch (IOException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
+            ReflectionUtil.invokeMethod("loadProviders", FrameworkProviderService.class.getName(), null,
+                    new Object[]{serializedConfig}, null, classLoader, null);
+        } catch (Throwable e) {
             logger.error(Marker.ANY_MARKER, e);
         }
     }

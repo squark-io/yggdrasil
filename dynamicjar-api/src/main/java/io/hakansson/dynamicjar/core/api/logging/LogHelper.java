@@ -5,6 +5,7 @@ import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.core.api.util.LibHelper;
+import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
 import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +24,8 @@ import java.util.ServiceLoader;
 public class LogHelper {
 
     private static Logger logger = InternalLoggerBinder.getLogger(LogHelper.class);
-    private static String LOGGING_MODULE_NAME = "logger";
+    private static String FALLBACK_LOGGING_MODULE_NAME = "FALLBACK_LOGGER";
+    private static boolean fallbackLoaded = false;
 
     @SuppressWarnings("unused")
     public static void initiateLogging(byte[] configurationBytes, Object classLoader, @Nullable URL jarWithConfig) throws
@@ -54,6 +56,16 @@ public class LogHelper {
         }
 
         if (loggingModule != null) {
+            if (fallbackLoaded && classLoader.getClass().getName().equals(NestedJarClassLoader.class.getName())) {
+                logger.info("Unloading fallback loader and replacing it with " + loggingModule.getClass().getSimpleName());
+                try {
+                    ReflectionUtil.invokeMethod("unloadModule", NestedJarClassLoader.class.getName(), classLoader,
+                            new Object[]{FALLBACK_LOGGING_MODULE_NAME}, null, null, null);
+                } catch (Throwable e) {
+                    throw new DynamicJarException(e);
+                }
+                //((NestedJarClassLoader) classLoader).unloadModule(FALLBACK_LOGGING_MODULE_NAME);
+            }
             ILoggerFactory iLoggerFactory = loggingModule.initialize(configuration, classLoader, jarWithConfig);
             InternalLoggerBinder.getSingleton().notifyLoggingInitialized(iLoggerFactory);
             if (internalLogging) logger.info("Initiated logging using " + loggingModule.getClass().getSimpleName());
@@ -67,10 +79,11 @@ public class LogHelper {
                     if (internalLogging) logger.info("Found fallback logger. Loading...");
                     try {
                         Method addURLs = classLoader.getClass().getDeclaredMethod("addURLs", String.class, URL[].class);
-                        addURLs.invoke(classLoader, LOGGING_MODULE_NAME, loggerFallbackURLs);
+                        addURLs.invoke(classLoader, FALLBACK_LOGGING_MODULE_NAME, loggerFallbackURLs);
                     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                         throw new DynamicJarException(e);
                     }
+                    fallbackLoaded = true;
                 }
             } else if (internalLogging) {
                 logger.info("No logging module found. May not get logging in thirdparty libraries");

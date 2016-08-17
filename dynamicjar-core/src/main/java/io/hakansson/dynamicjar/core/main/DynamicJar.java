@@ -107,10 +107,10 @@ public final class DynamicJar {
         if (StringUtils.isNotEmpty(configuration.getMainClass())) {
             logger.debug("Loading main class " + configuration.getMainClass());
             try {
-                Class<?> mainClass = Class.forName(configuration.getMainClass(), true, forClassLoader);
-                ReflectionUtil.invokeMethod("main", mainClass, null, new Object[]{args}, null);
+                ReflectionUtil.invokeMethod("main", configuration.getMainClass(), null, new Object[]{args}, null, forClassLoader,
+                        null);
                 logger.debug("Main class loaded");
-            } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException e) {
+            } catch (Throwable e) {
                 throw new MainClassLoadException(e);
             }
         }
@@ -124,11 +124,10 @@ public final class DynamicJar {
         }
 
         try {
-            Class<?> dynamicJarClass = Class.forName(DynamicJar.class.getName(), true, classLoader);
-            return (NestedJarClassLoader) ReflectionUtil.invokeMethod("initiate", dynamicJarClass, null,
+            return ReflectionUtil.invokeMethod("initiate", DynamicJar.class.getName(), null,
                     new Object[]{ConfigurationSerializer.serializeConfig(configuration), classLoader},
-                    new Class[]{byte[].class, Object.class});
-        } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException | IOException e) {
+                    new Class[]{byte[].class, Object.class}, classLoader, NestedJarClassLoader.class);
+        } catch (Throwable e) {
             throw new NestedJarClassLoaderException(e);
         }
     }
@@ -150,10 +149,11 @@ public final class DynamicJar {
             throw new DynamicJarException(e);
         }
         try {
-            ReflectionUtil.invokeMethod("initiateLogging", Class.forName(LogHelper.class.getName(), true, isolatedClassLoader),
-                    null, new Object[]{configurationBytes, isolatedClassLoader, classesJar},
-                    new Class[]{byte[].class, Object.class, URL.class});
-        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException e) {
+            //Initiate logging again in case we found logging module, but do it in the isolated classloader.
+            ReflectionUtil.invokeMethod("initiateLogging", LogHelper.class.getName(), null,
+                    new Object[]{configurationBytes, isolatedClassLoader, classesJar},
+                    new Class[]{byte[].class, Object.class, URL.class}, isolatedClassLoader, null);
+        } catch (Throwable e) {
             throw new DynamicJarException(e);
         }
 
@@ -164,6 +164,15 @@ public final class DynamicJar {
 
         RemoteDependencyLoader.loadDependencies(isolatedClassLoader, (NestedJarClassLoader) helperClassLoader, configuration,
                 loadedLibs);
+
+        try {
+            //Initiate logging again in case we found logging module, but do it in the isolated classloader.
+            ReflectionUtil.invokeMethod("initiateLogging", LogHelper.class.getName(), null,
+                    new Object[]{configurationBytes, isolatedClassLoader, classesJar},
+                    new Class[]{byte[].class, Object.class, URL.class}, isolatedClassLoader, null);
+        } catch (Throwable e) {
+            throw new DynamicJarException(e);
+        }
 
         FrameworkProviderService.loadProviders(isolatedClassLoader, configuration);
         logger.info("DynamicJar initiated");

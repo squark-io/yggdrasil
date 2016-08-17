@@ -13,9 +13,9 @@ import java.lang.reflect.Method;
  * Copyright 2016
  */
 public class ReflectionUtil {
-    public static <T> Object invokeMethod(@NotNull String methodName, Class<T> type, @Nullable T instance,
-                                          @Nullable Object[] args, @Nullable Class[] argsTypeOverrides) throws
-            ClassNotFoundException, NoSuchMethodException, IllegalAccessException
+    public static <T> T invokeMethod(@NotNull String methodName, String className, @Nullable Object instance,
+            @Nullable Object[] args, @Nullable Class[] argsTypeOverrides, @Nullable ClassLoader classLoader,
+            @Nullable Class<? extends T> returnType) throws Throwable
     {
         if (args != null && argsTypeOverrides != null && args.length != argsTypeOverrides.length) {
             throw new IllegalStateException("Type override must be same size as arguments array");
@@ -34,6 +34,14 @@ public class ReflectionUtil {
                 }
             }
         }
+        if (classLoader == null) {
+            if (instance != null) {
+                classLoader = instance.getClass().getClassLoader();
+            } else {
+                classLoader = ReflectionUtil.class.getClassLoader();
+            }
+        }
+        Class<?> type = Class.forName(className, true, classLoader);
         Method method;
         try {
             method = type.getMethod(methodName, argsTypes);
@@ -44,12 +52,17 @@ public class ReflectionUtil {
             method.setAccessible(true);
         }
         try {
-            return method.invoke(instance, argsObjects);
+            Object invocationResult = method.invoke(instance, argsObjects);
+            if (returnType != null) {
+                return returnType.cast(invocationResult);
+            } else {
+                return null;
+            }
         } catch (Throwable e) {
             if (e instanceof InvocationTargetException) {
                 e = e.getCause();
             }
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 }
