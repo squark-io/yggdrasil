@@ -15,7 +15,7 @@ import java.util.Date;
  * Created by Erik Håkansson on 2016-06-10.
  * Copyright 2016
  */
-class CrappyLogger implements Logger {
+public class CrappyLogger implements Logger {
 
     private static final String DYNAMICJAR_LOG_LEVEL = "dynamicjar.logLevel";
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss.SSS");

@@ -20,6 +20,7 @@
         <module>dynamicjar-resteasy-framework-provider-integration-test</module>
         <module>dynamicjar-logging-module</module>
         <module>dynamicjar-jpa-framework-provider</module>
+        <module>dynamicjar-logging-module-integration-test</module>
     </modules>
 
 </project>

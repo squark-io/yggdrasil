@@ -64,7 +64,8 @@ public class LogHelper {
                 } catch (Throwable e) {
                     throw new DynamicJarException(e);
                 }
-                //((NestedJarClassLoader) classLoader).unloadModule(FALLBACK_LOGGING_MODULE_NAME);
+            } else {
+                logger.debug("No fallback logger loaded. Not unloading anything.");
             }
             ILoggerFactory iLoggerFactory = loggingModule.initialize(configuration, classLoader, jarWithConfig);
             InternalLoggerBinder.getSingleton().notifyLoggingInitialized(iLoggerFactory);
@@ -84,6 +85,8 @@ public class LogHelper {
                         throw new DynamicJarException(e);
                     }
                     fallbackLoaded = true;
+                } else {
+                    logger.warn("Failed to find fallback logger. May not get logging in thirdparty libraries");
                 }
             } else if (internalLogging) {
                 logger.info("No logging module found. May not get logging in thirdparty libraries");

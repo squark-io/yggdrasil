@@ -53,6 +53,10 @@
         <version.weld-api>2.3.SP2</version.weld-api>
         <version.weld-spi>2.3.SP2</version.weld-spi>
         <version.xnio>3.3.1.Final</version.xnio>
+
+        <version.junit.jupiter>5.0.0-M2</version.junit.jupiter>
+        <version.junit.vintage>4.12.0-M2</version.junit.vintage>
+        <version.junit.platform>1.0.0-M2</version.junit.platform>
     </properties>
 
     <modules>
@@ -412,6 +416,18 @@
                 <version>${version.commons-exec}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${version.junit.jupiter}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.vintage</groupId>
+                <artifactId>junit-vintage-engine</artifactId>
+                <version>${version.junit.vintage}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -501,6 +517,13 @@
                         </excludes>
                         <argLine>${jacoco.argLine}</argLine>
                     </configuration>
+                    <!--<dependencies>-->
+                        <!--<dependency>-->
+                            <!--<groupId>org.junit.platform</groupId>-->
+                            <!--<artifactId>junit-platform-surefire-provider</artifactId>-->
+                            <!--<version>${version.junit.platform}</version>-->
+                        <!--</dependency>-->
+                    <!--</dependencies>-->
                 </plugin>
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>

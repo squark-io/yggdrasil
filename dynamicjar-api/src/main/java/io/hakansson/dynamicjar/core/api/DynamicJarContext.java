@@ -1,5 +1,6 @@
 package io.hakansson.dynamicjar.core.api;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import java.util.Map;
  */
 public class DynamicJarContext {
     private static Map<String, Object> registeredObjects = new HashMap<>();
+    private static URL overriddenLibraryPath;
 
     public static void registerObject(String name, Object object) {
         registeredObjects.put(name, object);
@@ -22,5 +24,13 @@ public class DynamicJarContext {
 
     public static <T> T getObject(Class<T> type) {
         return type.cast(registeredObjects.get(type.getName()));
+    }
+
+    public static void overrideLibraryPath(URL resource) {
+        overriddenLibraryPath = resource;
+    }
+
+    public static URL getOverriddenLibraryPath() {
+        return overriddenLibraryPath;
     }
 }

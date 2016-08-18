@@ -23,6 +23,11 @@
             <groupId>io.hakansson.dynamicjar</groupId>
             <artifactId>dynamicjar-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-logging-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- EXTERNAL DEPENDENCIES -->
         <dependency>
