@@ -119,6 +119,7 @@
                                 <exclude>**/org/slf4j/impl/**</exclude>
                                 <exclude>**/CrappyLogger*</exclude>
                                 <exclude>**/io/hakansson/dynamicjar/core/api/exception/**</exclude>
+                                <exclude>**/dynamicjar-logging-api*.jar</exclude>
                             </excludes>
                         </configuration>
                     </execution>
