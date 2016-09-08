@@ -491,6 +491,12 @@
                             <configuration>
                                 <dataFile>${project.build.directory}/jacoco-it.exec</dataFile>
                                 <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+                                <excludes>
+                                    <exclude>**/HelpMojo*</exclude>
+                                    <exclude>**/org/slf4j/impl/**</exclude>
+                                    <exclude>**/CrappyLogger*</exclude>
+                                    <exclude>**/io/hakansson/dynamicjar/core/api/exception/**</exclude>
+                                </excludes>
                             </configuration>
                         </execution>
                     </executions>
@@ -517,13 +523,6 @@
                         </excludes>
                         <argLine>${jacoco.argLine}</argLine>
                     </configuration>
-                    <!--<dependencies>-->
-                        <!--<dependency>-->
-                            <!--<groupId>org.junit.platform</groupId>-->
-                            <!--<artifactId>junit-platform-surefire-provider</artifactId>-->
-                            <!--<version>${version.junit.platform}</version>-->
-                        <!--</dependency>-->
-                    <!--</dependencies>-->
                 </plugin>
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>

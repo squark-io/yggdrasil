@@ -48,6 +48,11 @@
             <artifactId>dynamicjar-logging-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.hakansson.dynamicjar</groupId>
+            <artifactId>dynamicjar-logging-api</artifactId>
+            <classifier>fallback</classifier>
+        </dependency>
+        <dependency>
             <groupId>io.hakansson.dynamicjar.it</groupId>
             <artifactId>yamlconfigfile-test</artifactId>
             <scope>test</scope>
@@ -112,7 +117,7 @@
                             <excludes>
                                 <exclude>**/HelpMojo*</exclude>
                                 <exclude>**/org/slf4j/impl/**</exclude>
-                                <exclude>**/io/hakansson/dynamicjar/logging/api/CrappyLogger*</exclude>
+                                <exclude>**/CrappyLogger*</exclude>
                                 <exclude>**/io/hakansson/dynamicjar/core/api/exception/**</exclude>
                             </excludes>
                         </configuration>
