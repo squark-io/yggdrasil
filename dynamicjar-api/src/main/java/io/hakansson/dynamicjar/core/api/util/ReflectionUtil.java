@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * dynamicjar
@@ -13,6 +15,9 @@ import java.lang.reflect.Method;
  * Copyright 2016
  */
 public class ReflectionUtil {
+
+    private static Map<String, Method> cachedMethods = new HashMap<>();
+
     public static <T> T invokeMethod(@NotNull String methodName, String className, @Nullable Object instance,
             @Nullable Object[] args, @Nullable Class[] argsTypeOverrides, @Nullable ClassLoader classLoader,
             @Nullable Class<? extends T> returnType) throws Throwable
@@ -20,6 +25,9 @@ public class ReflectionUtil {
         if (args != null && argsTypeOverrides != null && args.length != argsTypeOverrides.length) {
             throw new IllegalStateException("Type override must be same size as arguments array");
         }
+
+        String signature = className + "!" + methodName;
+
         Class<?>[] argsTypes = argsTypeOverrides;
         Object[] argsObjects = null;
         if (args != null) {
@@ -32,8 +40,10 @@ public class ReflectionUtil {
                 if (argsTypeOverrides == null) {
                     argsTypes[i] = args[i] == null ? null : args[i].getClass();
                 }
+                signature += '#' + argsTypes[i].getName();
             }
         }
+
         if (classLoader == null) {
             if (instance != null) {
                 classLoader = instance.getClass().getClassLoader();
@@ -42,14 +52,17 @@ public class ReflectionUtil {
             }
         }
         Class<?> type = Class.forName(className, true, classLoader);
-        Method method;
-        try {
-            method = type.getMethod(methodName, argsTypes);
-        } catch (NoSuchMethodException e) {
-            method = type.getDeclaredMethod(methodName, argsTypes);
-        }
-        if (!method.isAccessible()) {
-            method.setAccessible(true);
+        Method method = cachedMethods.get(signature);
+        if (method == null) {
+            try {
+                method = type.getMethod(methodName, argsTypes);
+            } catch (NoSuchMethodException e) {
+                method = type.getDeclaredMethod(methodName, argsTypes);
+            }
+            if (!method.isAccessible()) {
+                method.setAccessible(true);
+            }
+            cachedMethods.put(signature, method);
         }
         try {
             Object invocationResult = method.invoke(instance, argsObjects);

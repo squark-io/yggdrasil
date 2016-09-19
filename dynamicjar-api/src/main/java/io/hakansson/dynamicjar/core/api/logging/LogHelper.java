@@ -12,8 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ServiceLoader;
 
@@ -79,9 +77,9 @@ public class LogHelper {
                 if (loggerFallbackURLs.length >= 1) {
                     if (internalLogging) logger.info("Found fallback logger. Loading...");
                     try {
-                        Method addURLs = classLoader.getClass().getDeclaredMethod("addURLs", String.class, URL[].class);
-                        addURLs.invoke(classLoader, FALLBACK_LOGGING_MODULE_NAME, loggerFallbackURLs);
-                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        ReflectionUtil.invokeMethod("addURLs", classLoader.getClass().getName(), classLoader,
+                                new Object[]{FALLBACK_LOGGING_MODULE_NAME, loggerFallbackURLs}, null, null, null);
+                    } catch (Throwable e) {
                         throw new DynamicJarException(e);
                     }
                     fallbackLoaded = true;
