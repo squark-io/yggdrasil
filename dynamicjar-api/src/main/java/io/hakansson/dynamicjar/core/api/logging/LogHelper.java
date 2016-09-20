@@ -6,7 +6,7 @@ import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.core.api.util.LibHelper;
 import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
-import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
+import io.hakansson.dynamicjar.logger.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.ILoggerFactory;
@@ -26,19 +26,25 @@ public class LogHelper {
     private static boolean fallbackLoaded = false;
 
     @SuppressWarnings("unused")
-    public static void initiateLogging(byte[] configurationBytes, Object classLoader, @Nullable URL jarWithConfig) throws
+    public static void initiateLoggingWithConfigAsBytes(byte[] configurationBytes, Object classLoader, @Nullable URL jarWithConfig) throws
             DynamicJarException
+    {
+        initiateLoggingWithConfigAsBytes(configurationBytes, classLoader, jarWithConfig, true);
+    }
+
+    public static void initiateLoggingWithConfigAsBytes(byte[] configurationBytes, Object classLoader, @Nullable URL jarWithConfig, boolean logLogging) throws
+        DynamicJarException
     {
 
         DynamicJarConfiguration configuration = ConfigurationSerializer.deserializeConfig(configurationBytes);
-        initiateLogging(configuration, (ClassLoader) classLoader, jarWithConfig, true);
+        initiateLogging(configuration, (ClassLoader) classLoader, jarWithConfig, logLogging);
     }
 
     public static void initiateLogging(@Nullable DynamicJarConfiguration configuration, ClassLoader classLoader,
-            @Nullable URL jarWithConfig, boolean internalLogging) throws DynamicJarException
+            @Nullable URL jarWithConfig, boolean logLogging) throws DynamicJarException
     {
 
-        if (internalLogging) {
+        if (logLogging) {
             logger.info("Initiating logging...");
         }
 
@@ -67,15 +73,14 @@ public class LogHelper {
             }
             ILoggerFactory iLoggerFactory = loggingModule.initialize(configuration, classLoader, jarWithConfig);
             InternalLoggerBinder.getSingleton().notifyLoggingInitialized(iLoggerFactory);
-            if (internalLogging) logger.info("Initiated logging using " + loggingModule.getClass().getSimpleName());
+            if (logLogging) logger.info("Initiated logging using " + loggingModule.getClass().getSimpleName());
         } else {
             if (classLoader.getClass().getName().equals(NestedJarClassLoader.class.getName())) {
-                if (internalLogging) logger.info("No logging module found. Trying to load fallback console logger...");
+                if (logLogging) logger.info("No logging module found. Trying to load fallback console logger...");
                 URL[] loggerFallbackURLs = LibHelper.getLibs(LogHelper.class,
-                        Constants.DYNAMICJAR_RUNTIME_OPTIONAL_LIB_PATH + Constants.DYNAMIC_JAR_LOGGING_API_ARTIFACT_ID +
-                                "-fallback.jar");
+                        Constants.DYNAMICJAR_RUNTIME_OPTIONAL_LIB_PATH + Constants.DYNAMIC_JAR_LOGGING_FALLBACK_ARTIFACT_ID + ".jar");
                 if (loggerFallbackURLs.length >= 1) {
-                    if (internalLogging) logger.info("Found fallback logger. Loading...");
+                    if (logLogging) logger.info("Found fallback logger. Loading...");
                     try {
                         ReflectionUtil.invokeMethod("addURLs", classLoader.getClass().getName(), classLoader,
                                 new Object[]{FALLBACK_LOGGING_MODULE_NAME, loggerFallbackURLs}, null, null, null);
@@ -86,7 +91,7 @@ public class LogHelper {
                 } else {
                     logger.warn("Failed to find fallback logger. May not get logging in thirdparty libraries");
                 }
-            } else if (internalLogging) {
+            } else if (logLogging) {
                 logger.info("No logging module found. May not get logging in thirdparty libraries");
             }
         }

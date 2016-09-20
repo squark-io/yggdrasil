@@ -19,7 +19,7 @@
             <artifactId>nested-jar-classloader</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
             <artifactId>dynamicjar-logging-api</artifactId>
         </dependency>
 

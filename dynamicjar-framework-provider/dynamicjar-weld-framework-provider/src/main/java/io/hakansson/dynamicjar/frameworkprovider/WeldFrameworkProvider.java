@@ -4,7 +4,7 @@ import io.hakansson.dynamicjar.core.api.DynamicJarContext;
 import io.hakansson.dynamicjar.core.api.FrameworkProvider;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
-import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
+import io.hakansson.dynamicjar.logger.api.InternalLoggerBinder;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.slf4j.Logger;

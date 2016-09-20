@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dynamicjar-framework-provider</artifactId>
+        <artifactId>dynamicjar-logging</artifactId>
         <groupId>io.hakansson.dynamicjar</groupId>
         <version>0.0.1-ALPHA-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+    <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
     <artifactId>dynamicjar-logging-module</artifactId>
 
     <dependencies>
@@ -54,9 +54,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
-            <artifactId>dynamicjar-logging-api</artifactId>
-            <classifier>fallback</classifier>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
+            <artifactId>dynamicjar-logging-fallback</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -67,7 +66,8 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <classpathDependencyExcludes>
-                        <classpathDependencyExclude>${project.groupId}:${project.artifactId}</classpathDependencyExclude>
+                        <classpathDependencyExclude>${project.groupId}:${project.artifactId}
+                        </classpathDependencyExclude>
                         <classpathDependencyExclude>org.slf4j:slf4j-jdk14</classpathDependencyExclude>
                         <classpathDependencyExclude>org.apache.logging.log4j:*</classpathDependencyExclude>
                     </classpathDependencyExcludes>
@@ -97,10 +97,11 @@
                         </goals>
                         <configuration>
                             <includeGroupIds>io.hakansson.dynamicjar</includeGroupIds>
-                            <includeArtifactIds>dynamicjar-logging-api</includeArtifactIds>
+                            <includeArtifactIds>dynamicjar-logging-api,dynamicjar-logging-fallback</includeArtifactIds>
                             <stripVersion>true</stripVersion>
                             <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
-                            <outputDirectory>${project.build.directory}/classes/META-INF/dynamicjar-optional-lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/classes/META-INF/dynamicjar-optional-lib
+                            </outputDirectory>
                             <skip>${skipTests}</skip>
                         </configuration>
                     </execution>
@@ -115,7 +116,7 @@
                             <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
                             <outputDirectory>${project.build.directory}/test-dependencies</outputDirectory>
                             <skip>${skipTests}</skip>
-                            <excludeArtifactIds>dynamicjar-logging-api</excludeArtifactIds>
+                            <excludeArtifactIds>dynamicjar-logging-api,dynamicjar-logging-fallback</excludeArtifactIds>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,9 +1,7 @@
-package io.hakansson.dynamicjar.logging.api;
+package io.hakansson.dynamicjar.logger.api;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
-
-import java.text.SimpleDateFormat;
 
 /**
  * dynamicjar

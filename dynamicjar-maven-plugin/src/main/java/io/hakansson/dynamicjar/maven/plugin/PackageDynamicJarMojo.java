@@ -429,7 +429,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         addDependency(getCoreDependency(), targetJarOutputStream, true, true, Constants.DYNAMICJAR_RUNTIME_LIB_PATH, null);
         addDependency(getDependencyResolutionProvider(), targetJarOutputStream, true, true, Constants.DYNAMICJAR_RUNTIME_LIB_PATH,
                 null);
-        String fallbackName = Constants.DYNAMIC_JAR_LOGGING_API_ARTIFACT_ID + "-fallback.jar";
+        String fallbackName = Constants.DYNAMIC_JAR_LOGGING_FALLBACK_ARTIFACT_ID + ".jar";
         addDependency(getLoggingFallback(), targetJarOutputStream, true, false, Constants.DYNAMICJAR_RUNTIME_OPTIONAL_LIB_PATH,
                 fallbackName);
         addDependency(getBootstrapDependency(), targetJarOutputStream, false, false, null, null);
@@ -513,8 +513,7 @@ public class PackageDynamicJarMojo extends AbstractMojo {
         org.apache.maven.model.Dependency loggingFallbackDependency = new org.apache.maven.model.Dependency();
         String dynamicJarVersion = pluginDescriptor.getVersion();
         loggingFallbackDependency.setGroupId(Constants.DYNAMIC_JAR_LOGGING_API_GROUP_ID);
-        loggingFallbackDependency.setArtifactId(Constants.DYNAMIC_JAR_LOGGING_API_ARTIFACT_ID);
-        loggingFallbackDependency.setClassifier("fallback");
+        loggingFallbackDependency.setArtifactId(Constants.DYNAMIC_JAR_LOGGING_FALLBACK_ARTIFACT_ID);
         loggingFallbackDependency.setVersion(dynamicJarVersion);
         loggingFallbackDependency.setScope(Scopes.COMPILE);
         return loggingFallbackDependency;

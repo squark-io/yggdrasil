@@ -6,7 +6,7 @@ import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.core.api.util.FrameworkProviderComparator;
 import io.hakansson.dynamicjar.core.api.util.FrameworkProviderUtil;
 import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
-import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
+import io.hakansson.dynamicjar.logger.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.collections4.IteratorUtils;
 import org.slf4j.Logger;

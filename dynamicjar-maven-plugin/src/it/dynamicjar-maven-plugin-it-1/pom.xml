@@ -20,7 +20,7 @@
     <!-- need a dependency for coverage -->
     <dependencies>
         <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
             <artifactId>dynamicjar-logging-module</artifactId>
             <scope>provided</scope>
         </dependency>

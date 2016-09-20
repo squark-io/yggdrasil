@@ -4,7 +4,7 @@ import io.hakansson.dynamicjar.core.api.Constants;
 import io.hakansson.dynamicjar.core.api.DynamicJarContext;
 import io.hakansson.dynamicjar.core.api.logging.LogHelper;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
-import io.hakansson.dynamicjar.logging.api.CrappyLogger;
+import io.hakansson.dynamicjar.logger.api.CrappyLogger;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.Assertions;
@@ -32,24 +32,40 @@ import java.util.List;
 @SuppressWarnings("Duplicates")
 public class LoggingModuleIntegrationTest {
 
-    private static PrintStream console = System.out;
+    private static PrintStream originalOut = System.out;
+    private static PrintStream originalErr = System.err;
+    private static ByteArrayOutputStream combined = new ByteArrayOutputStream();
     private static ByteArrayOutputStream out = new ByteArrayOutputStream() {
         @Override
         public synchronized void write(byte[] b, int off, int len) {
-            super.write(b, off, len);
-            console.write(b, off, len);
+            combined.write(b, off, len);
+            originalOut.write(b, off, len);
         }
 
         @Override
         public void write(byte[] b) throws IOException {
-            super.write(b);
-            console.write(b);
+            combined.write(b);
+            originalOut.write(b);
+        }
+    };
+    private static ByteArrayOutputStream err = new ByteArrayOutputStream() {
+        @Override
+        public synchronized void write(byte[] b, int off, int len) {
+            combined.write(b, off, len);
+            originalErr.write(b, off, len);
+        }
+
+        @Override
+        public void write(byte[] b) throws IOException {
+            combined.write(b);
+            originalErr.write(b);
         }
     };
 
     @BeforeAll
     public static void setUp() {
         System.setOut(new PrintStream(out));
+        System.setErr(new PrintStream(err));
     }
 
     @Test
@@ -60,29 +76,28 @@ public class LoggingModuleIntegrationTest {
 
         List<URL> urlList = new ArrayList<>();
         for (URL url : urls) {
-            if (!url.getFile().contains("slf4j-jdk14") &&
-                    !url.getFile().matches(".*dynamicjar-logging-api-.*-fallback\\.jar.*") &&
-                    !url.getFile().contains("dynamicjar-logging-module"))
-            {
+            if (!url.getFile().contains("slf4j-jdk14") && !url.getFile().contains("dynamicjar-logging-fallback") &&
+                !url.getFile().contains("dynamicjar-logging-module")) {
                 urlList.add(url);
             }
         }
         nestedJarClassLoader.addURLs(urlList.toArray(new URL[urlList.size()]));
         String libsUrl = getClass().getClassLoader().getResource("META-INF/dynamicjar-optional-lib").getFile();
-        URL overrideLibraryPathURL = new File(new File(URI.create(libsUrl.substring(0, libsUrl.indexOf("!/")))).getParentFile(),
-                "classes").toURI().toURL();
+        URL overrideLibraryPathURL =
+            new File(new File(URI.create(libsUrl.substring(0, libsUrl.indexOf("!/")))).getParentFile(), "classes").toURI()
+                .toURL();
         Class<?> dynamicJarContext = nestedJarClassLoader.loadClass(DynamicJarContext.class.getName());
         Method overrideLibraryPath = dynamicJarContext.getMethod("overrideLibraryPath", URL.class);
         overrideLibraryPath.invoke(null, overrideLibraryPathURL);
         initiateLogging(new DynamicJarConfiguration(), nestedJarClassLoader);
-        Method loggerFactoryMethod = Class.forName(LoggerFactory.class.getName(), true, nestedJarClassLoader).getMethod(
-                "getLogger", Class.class);
+        Method loggerFactoryMethod =
+            Class.forName(LoggerFactory.class.getName(), true, nestedJarClassLoader).getMethod("getLogger", Class.class);
         Object logger = loggerFactoryMethod.invoke(null, LoggingModuleIntegrationTest.class);
 
         Assertions.assertEquals(CrappyLogger.class.getName(), logger.getClass().getName());
 
         nestedJarClassLoader.addURLs(
-                new File("target/dynamicjar-logging-module-" + System.getProperty("project.version") + ".jar").toURI().toURL());
+            new File("target/dynamicjar-logging-module-" + System.getProperty("project.version") + ".jar").toURI().toURL());
         File testDependenciesFile = new File("target/test-dependencies");
         List<URL> testDependencies = new ArrayList<>();
         for (File dep : testDependenciesFile.listFiles()) {
@@ -97,7 +112,7 @@ public class LoggingModuleIntegrationTest {
     }
 
     private void assertOutputDoesNotContainSlf4jWarnings() {
-        String result = new String(out.toByteArray());
+        String result = new String(combined.toByteArray());
         if (result.contains("Failed to load class \"org.slf4j.impl.StaticLoggerBinder\"")) {
             throw new AssertionError("Failed to find org.slf4j.impl.StaticLoggerBinder implementation");
         }
@@ -107,11 +122,10 @@ public class LoggingModuleIntegrationTest {
     }
 
 
-    private void initiateLogging(DynamicJarConfiguration configuration, NestedJarClassLoader nestedJarClassLoader) throws
-            Exception
-    {
+    private void initiateLogging(DynamicJarConfiguration configuration, NestedJarClassLoader nestedJarClassLoader)
+        throws Exception {
         Class<?> logHelper = nestedJarClassLoader.loadClass(LogHelper.class.getName(), true);
-        Method initiateLogging = logHelper.getMethod("initiateLogging", byte[].class, Object.class, URL.class);
+        Method initiateLogging = logHelper.getMethod("initiateLoggingWithConfigAsBytes", byte[].class, Object.class, URL.class);
         initiateLogging.invoke(null, SerializationUtils.serialize(configuration), nestedJarClassLoader, null);
     }
 }

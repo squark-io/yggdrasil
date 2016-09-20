@@ -1,4 +1,4 @@
-package io.hakansson.dynamicjar.logging.api;
+package io.hakansson.dynamicjar.logger.api;
 
 /**
  *

@@ -12,7 +12,7 @@ import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.core.api.util.LibHelper;
 import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
-import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
+import io.hakansson.dynamicjar.logger.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarURLStreamHandler;
 import io.hakansson.dynamicjar.nestedjarclassloader.exception.NestedJarClassLoaderException;
@@ -150,7 +150,7 @@ public final class DynamicJar {
         }
         try {
             //Initiate logging again in case we found logging module, but do it in the isolated classloader.
-            ReflectionUtil.invokeMethod("initiateLogging", LogHelper.class.getName(), null,
+            ReflectionUtil.invokeMethod("initiateLoggingWithConfigAsBytes", LogHelper.class.getName(), null,
                     new Object[]{configurationBytes, isolatedClassLoader, classesJar},
                     new Class[]{byte[].class, Object.class, URL.class}, isolatedClassLoader, null);
         } catch (Throwable e) {
@@ -167,9 +167,9 @@ public final class DynamicJar {
 
         try {
             //Initiate logging again in case we found logging module, but do it in the isolated classloader.
-            ReflectionUtil.invokeMethod("initiateLogging", LogHelper.class.getName(), null,
-                    new Object[]{configurationBytes, isolatedClassLoader, classesJar},
-                    new Class[]{byte[].class, Object.class, URL.class}, isolatedClassLoader, null);
+            ReflectionUtil.invokeMethod("initiateLoggingWithConfigAsBytes", LogHelper.class.getName(), null,
+                    new Object[]{configurationBytes, isolatedClassLoader, classesJar, false},
+                    new Class[]{byte[].class, Object.class, URL.class, boolean.class}, isolatedClassLoader, null);
         } catch (Throwable e) {
             throw new DynamicJarException(e);
         }

@@ -68,9 +68,9 @@
         <module>dynamicjar-integration-tests</module>
         <module>dynamicjar-framework-provider</module>
         <module>nested-jar-classloader</module>
-        <module>dynamicjar-logging-api</module>
         <module>dynamicjar-bootstrap</module>
         <module>dynamicjar-coverage-report</module>
+        <module>dynamicjar-logging</module>
     </modules>
 
     <dependencyManagement>
@@ -122,19 +122,18 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+                <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
                 <artifactId>dynamicjar-logging-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar</groupId>
+                <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
                 <artifactId>dynamicjar-logging-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar</groupId>
-                <artifactId>dynamicjar-logging-api</artifactId>
-                <classifier>fallback</classifier>
+                <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
+                <artifactId>dynamicjar-logging-fallback</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

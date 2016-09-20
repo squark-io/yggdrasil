@@ -44,13 +44,12 @@
             <artifactId>dynamicjar-maven-plugin</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
             <artifactId>dynamicjar-logging-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
-            <artifactId>dynamicjar-logging-api</artifactId>
-            <classifier>fallback</classifier>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
+            <artifactId>dynamicjar-logging-fallback</artifactId>
         </dependency>
         <dependency>
             <groupId>io.hakansson.dynamicjar.it</groupId>
@@ -67,7 +66,7 @@
             <artifactId>dynamicjar-jpa-framework-provider</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
             <artifactId>dynamicjar-logging-module</artifactId>
         </dependency>
         <dependency>

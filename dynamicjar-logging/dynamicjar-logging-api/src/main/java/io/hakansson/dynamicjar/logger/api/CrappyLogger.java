@@ -1,4 +1,4 @@
-package io.hakansson.dynamicjar.logging.api;
+package io.hakansson.dynamicjar.logger.api;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
