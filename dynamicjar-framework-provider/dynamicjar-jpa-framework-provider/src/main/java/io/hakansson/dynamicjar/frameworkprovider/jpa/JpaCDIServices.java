@@ -1,6 +1,6 @@
 package io.hakansson.dynamicjar.frameworkprovider.jpa;
 
-import io.hakansson.dynamicjar.logger.api.InternalLoggerBinder;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.weld.injection.spi.JpaInjectionServices;
 import org.jboss.weld.injection.spi.ResourceReference;

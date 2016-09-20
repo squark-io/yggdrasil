@@ -6,7 +6,7 @@ import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.util.ConfigurationSerializer;
 import io.hakansson.dynamicjar.core.api.util.LibHelper;
 import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
-import io.hakansson.dynamicjar.logger.api.InternalLoggerBinder;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.ILoggerFactory;

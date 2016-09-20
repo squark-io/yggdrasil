@@ -7,7 +7,7 @@ import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarDependency;
 import io.hakansson.dynamicjar.core.api.util.Scopes;
 import io.hakansson.dynamicjar.core.main.factory.DependencyResolutionProviderFactory;
-import io.hakansson.dynamicjar.logger.api.InternalLoggerBinder;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

@@ -6,7 +6,7 @@ import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
 import io.hakansson.dynamicjar.core.api.model.ProviderConfiguration;
 import io.hakansson.dynamicjar.frameworkprovider.exception.DynamicJarMultipleResourceException;
-import io.hakansson.dynamicjar.logger.api.InternalLoggerBinder;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.undertow.Undertow;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;

@@ -3,7 +3,7 @@ package io.hakansson.dynamicjar.core.main;
 import io.hakansson.dynamicjar.core.api.Constants;
 import io.hakansson.dynamicjar.core.api.util.LibHelper;
 import io.hakansson.dynamicjar.core.api.util.ReflectionUtil;
-import io.hakansson.dynamicjar.logger.api.InternalLoggerBinder;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.BootstrapClassLoader;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.slf4j.Logger;

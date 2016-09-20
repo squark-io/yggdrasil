@@ -3,7 +3,7 @@ package io.hakansson.dynamicjar.core.main.factory;
 import io.hakansson.dynamicjar.core.api.DependencyResolutionProvider;
 import io.hakansson.dynamicjar.core.api.exception.DependencyResolutionException;
 import io.hakansson.dynamicjar.core.main.DynamicJar;
-import io.hakansson.dynamicjar.logger.api.InternalLoggerBinder;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.slf4j.Logger;
 

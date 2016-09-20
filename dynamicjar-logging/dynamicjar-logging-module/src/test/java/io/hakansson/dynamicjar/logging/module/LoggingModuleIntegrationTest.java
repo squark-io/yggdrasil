@@ -1,10 +1,10 @@
-package io.hakansson.dynamicjar.module.logging;
+package io.hakansson.dynamicjar.logging.module;
 
 import io.hakansson.dynamicjar.core.api.Constants;
 import io.hakansson.dynamicjar.core.api.DynamicJarContext;
 import io.hakansson.dynamicjar.core.api.logging.LogHelper;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
-import io.hakansson.dynamicjar.logger.api.CrappyLogger;
+import io.hakansson.dynamicjar.logging.api.CrappyLogger;
 import io.hakansson.dynamicjar.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.Assertions;

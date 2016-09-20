@@ -4,7 +4,7 @@ import io.hakansson.dynamicjar.core.api.DependencyResolutionProvider;
 import io.hakansson.dynamicjar.core.api.exception.DependencyResolutionException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarDependency;
 import io.hakansson.dynamicjar.core.api.util.Scopes;
-import io.hakansson.dynamicjar.logger.api.InternalLoggerBinder;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import io.hakansson.dynamicjar.maven.provider.api.DynamicJarDependencyMavenUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;

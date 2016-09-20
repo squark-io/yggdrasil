@@ -36,6 +36,10 @@
             <groupId>io.hakansson.dynamicjar</groupId>
             <artifactId>dynamicjar-bootstrap</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
+            <artifactId>dynamicjar-logging-fallback</artifactId>
+        </dependency>
 
         <!-- EXTERNAL DEPENDENCIES -->
         <dependency>

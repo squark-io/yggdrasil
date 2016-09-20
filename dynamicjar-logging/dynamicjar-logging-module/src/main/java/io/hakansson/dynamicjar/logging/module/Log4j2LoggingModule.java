@@ -1,4 +1,4 @@
-package io.hakansson.dynamicjar.module.logging;
+package io.hakansson.dynamicjar.logging.module;
 
 import io.hakansson.dynamicjar.core.api.Constants;
 import io.hakansson.dynamicjar.core.api.exception.DependencyResolutionException;

@@ -3,7 +3,7 @@ package io.hakansson.dynamicjar.frameworkprovider.jpa;
 import io.hakansson.dynamicjar.core.api.FrameworkProvider;
 import io.hakansson.dynamicjar.core.api.exception.DynamicJarException;
 import io.hakansson.dynamicjar.core.api.model.DynamicJarConfiguration;
-import io.hakansson.dynamicjar.logger.api.InternalLoggerBinder;
+import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
