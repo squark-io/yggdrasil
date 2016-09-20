@@ -6,10 +6,9 @@
     <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider.it</groupId>
     <artifactId>dynamicjar-weld-framework-provider-integration-test</artifactId>
     <parent>
-        <groupId>io.hakansson</groupId>
-        <artifactId>dynamicjar</artifactId>
-        <version>0.0.1-ALPHA-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <artifactId>dynamicjar-framework-provider</artifactId>
+        <groupId>io.hakansson.dynamicjar</groupId>
+        <version>0.0.2-ALPHA-SNAPSHOT</version>
     </parent>
 
     <description>A simple IT verifying the basic use case.</description>
