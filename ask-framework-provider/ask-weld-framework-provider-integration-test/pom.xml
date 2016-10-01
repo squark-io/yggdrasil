@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.squark.ask.ask-framework-provider.it</groupId>
+    <artifactId>ask-weld-framework-provider-integration-test</artifactId>
+    <parent>
+        <artifactId>ask-framework-provider</artifactId>
+        <groupId>io.squark.ask</groupId>
+        <version>0.0.2-ALPHA-SNAPSHOT</version>
+    </parent>
+
+    <description>A simple IT verifying the basic use case.</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- INTERNAL DEPENDENCIES -->
+        <dependency>
+            <groupId>io.squark.ask</groupId>
+            <artifactId>ask-weld-framework-provider</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- TEST DEPENDENCIES -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <executions>
+                    <execution>
+                        <id>it</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${version.maven.failsafe.plugin}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*IntegrationTest.java</include>
+                    </includes>
+                    <systemProperties>
+                        <targetArtifact>
+                            ${project.build.directory}/${project.artifactId}-${project.version}-ask.jar
+                        </targetArtifact>
+                        <jacoco.argLine>${jacoco.argLine}</jacoco.argLine>
+                    </systemProperties>
+                    <argLine>${jacoco.argLine}</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.squark.ask</groupId>
+                <artifactId>ask-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package-ask</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
