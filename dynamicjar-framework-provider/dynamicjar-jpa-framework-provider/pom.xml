@@ -4,17 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>dynamicjar-framework-provider</artifactId>
-        <groupId>io.hakansson.dynamicjar</groupId>
+        <groupId>io.squark.dynamicjar</groupId>
         <version>0.0.2-ALPHA-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.hakansson.dynamicjar.frameworkprovider</groupId>
+    <groupId>io.squark.dynamicjar.frameworkprovider</groupId>
     <artifactId>dynamicjar-jpa-framework-provider</artifactId>
     <dependencies>
         <!-- INTERNAL DEPENDENCIES -->
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
+            <groupId>io.squark.dynamicjar</groupId>
             <artifactId>dynamicjar-api</artifactId>
         </dependency>
 
@@ -70,17 +70,17 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <groupId>io.squark.dynamicjar.dynamicjar-framework-provider</groupId>
             <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
+            <groupId>io.squark.dynamicjar</groupId>
             <artifactId>dynamicjar-weld-framework-provider</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
+            <groupId>io.squark.dynamicjar.dynamicjar-logging</groupId>
             <artifactId>dynamicjar-logging-fallback</artifactId>
             <scope>test</scope>
         </dependency>

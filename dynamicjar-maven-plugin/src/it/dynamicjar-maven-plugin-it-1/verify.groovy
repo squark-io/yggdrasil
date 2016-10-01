@@ -10,5 +10,5 @@ JarFile jarFile = new JarFile(new File(basedir, "target/dynamicjar-maven-plugin-
 JarEntry configEntry = jarFile.getEntry("META-INF/dynamicjar.json") as JarEntry;
 assert configEntry != null;
 
-JarEntry classEntry = jarFile.getEntry("io/hakansson/dynamicjar/core/main/Bootstrap.class") as JarEntry
+JarEntry classEntry = jarFile.getEntry("io/squark/dynamicjar/core/main/Bootstrap.class") as JarEntry
 assert classEntry != null;

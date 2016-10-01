@@ -4,25 +4,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>dynamicjar</artifactId>
-        <groupId>io.hakansson</groupId>
+        <groupId>io.squark</groupId>
         <version>0.0.2-ALPHA-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.hakansson.dynamicjar</groupId>
+    <groupId>io.squark.dynamicjar</groupId>
     <artifactId>dynamicjar-bootstrap</artifactId>
     <dependencies>
         <!-- INTERNAL DEPENDENCIES -->
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
+            <groupId>io.squark.dynamicjar</groupId>
             <artifactId>dynamicjar-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
+            <groupId>io.squark.dynamicjar</groupId>
             <artifactId>nested-jar-classloader</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
+            <groupId>io.squark.dynamicjar</groupId>
             <artifactId>dynamicjar-core</artifactId>
             <scope>provided</scope>
         </dependency>

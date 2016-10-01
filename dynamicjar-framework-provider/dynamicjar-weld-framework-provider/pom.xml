@@ -6,18 +6,18 @@
 
     <parent>
         <artifactId>dynamicjar-framework-provider</artifactId>
-        <groupId>io.hakansson.dynamicjar</groupId>
+        <groupId>io.squark.dynamicjar</groupId>
         <version>0.0.2-ALPHA-SNAPSHOT</version>
     </parent>
 
-    <groupId>io.hakansson.dynamicjar</groupId>
+    <groupId>io.squark.dynamicjar</groupId>
     <artifactId>dynamicjar-weld-framework-provider</artifactId>
 
     <dependencies>
 
         <!-- INTERNAL DEPENDENCIES -->
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
+            <groupId>io.squark.dynamicjar</groupId>
             <artifactId>dynamicjar-api</artifactId>
         </dependency>
 

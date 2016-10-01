@@ -2,12 +2,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.hakansson.dynamicjar</groupId>
+    <groupId>io.squark.dynamicjar</groupId>
     <artifactId>dynamicjar-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
     <parent>
-        <groupId>io.hakansson</groupId>
+        <groupId>io.squark</groupId>
         <artifactId>dynamicjar</artifactId>
         <version>0.0.2-ALPHA-SNAPSHOT</version>
     </parent>
@@ -25,19 +25,19 @@
         <!-- LOCAL DEPENDENCIES -->
 
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
+            <groupId>io.squark.dynamicjar</groupId>
             <artifactId>dynamicjar-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
+            <groupId>io.squark.dynamicjar</groupId>
             <artifactId>dynamicjar-maven-provider-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar</groupId>
+            <groupId>io.squark.dynamicjar</groupId>
             <artifactId>dynamicjar-bootstrap</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
+            <groupId>io.squark.dynamicjar.dynamicjar-logging</groupId>
             <artifactId>dynamicjar-logging-fallback</artifactId>
         </dependency>
 
@@ -90,7 +90,7 @@
 
         <!-- TEST DEPENDENCIES -->
         <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
+            <groupId>io.squark.dynamicjar.dynamicjar-logging</groupId>
             <artifactId>dynamicjar-logging-module</artifactId>
             <scope>test</scope>
         </dependency>

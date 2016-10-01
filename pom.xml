@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.hakansson</groupId>
+    <groupId>io.squark</groupId>
     <artifactId>dynamicjar</artifactId>
     <version>0.0.2-ALPHA-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -77,87 +77,87 @@
         <dependencies>
             <!-- INTERNAL DEPENDENCIES -->
             <dependency>
-                <groupId>io.hakansson.dynamicjar</groupId>
+                <groupId>io.squark.dynamicjar</groupId>
                 <artifactId>dynamicjar-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar</groupId>
+                <groupId>io.squark.dynamicjar</groupId>
                 <artifactId>dynamicjar-bootstrap</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar</groupId>
+                <groupId>io.squark.dynamicjar</groupId>
                 <artifactId>dynamicjar-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar</groupId>
+                <groupId>io.squark.dynamicjar</groupId>
                 <artifactId>nested-jar-classloader</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar</groupId>
+                <groupId>io.squark.dynamicjar</groupId>
                 <artifactId>dynamicjar-maven-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar</groupId>
+                <groupId>io.squark.dynamicjar</groupId>
                 <artifactId>dynamicjar-maven-provider-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar</groupId>
+                <groupId>io.squark.dynamicjar</groupId>
                 <artifactId>dynamicjar-maven-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar</groupId>
+                <groupId>io.squark.dynamicjar</groupId>
                 <artifactId>dynamicjar-weld-framework-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+                <groupId>io.squark.dynamicjar.dynamicjar-framework-provider</groupId>
                 <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
+                <groupId>io.squark.dynamicjar.dynamicjar-logging</groupId>
                 <artifactId>dynamicjar-logging-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
+                <groupId>io.squark.dynamicjar.dynamicjar-logging</groupId>
                 <artifactId>dynamicjar-logging-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar.dynamicjar-logging</groupId>
+                <groupId>io.squark.dynamicjar.dynamicjar-logging</groupId>
                 <artifactId>dynamicjar-logging-fallback</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar.it</groupId>
+                <groupId>io.squark.dynamicjar.it</groupId>
                 <artifactId>yamlconfigfile-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar.it</groupId>
+                <groupId>io.squark.dynamicjar.it</groupId>
                 <artifactId>jsonconfigfile-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar.frameworkprovider</groupId>
+                <groupId>io.squark.dynamicjar.frameworkprovider</groupId>
                 <artifactId>dynamicjar-jpa-framework-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider.it</groupId>
+                <groupId>io.squark.dynamicjar.dynamicjar-framework-provider.it</groupId>
                 <artifactId>dynamicjar-resteasy-framework-provider-integration-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider.it</groupId>
+                <groupId>io.squark.dynamicjar.dynamicjar-framework-provider.it</groupId>
                 <artifactId>dynamicjar-weld-framework-provider-integration-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -494,7 +494,7 @@
                                     <exclude>**/HelpMojo*</exclude>
                                     <exclude>**/org/slf4j/impl/**</exclude>
                                     <exclude>**/CrappyLogger*</exclude>
-                                    <exclude>**/io/hakansson/dynamicjar/core/api/exception/**</exclude>
+                                    <exclude>**/io/squark/dynamicjar/core/api/exception/**</exclude>
                                 </excludes>
                             </configuration>
                         </execution>

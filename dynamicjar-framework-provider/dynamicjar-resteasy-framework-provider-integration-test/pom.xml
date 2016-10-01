@@ -3,11 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider.it</groupId>
+    <groupId>io.squark.dynamicjar.dynamicjar-framework-provider.it</groupId>
     <artifactId>dynamicjar-resteasy-framework-provider-integration-test</artifactId>
     <parent>
         <artifactId>dynamicjar-framework-provider</artifactId>
-        <groupId>io.hakansson.dynamicjar</groupId>
+        <groupId>io.squark.dynamicjar</groupId>
         <version>0.0.2-ALPHA-SNAPSHOT</version>
     </parent>
 
@@ -20,7 +20,7 @@
     <dependencies>
         <!-- INTERNAL DEPENDENCIES -->
         <dependency>
-            <groupId>io.hakansson.dynamicjar.dynamicjar-framework-provider</groupId>
+            <groupId>io.squark.dynamicjar.dynamicjar-framework-provider</groupId>
             <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -72,7 +72,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>io.hakansson.dynamicjar</groupId>
+                <groupId>io.squark.dynamicjar</groupId>
                 <artifactId>dynamicjar-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <executions>

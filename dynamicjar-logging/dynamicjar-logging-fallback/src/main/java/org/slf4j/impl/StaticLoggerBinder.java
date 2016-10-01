@@ -1,7 +1,7 @@
 package org.slf4j.impl;
 
-import io.hakansson.dynamicjar.logging.api.CrappyLoggerFactory;
-import io.hakansson.dynamicjar.logging.api.InternalLoggerBinder;
+import io.squark.dynamicjar.logging.api.CrappyLoggerFactory;
+import io.squark.dynamicjar.logging.api.InternalLoggerBinder;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
