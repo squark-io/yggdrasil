@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>yggdrasil</artifactId>
+        <groupId>io.squark</groupId>
+        <version>0.0.2-ALPHA-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+
+    <groupId>io.squark.yggdrasil</groupId>
+    <artifactId>yggdrasil-framework-provider</artifactId>
+
+    <modules>
+        <module>yggdrasil-weld-framework-provider</module>
+        <module>yggdrasil-weld-framework-provider-integration-test</module>
+        <module>yggdrasil-resteasy-framework-provider</module>
+        <module>yggdrasil-resteasy-framework-provider-integration-test</module>
+        <module>yggdrasil-jpa-framework-provider</module>
+    </modules>
+
+</project>

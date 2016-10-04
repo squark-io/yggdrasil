@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.squark</groupId>
-    <artifactId>dynamicjar</artifactId>
+    <artifactId>yggdrasil</artifactId>
     <version>0.0.2-ALPHA-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -60,105 +60,105 @@
     </properties>
 
     <modules>
-        <module>dynamicjar-core</module>
-        <module>dynamicjar-maven-provider</module>
-        <module>dynamicjar-api</module>
-        <module>dynamicjar-maven-plugin</module>
-        <module>dynamicjar-maven-provider-api</module>
-        <module>dynamicjar-integration-tests</module>
-        <module>dynamicjar-framework-provider</module>
+        <module>yggdrasil-core</module>
+        <module>yggdrasil-maven-provider</module>
+        <module>yggdrasil-api</module>
+        <module>yggdrasil-maven-plugin</module>
+        <module>yggdrasil-maven-provider-api</module>
+        <module>yggdrasil-integration-tests</module>
+        <module>yggdrasil-framework-provider</module>
         <module>nested-jar-classloader</module>
-        <module>dynamicjar-bootstrap</module>
-        <module>dynamicjar-coverage-report</module>
-        <module>dynamicjar-logging</module>
+        <module>yggdrasil-bootstrap</module>
+        <module>yggdrasil-coverage-report</module>
+        <module>yggdrasil-logging</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <!-- INTERNAL DEPENDENCIES -->
             <dependency>
-                <groupId>io.squark.dynamicjar</groupId>
-                <artifactId>dynamicjar-api</artifactId>
+                <groupId>io.squark.yggdrasil</groupId>
+                <artifactId>yggdrasil-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar</groupId>
-                <artifactId>dynamicjar-bootstrap</artifactId>
+                <groupId>io.squark.yggdrasil</groupId>
+                <artifactId>yggdrasil-bootstrap</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar</groupId>
-                <artifactId>dynamicjar-core</artifactId>
+                <groupId>io.squark.yggdrasil</groupId>
+                <artifactId>yggdrasil-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar</groupId>
+                <groupId>io.squark.yggdrasil</groupId>
                 <artifactId>nested-jar-classloader</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar</groupId>
-                <artifactId>dynamicjar-maven-provider</artifactId>
+                <groupId>io.squark.yggdrasil</groupId>
+                <artifactId>yggdrasil-maven-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar</groupId>
-                <artifactId>dynamicjar-maven-provider-api</artifactId>
+                <groupId>io.squark.yggdrasil</groupId>
+                <artifactId>yggdrasil-maven-provider-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar</groupId>
-                <artifactId>dynamicjar-maven-plugin</artifactId>
+                <groupId>io.squark.yggdrasil</groupId>
+                <artifactId>yggdrasil-maven-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar</groupId>
-                <artifactId>dynamicjar-weld-framework-provider</artifactId>
+                <groupId>io.squark.yggdrasil</groupId>
+                <artifactId>yggdrasil-weld-framework-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar.dynamicjar-framework-provider</groupId>
-                <artifactId>dynamicjar-resteasy-framework-provider</artifactId>
+                <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
+                <artifactId>yggdrasil-resteasy-framework-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar.dynamicjar-logging</groupId>
-                <artifactId>dynamicjar-logging-module</artifactId>
+                <groupId>io.squark.yggdrasil.yggdrasil-logging</groupId>
+                <artifactId>yggdrasil-logging-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar.dynamicjar-logging</groupId>
-                <artifactId>dynamicjar-logging-api</artifactId>
+                <groupId>io.squark.yggdrasil.yggdrasil-logging</groupId>
+                <artifactId>yggdrasil-logging-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar.dynamicjar-logging</groupId>
-                <artifactId>dynamicjar-logging-fallback</artifactId>
+                <groupId>io.squark.yggdrasil.yggdrasil-logging</groupId>
+                <artifactId>yggdrasil-logging-fallback</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar.it</groupId>
+                <groupId>io.squark.yggdrasil.it</groupId>
                 <artifactId>yamlconfigfile-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar.it</groupId>
+                <groupId>io.squark.yggdrasil.it</groupId>
                 <artifactId>jsonconfigfile-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar.frameworkprovider</groupId>
-                <artifactId>dynamicjar-jpa-framework-provider</artifactId>
+                <groupId>io.squark.yggdrasil.frameworkprovider</groupId>
+                <artifactId>yggdrasil-jpa-framework-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar.dynamicjar-framework-provider.it</groupId>
-                <artifactId>dynamicjar-resteasy-framework-provider-integration-test</artifactId>
+                <groupId>io.squark.yggdrasil.yggdrasil-framework-provider.it</groupId>
+                <artifactId>yggdrasil-resteasy-framework-provider-integration-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.dynamicjar.dynamicjar-framework-provider.it</groupId>
-                <artifactId>dynamicjar-weld-framework-provider-integration-test</artifactId>
+                <groupId>io.squark.yggdrasil.yggdrasil-framework-provider.it</groupId>
+                <artifactId>yggdrasil-weld-framework-provider-integration-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -494,7 +494,7 @@
                                     <exclude>**/HelpMojo*</exclude>
                                     <exclude>**/org/slf4j/impl/**</exclude>
                                     <exclude>**/CrappyLogger*</exclude>
-                                    <exclude>**/io/squark/dynamicjar/core/api/exception/**</exclude>
+                                    <exclude>**/io/squark/yggdrasil/core/api/exception/**</exclude>
                                 </excludes>
                             </configuration>
                         </execution>
