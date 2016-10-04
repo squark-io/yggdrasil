@@ -10,10 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.squark.dynamicjar</groupId>
-    <artifactId>nested-jar-classloader</artifactId>
+    <artifactId>dynamicjar-api</artifactId>
 
     <dependencies>
         <!-- INTERNAL DEPENDENCIES -->
+        <dependency>
+            <groupId>io.squark.dynamicjar</groupId>
+            <artifactId>nested-jar-classloader</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.squark.dynamicjar.dynamicjar-logging</groupId>
             <artifactId>dynamicjar-logging-api</artifactId>
@@ -21,30 +25,38 @@
 
         <!-- EXTERNAL DEPENDENCIES -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
+            <groupId>com.intellij</groupId>
+            <artifactId>annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.intellij</groupId>
-            <artifactId>annotations</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
 
         <!-- TEST DEPENDENCIES -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
             <scope>test</scope>
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
