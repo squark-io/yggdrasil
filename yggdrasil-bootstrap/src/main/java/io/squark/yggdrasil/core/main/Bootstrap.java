@@ -4,8 +4,8 @@ import io.squark.yggdrasil.core.api.Constants;
 import io.squark.yggdrasil.core.api.util.LibHelper;
 import io.squark.yggdrasil.core.api.util.ReflectionUtil;
 import io.squark.yggdrasil.logging.api.InternalLoggerBinder;
-import io.squark.yggdrasil.nestedjarclassloader.BootstrapClassLoader;
-import io.squark.yggdrasil.nestedjarclassloader.NestedJarClassLoader;
+import io.squark.nestedjarclassloader.BootstrapClassLoader;
+import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import org.slf4j.Logger;
 
 import java.lang.reflect.Constructor;

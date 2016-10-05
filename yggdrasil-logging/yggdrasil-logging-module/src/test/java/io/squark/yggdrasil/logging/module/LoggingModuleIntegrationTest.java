@@ -5,7 +5,7 @@ import io.squark.yggdrasil.core.api.YggdrasilContext;
 import io.squark.yggdrasil.core.api.logging.LogHelper;
 import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
 import io.squark.yggdrasil.logging.api.CrappyLogger;
-import io.squark.yggdrasil.nestedjarclassloader.NestedJarClassLoader;
+import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.lang3.SerializationUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

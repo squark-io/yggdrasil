@@ -4,7 +4,7 @@ import io.squark.yggdrasil.core.api.DependencyResolutionProvider;
 import io.squark.yggdrasil.core.api.exception.DependencyResolutionException;
 import io.squark.yggdrasil.core.main.Yggdrasil;
 import io.squark.yggdrasil.logging.api.InternalLoggerBinder;
-import io.squark.yggdrasil.nestedjarclassloader.NestedJarClassLoader;
+import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;

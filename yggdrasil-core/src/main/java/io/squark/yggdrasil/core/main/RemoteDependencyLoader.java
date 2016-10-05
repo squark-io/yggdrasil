@@ -8,7 +8,7 @@ import io.squark.yggdrasil.core.api.model.YggdrasilDependency;
 import io.squark.yggdrasil.core.api.util.Scopes;
 import io.squark.yggdrasil.core.main.factory.DependencyResolutionProviderFactory;
 import io.squark.yggdrasil.logging.api.InternalLoggerBinder;
-import io.squark.yggdrasil.nestedjarclassloader.NestedJarClassLoader;
+import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

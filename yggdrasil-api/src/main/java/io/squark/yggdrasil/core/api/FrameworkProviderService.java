@@ -7,7 +7,7 @@ import io.squark.yggdrasil.core.api.util.FrameworkProviderComparator;
 import io.squark.yggdrasil.core.api.util.FrameworkProviderUtil;
 import io.squark.yggdrasil.core.api.util.ReflectionUtil;
 import io.squark.yggdrasil.logging.api.InternalLoggerBinder;
-import io.squark.yggdrasil.nestedjarclassloader.NestedJarClassLoader;
+import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.collections4.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
