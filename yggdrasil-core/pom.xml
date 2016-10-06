@@ -13,6 +13,11 @@
     <groupId>io.squark.yggdrasil</groupId>
     <artifactId>yggdrasil-core</artifactId>
 
+    <name>Yggdrasil Core</name>
+    <description>
+        Core module for Yggdrasil
+    </description>
+
     <dependencies>
         <!-- INTERNAL DEPENDENCIES -->
         <dependency>

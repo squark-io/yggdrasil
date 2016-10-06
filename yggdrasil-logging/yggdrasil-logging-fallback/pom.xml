@@ -12,6 +12,11 @@
     <groupId>io.squark.yggdrasil.yggdrasil-logging</groupId>
     <artifactId>yggdrasil-logging-fallback</artifactId>
 
+    <name>Yggdrasil Logging Fallback</name>
+    <description>
+        Fallback console logger for Yggdrasil with support for SLF4J and being overridden by the real logger
+    </description>
+
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>

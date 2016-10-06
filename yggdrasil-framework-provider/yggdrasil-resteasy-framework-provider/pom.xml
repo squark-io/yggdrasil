@@ -12,6 +12,11 @@
     <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
     <artifactId>yggdrasil-resteasy-framework-provider</artifactId>
 
+    <name>Yggdrasil JAX-RS provider</name>
+    <description>
+        JAX-RS Provider using RESTEasy ${version.resteasy} for Yggdrasil projects
+    </description>
+
     <dependencies>
 
         <dependency>

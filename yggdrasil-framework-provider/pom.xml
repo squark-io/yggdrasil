@@ -13,6 +13,11 @@
     <groupId>io.squark.yggdrasil</groupId>
     <artifactId>yggdrasil-framework-provider</artifactId>
 
+    <name>Yggdrasil Framework Provider</name>
+    <description>
+        Parent to various component providers for Yggdrasil
+    </description>
+
     <modules>
         <module>yggdrasil-weld-framework-provider</module>
         <module>yggdrasil-weld-framework-provider-integration-test</module>

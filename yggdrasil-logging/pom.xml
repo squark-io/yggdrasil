@@ -13,6 +13,11 @@
     <artifactId>yggdrasil-logging</artifactId>
     <packaging>pom</packaging>
 
+    <name>Yggdrasil Logging</name>
+    <description>
+        Parent for Yggdrasil logging modules
+    </description>
+
     <modules>
         <module>yggdrasil-logging-api</module>
         <module>yggdrasil-logging-fallback</module>

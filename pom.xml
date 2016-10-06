@@ -9,6 +9,12 @@
     <version>0.0.2-ALPHA-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <name>Yggdrasil Embedded Container</name>
+    <description>
+        And embedded container supporting runtime dependency resolving.
+        Supports loading arbitrary plugins; e.g. CDI, JPA, JAX-RS
+    </description>
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -557,5 +563,36 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>squark.io</name>
+        <url>http://squark.io</url>
+    </organization>
+
+    <url>http://yggdrasil.squark.io</url>
+    <contributors>
+        <contributor>
+            <name>Erik Håkansson</name>
+            <email>erik@squark.com</email>
+        </contributor>
+    </contributors>
+
+    <developers>
+        <developer>
+            <name>Erik Håkansson</name>
+            <email>erik@squark.com</email>
+        </developer>
+    </developers>
+
+    <inceptionYear>2016</inceptionYear>
 
 </project>

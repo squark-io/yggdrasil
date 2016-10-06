@@ -11,6 +11,12 @@
 
     <groupId>io.squark.yggdrasil.frameworkprovider</groupId>
     <artifactId>yggdrasil-jpa-framework-provider</artifactId>
+
+    <name>Yggdrasil JPA provider</name>
+    <description>
+        JPA Provider using Hibernate ${version.hibernate} for Yggdrasil projects
+    </description>
+
     <dependencies>
         <!-- INTERNAL DEPENDENCIES -->
         <dependency>

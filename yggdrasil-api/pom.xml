@@ -12,6 +12,11 @@
     <groupId>io.squark.yggdrasil</groupId>
     <artifactId>yggdrasil-api</artifactId>
 
+    <name>Yggdrasil API</name>
+    <description>
+        API module for Yggdrasil common classes
+    </description>
+
     <dependencies>
         <!-- INTERNAL DEPENDENCIES -->
         <dependency>

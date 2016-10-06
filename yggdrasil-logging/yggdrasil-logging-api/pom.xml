@@ -12,8 +12,12 @@
     <groupId>io.squark.yggdrasil.yggdrasil-logging</groupId>
     <artifactId>yggdrasil-logging-api</artifactId>
 
-    <dependencies>
+    <name>Yggdrasil Logging API</name>
+    <description>
+        API classes for Yggdrasil logging module
+    </description>
 
+    <dependencies>
         <!-- EXTERNAL DEPENDENCIES -->
         <dependency>
             <groupId>com.intellij</groupId>

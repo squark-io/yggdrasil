@@ -13,6 +13,11 @@
     <groupId>io.squark.yggdrasil</groupId>
     <artifactId>yggdrasil-integration-tests</artifactId>
 
+    <name>Yggdrasil integration tests</name>
+    <description>
+        Generic integrations tests for Yggdrasil
+    </description>
+
     <modules>
         <module>yggdrasil-core-it-jsonconfigfile</module>
         <module>yggdrasil-core-it-yamlconfigfile</module>

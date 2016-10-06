@@ -11,6 +11,12 @@
 
     <groupId>io.squark.yggdrasil</groupId>
     <artifactId>yggdrasil-bootstrap</artifactId>
+
+    <name>Yggdrasil Bootstrap</name>
+    <description>
+        Helper module for bootstrapping Yggdrasil projects
+    </description>
+
     <dependencies>
         <!-- INTERNAL DEPENDENCIES -->
         <dependency>

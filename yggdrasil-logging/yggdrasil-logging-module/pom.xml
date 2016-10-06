@@ -12,6 +12,11 @@
     <groupId>io.squark.yggdrasil.yggdrasil-logging</groupId>
     <artifactId>yggdrasil-logging-module</artifactId>
 
+    <name>Yggdrasil Logging Module</name>
+    <description>
+        Yggdrasil logging module using Log4j ${version.log4j}
+    </description>
+
     <dependencies>
         <!-- INTERNAL DEPENDENCIES -->
         <dependency>

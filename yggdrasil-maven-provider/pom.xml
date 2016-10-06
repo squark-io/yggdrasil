@@ -12,6 +12,11 @@
     <groupId>io.squark.yggdrasil</groupId>
     <artifactId>yggdrasil-maven-provider</artifactId>
 
+    <name>Yggdrasil Maven Dependency Provider</name>
+    <description>
+        Yggdrasil dependency resolver using Maven/Aether to resolve dependencies
+    </description>
+
     <dependencies>
 
         <!-- LOCAL DEPENDENCIES -->

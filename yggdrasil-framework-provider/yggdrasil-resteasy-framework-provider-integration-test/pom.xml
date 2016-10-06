@@ -11,7 +11,10 @@
         <version>0.0.2-ALPHA-SNAPSHOT</version>
     </parent>
 
-    <description>A simple IT verifying the basic use case.</description>
+    <name>Yggdrasil JAX-RS provider integration tests</name>
+    <description>
+        Integrations tests for Yggdrasil JAX-RS provider
+    </description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -13,6 +13,11 @@
     <groupId>io.squark.yggdrasil.it</groupId>
     <artifactId>jsonconfigfile-test</artifactId>
 
+    <name>Yggdrasil JSON config file integration test</name>
+    <description>
+        Integrations test for Yggdrasil with JSON config file
+    </description>
+
     <dependencies>
         <dependency>
             <groupId>io.squark.yggdrasil</groupId>
