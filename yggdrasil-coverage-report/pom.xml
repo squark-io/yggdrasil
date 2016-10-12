@@ -79,11 +79,6 @@
             <artifactId>yggdrasil-jax-rs-provider</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.squark.yggdrasil.yggdrasil-framework-provider.it</groupId>
-            <artifactId>yggdrasil-jax-rs-provider-integration-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>io.squark.yggdrasil</groupId>
             <artifactId>yggdrasil-cdi-provider</artifactId>
         </dependency>
