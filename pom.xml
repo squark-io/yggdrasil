@@ -50,6 +50,7 @@
         <version.maven.plugin.plugin>3.4</version.maven.plugin.plugin>
         <version.maven.source.plugin>3.0.1</version.maven.source.plugin>
         <version.maven.surefire.plugin>2.19.1</version.maven.surefire.plugin>
+        <version.mockito>1.9.5</version.mockito>
         <version.plexus.utils>3.0.22</version.plexus.utils>
         <version.rest-assured>2.9.0</version.rest-assured>
         <version.resteasy>3.0.16.Final</version.resteasy>
@@ -121,12 +122,12 @@
             </dependency>
             <dependency>
                 <groupId>io.squark.yggdrasil</groupId>
-                <artifactId>yggdrasil-weld-framework-provider</artifactId>
+                <artifactId>yggdrasil-cdi-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
-                <artifactId>yggdrasil-resteasy-framework-provider</artifactId>
+                <artifactId>yggdrasil-jax-rs-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -156,17 +157,17 @@
             </dependency>
             <dependency>
                 <groupId>io.squark.yggdrasil.frameworkprovider</groupId>
-                <artifactId>yggdrasil-jpa-framework-provider</artifactId>
+                <artifactId>yggdrasil-jpa-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.squark.yggdrasil.yggdrasil-framework-provider.it</groupId>
-                <artifactId>yggdrasil-resteasy-framework-provider-integration-test</artifactId>
+                <artifactId>yggdrasil-jax-rs-provider-integration-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.squark.yggdrasil.yggdrasil-framework-provider.it</groupId>
-                <artifactId>yggdrasil-weld-framework-provider-integration-test</artifactId>
+                <artifactId>yggdrasil-cdi-provider-integration-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -397,6 +398,12 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${version.h2}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${version.mockito}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

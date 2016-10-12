@@ -68,7 +68,7 @@
         </dependency>
         <dependency>
             <groupId>io.squark.yggdrasil.frameworkprovider</groupId>
-            <artifactId>yggdrasil-jpa-framework-provider</artifactId>
+            <artifactId>yggdrasil-jpa-provider</artifactId>
         </dependency>
         <dependency>
             <groupId>io.squark.yggdrasil.yggdrasil-logging</groupId>
@@ -76,21 +76,16 @@
         </dependency>
         <dependency>
             <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
-            <artifactId>yggdrasil-resteasy-framework-provider</artifactId>
+            <artifactId>yggdrasil-jax-rs-provider</artifactId>
         </dependency>
         <dependency>
             <groupId>io.squark.yggdrasil.yggdrasil-framework-provider.it</groupId>
-            <artifactId>yggdrasil-resteasy-framework-provider-integration-test</artifactId>
+            <artifactId>yggdrasil-jax-rs-provider-integration-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.squark.yggdrasil</groupId>
-            <artifactId>yggdrasil-weld-framework-provider</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.squark.yggdrasil.yggdrasil-framework-provider.it</groupId>
-            <artifactId>yggdrasil-weld-framework-provider-integration-test</artifactId>
-            <scope>test</scope>
+            <artifactId>yggdrasil-cdi-provider</artifactId>
         </dependency>
     </dependencies>
     <build>

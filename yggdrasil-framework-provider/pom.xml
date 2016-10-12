@@ -19,11 +19,9 @@
     </description>
 
     <modules>
-        <module>yggdrasil-weld-framework-provider</module>
-        <module>yggdrasil-weld-framework-provider-integration-test</module>
-        <module>yggdrasil-resteasy-framework-provider</module>
-        <module>yggdrasil-resteasy-framework-provider-integration-test</module>
-        <module>yggdrasil-jpa-framework-provider</module>
+        <module>yggdrasil-cdi-provider</module>
+        <module>yggdrasil-jax-rs-provider</module>
+        <module>yggdrasil-jpa-provider</module>
     </modules>
 
 </project>
