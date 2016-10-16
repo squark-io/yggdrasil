@@ -15,6 +15,7 @@
  */
 package io.squark.yggdrasil.core.main;
 
+import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import io.squark.yggdrasil.core.api.DependencyResolutionProvider;
 import io.squark.yggdrasil.core.api.exception.DependencyResolutionException;
 import io.squark.yggdrasil.core.api.exception.PropertyLoadException;
@@ -23,7 +24,6 @@ import io.squark.yggdrasil.core.api.model.YggdrasilDependency;
 import io.squark.yggdrasil.core.api.util.Scopes;
 import io.squark.yggdrasil.core.main.factory.DependencyResolutionProviderFactory;
 import io.squark.yggdrasil.logging.api.InternalLoggerBinder;
-import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -33,7 +33,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class RemoteDependencyLoader {
 
@@ -44,12 +51,11 @@ public class RemoteDependencyLoader {
 
     private static boolean anyParentIsProvided(YggdrasilDependency child) {
         return child.getParent().isPresent() &&
-                (Scopes.PROVIDED.equals(child.getParent().get().getScope()) || anyParentIsProvided(child.getParent().get()));
+               (Scopes.PROVIDED.equals(child.getParent().get().getScope()) || anyParentIsProvided(child.getParent().get()));
     }
 
     private static void loadJars(final Set<YggdrasilDependency> dependencies, NestedJarClassLoader classLoader,
-                                 boolean includeTransitive, Set<String> exclusions) throws IOException
-    {
+        boolean includeTransitive, Set<String> exclusions) throws IOException {
         if (logger.isDebugEnabled()) {
             logger.debug("Loading the following dependencies: " + dependencies);
         }
@@ -58,10 +64,10 @@ public class RemoteDependencyLoader {
         filterDependencies(flatDependencies, exclusions);
         for (YggdrasilDependency dependency : flatDependencies) {
             if ((!StringUtils.equals(dependency.getScope(), Scopes.PROVIDED) && !anyParentIsProvided(dependency)) ||
-                    dependency.getOptional())
-            {
-                logger.debug("Found dependency " + dependency.toShortString() + " of scope " + dependency.getScope() +
-                        " and optional=" + dependency.getOptional() + ". Skipping.");
+                dependency.getOptional()) {
+                logger.debug(
+                    "Found dependency " + dependency.toShortString() + " of scope " + dependency.getScope() + " and optional=" +
+                    dependency.getOptional() + ". Skipping.");
                 continue;
             }
             String identifier = dependency.toShortStringWithoutVersion();
@@ -73,7 +79,7 @@ public class RemoteDependencyLoader {
             if (loadedVersion != null) {
                 if (!StringUtils.equals(loadedVersion, dependency.getVersion())) {
                     logger.warn("Dependency " + identifier + " exists in at least two versions: {" + loadedVersion + ", " +
-                            dependency.getVersion() + "}. Only first found will be loaded.");
+                                dependency.getVersion() + "}. Only first found will be loaded.");
                 }
                 continue;
             }
@@ -108,27 +114,25 @@ public class RemoteDependencyLoader {
     }
 
     static void loadDependencies(NestedJarClassLoader classLoader, NestedJarClassLoader helperClassLoader,
-                                 YggdrasilConfiguration yggdrasilConfiguration, Set<String> exclusions) throws
-            PropertyLoadException, DependencyResolutionException
-    {
+        YggdrasilConfiguration yggdrasilConfiguration, Set<String> exclusions)
+        throws PropertyLoadException, DependencyResolutionException {
 
-        Collection<DependencyResolutionProvider> dependencyResolvers = DependencyResolutionProviderFactory.getDependencyResolvers(
-                helperClassLoader);
+        Collection<DependencyResolutionProvider> dependencyResolvers =
+            DependencyResolutionProviderFactory.getDependencyResolvers(helperClassLoader);
         if (CollectionUtils.isEmpty(dependencyResolvers)) {
-            throw new DependencyResolutionException(
-                    "Failed to find implementations of " + DependencyResolutionProvider.class.getName());
+            logger.warn("Failed to find implementations of " + DependencyResolutionProvider.class.getName());
         }
         final Set<YggdrasilDependency> dependencies = yggdrasilConfiguration.getDependencies();
         Set<YggdrasilDependency> resolvedDependencies = new HashSet<>();
         if (dependencies != null) {
             for (DependencyResolutionProvider provider : dependencyResolvers) {
-                resolvedDependencies.addAll(provider.resolveDependencies(dependencies,
-                        yggdrasilConfiguration.isLoadTransitiveProvidedDependencies()));
+                resolvedDependencies.addAll(
+                    provider.resolveDependencies(dependencies, yggdrasilConfiguration.isLoadTransitiveProvidedDependencies()));
             }
         }
         try {
             loadJars(resolvedDependencies, classLoader, yggdrasilConfiguration.isLoadTransitiveProvidedDependencies(),
-                    exclusions);
+                exclusions);
         } catch (IOException e) {
             throw new DependencyResolutionException("Failed to resolve dependencies", e);
         }
@@ -141,28 +145,25 @@ public class RemoteDependencyLoader {
             String fileName = dependency.getFile().getName();
             if (exclusions.contains(fileName)) {
                 logger.debug(
-                        "A file with the name " + fileName + " was loaded from libs, but is also found in remote dependency " +
-                                dependency.toShortString() + ". Assuming same and skipping.");
+                    "A file with the name " + fileName + " was loaded from libs, but is also found in remote dependency " +
+                    dependency.toShortString() + ". Assuming same and skipping.");
                 dependencyIterator.remove();
             }
         }
     }
 
     private static List<YggdrasilDependency> getFlatDependencies(final Collection<YggdrasilDependency> dependencies,
-                                                                  boolean includeTransitive)
-    {
+        boolean includeTransitive) {
         return getFlatDependencies(dependencies, includeTransitive, 0);
     }
 
     private static List<YggdrasilDependency> getFlatDependencies(final Collection<YggdrasilDependency> dependencies,
-                                                                  boolean includeTransitive, int depth)
-    {
+        boolean includeTransitive, int depth) {
         List<YggdrasilDependency> jars = new ArrayList<>();
         if (dependencies != null) {
             for (YggdrasilDependency dependency : dependencies) {
                 if (Scopes.COMPILE.equals(dependency.getScope()) ||
-                        ((Scopes.PROVIDED.equals(dependency.getScope())) && (includeTransitive || depth == 0)))
-                {
+                    ((Scopes.PROVIDED.equals(dependency.getScope())) && (includeTransitive || depth == 0))) {
                     jars.add(dependency);
                 }
                 jars.addAll(getFlatDependencies(dependency.getChildDependencies(), includeTransitive, depth + 1));

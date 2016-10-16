@@ -15,6 +15,8 @@
  */
 package io.squark.yggdrasil.core.api;
 
+import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
+
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +24,7 @@ import java.util.Map;
 public class YggdrasilContext {
     private static Map<String, Object> registeredObjects = new HashMap<>();
     private static URL overriddenLibraryPath;
+    private static YggdrasilConfiguration configuration;
 
     public static void registerObject(String name, Object object) {
         registeredObjects.put(name, object);
@@ -41,5 +44,13 @@ public class YggdrasilContext {
 
     public static URL getOverriddenLibraryPath() {
         return overriddenLibraryPath;
+    }
+
+    public static void setConfiguration(YggdrasilConfiguration configuration) {
+        YggdrasilContext.configuration = configuration;
+    }
+
+    public static YggdrasilConfiguration getConfiguration() {
+        return configuration;
     }
 }

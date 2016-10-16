@@ -17,20 +17,21 @@ package io.squark.yggdrasil.core.main;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import io.squark.nestedjarclassloader.NestedJarClassLoader;
+import io.squark.nestedjarclassloader.NestedJarURLStreamHandler;
+import io.squark.nestedjarclassloader.exception.NestedJarClassLoaderException;
 import io.squark.yggdrasil.core.api.Constants;
 import io.squark.yggdrasil.core.api.FrameworkProviderService;
-import io.squark.yggdrasil.core.api.exception.YggdrasilException;
+import io.squark.yggdrasil.core.api.YggdrasilContext;
 import io.squark.yggdrasil.core.api.exception.MainClassLoadException;
 import io.squark.yggdrasil.core.api.exception.PropertyLoadException;
+import io.squark.yggdrasil.core.api.exception.YggdrasilException;
 import io.squark.yggdrasil.core.api.logging.LogHelper;
 import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
 import io.squark.yggdrasil.core.api.util.ConfigurationSerializer;
 import io.squark.yggdrasil.core.api.util.LibHelper;
 import io.squark.yggdrasil.core.api.util.ReflectionUtil;
 import io.squark.yggdrasil.logging.api.InternalLoggerBinder;
-import io.squark.nestedjarclassloader.NestedJarClassLoader;
-import io.squark.nestedjarclassloader.NestedJarURLStreamHandler;
-import io.squark.nestedjarclassloader.exception.NestedJarClassLoaderException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -69,16 +70,17 @@ public final class Yggdrasil {
             loadMainClass(isolatedClassLoader, configuration, args);
         } catch (YggdrasilException | NestedJarClassLoaderException e) {
             logger.error(null, e);
+            throw new RuntimeException(e);
         }
     }
 
     static YggdrasilConfiguration getConfiguration() throws PropertyLoadException {
 
         InputStream inputStream;
-        inputStream = Yggdrasil.class.getResourceAsStream(Constants.YAML_PROPERTIES_FILE);
+        inputStream = getFile(Constants.YAML_PROPERTIES_FILE);
         YggdrasilConfiguration yggdrasilConfiguration = null;
         if (inputStream == null) {
-            inputStream = Yggdrasil.class.getResourceAsStream(Constants.JSON_PROPERTIES_FILE);
+            inputStream = getFile(Constants.JSON_PROPERTIES_FILE);
             if (inputStream != null) {
                 logger.info("Found JSON configuration");
                 Gson gson = new Gson();
@@ -99,24 +101,29 @@ public final class Yggdrasil {
         }
         if (inputStream == null) {
             throw new PropertyLoadException(
-                    "Failed to find " + Constants.YAML_PROPERTIES_FILE + " or " + Constants.JSON_PROPERTIES_FILE);
+                "Failed to find " + Constants.YAML_PROPERTIES_FILE + " or " + Constants.JSON_PROPERTIES_FILE);
         } else if (yggdrasilConfiguration == null) {
             throw new PropertyLoadException("Unknown error. Failed to load properties");
         }
+
+        YggdrasilContext.setConfiguration(yggdrasilConfiguration);
 
         return yggdrasilConfiguration;
 
     }
 
-    private static void loadMainClass(ClassLoader forClassLoader, YggdrasilConfiguration configuration, String[] args) throws
-            MainClassLoadException
-    {
+    private static InputStream getFile(String file) {
+        return Yggdrasil.class.getResourceAsStream(file);
+    }
+
+    private static void loadMainClass(ClassLoader forClassLoader, YggdrasilConfiguration configuration, String[] args)
+        throws MainClassLoadException {
         //Load main class:
         if (StringUtils.isNotEmpty(configuration.getMainClass())) {
             logger.debug("Loading main class " + configuration.getMainClass());
             try {
-                ReflectionUtil.invokeMethod("main", configuration.getMainClass(), null, new Object[]{args}, null, forClassLoader,
-                        null);
+                ReflectionUtil
+                    .invokeMethod("main", configuration.getMainClass(), null, new Object[]{args}, null, forClassLoader, null);
                 logger.debug("Main class loaded");
             } catch (Throwable e) {
                 throw new MainClassLoadException(e);
@@ -124,17 +131,16 @@ public final class Yggdrasil {
         }
     }
 
-    public static NestedJarClassLoader initiate(ClassLoader classLoader, YggdrasilConfiguration configuration) throws
-            NestedJarClassLoaderException
-    {
+    public static NestedJarClassLoader initiate(ClassLoader classLoader, YggdrasilConfiguration configuration)
+        throws NestedJarClassLoaderException {
         if (!(classLoader instanceof NestedJarClassLoader)) {
             classLoader = new NestedJarClassLoader(classLoader);
         }
 
         try {
             return ReflectionUtil.invokeMethod("initiate", Yggdrasil.class.getName(), null,
-                    new Object[]{ConfigurationSerializer.serializeConfig(configuration), classLoader},
-                    new Class[]{byte[].class, Object.class}, classLoader, NestedJarClassLoader.class);
+                new Object[]{ConfigurationSerializer.serializeConfig(configuration), classLoader},
+                new Class[]{byte[].class, Object.class}, classLoader, NestedJarClassLoader.class);
         } catch (Throwable e) {
             throw new NestedJarClassLoaderException(e);
         }
@@ -159,25 +165,27 @@ public final class Yggdrasil {
         try {
             //Initiate logging again in case we found logging module, but do it in the isolated classloader.
             ReflectionUtil.invokeMethod("initiateLoggingWithConfigAsBytes", LogHelper.class.getName(), null,
-                    new Object[]{configurationBytes, isolatedClassLoader, classesJar},
-                    new Class[]{byte[].class, Object.class, URL.class}, isolatedClassLoader, null);
+                new Object[]{configurationBytes, isolatedClassLoader, classesJar},
+                new Class[]{byte[].class, Object.class, URL.class}, isolatedClassLoader, null);
         } catch (Throwable e) {
             throw new YggdrasilException(e);
         }
 
         Set<String> loadedLibs = new HashSet<>();
-        for (URL url : libs) {
-            loadedLibs.add(FilenameUtils.getName(url.getFile()));
+        if (libs != null) {
+            for (URL url : libs) {
+                loadedLibs.add(FilenameUtils.getName(url.getFile()));
+            }
         }
 
-        RemoteDependencyLoader.loadDependencies(isolatedClassLoader, (NestedJarClassLoader) helperClassLoader, configuration,
-                loadedLibs);
+        RemoteDependencyLoader
+            .loadDependencies(isolatedClassLoader, (NestedJarClassLoader) helperClassLoader, configuration, loadedLibs);
 
         try {
             //Initiate logging again in case we found logging module, but do it in the isolated classloader.
             ReflectionUtil.invokeMethod("initiateLoggingWithConfigAsBytes", LogHelper.class.getName(), null,
-                    new Object[]{configurationBytes, isolatedClassLoader, classesJar, false},
-                    new Class[]{byte[].class, Object.class, URL.class, boolean.class}, isolatedClassLoader, null);
+                new Object[]{configurationBytes, isolatedClassLoader, classesJar, false},
+                new Class[]{byte[].class, Object.class, URL.class, boolean.class}, isolatedClassLoader, null);
         } catch (Throwable e) {
             throw new YggdrasilException(e);
         }
@@ -189,16 +197,34 @@ public final class Yggdrasil {
 
     private static URL getClassesJar(YggdrasilConfiguration configuration) throws YggdrasilException {
         try {
-            File ownFile = new File(Yggdrasil.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            JarFile ownJar = new JarFile(ownFile);
-            Enumeration<JarEntry> entries = ownJar.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                if (entry.getName().endsWith(configuration.getClassesJar())) {
-                    return new URL(null, "jar:" + ownFile.toURI().toString() + "!/" + entry.getName(),
+            if (configuration.getClassesJar() == null) {
+                return null;
+            }
+            URL location = Yggdrasil.class.getProtectionDomain().getCodeSource().getLocation();
+            if (location == null) {
+                URL[] libs = LibHelper.getLibs(Yggdrasil.class, ".");
+                if (libs != null) {
+                    for (URL lib : libs) {
+                        if (lib.getFile().endsWith(configuration.getClassesJar())) {
+                            return new URL(null, "jar:" + lib.toURI().toString(), new NestedJarURLStreamHandler());
+                        }
+                    }
+                } else {
+                    return null;
+                }
+            } else {
+                File ownFile = new File(location.toURI());
+                JarFile ownJar = new JarFile(ownFile);
+                Enumeration<JarEntry> entries = ownJar.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    if (entry.getName().endsWith(configuration.getClassesJar())) {
+                        return new URL(null, "jar:" + ownFile.toURI().toString() + "!/" + entry.getName(),
                             new NestedJarURLStreamHandler());
+                    }
                 }
             }
+
         } catch (URISyntaxException | IOException e) {
             throw new YggdrasilException(e);
         }

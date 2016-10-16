@@ -59,9 +59,16 @@ public class LibHelper {
             if (YggdrasilContext.getOverriddenLibraryPath() != null) {
                 ownFile = new File(YggdrasilContext.getOverriddenLibraryPath().toURI());
             } else {
-                ownFile = new File(caller.getProtectionDomain().getCodeSource().getLocation().toURI());
+                URL location = caller.getProtectionDomain().getCodeSource().getLocation();
+                if (location == null) {
+                    ownFile = new File(path);
+                } else {
+                    ownFile = new File(location.toURI());
+                }
             }
-            if (ownFile.isDirectory()) {
+            if (!ownFile.exists()) {
+                return null;
+            } else if (ownFile.isDirectory()) {
                 libs = scan(new File(ownFile, path));
             } else {
                 libs = new ArrayList<>();
