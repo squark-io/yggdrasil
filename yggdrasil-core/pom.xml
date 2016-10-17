@@ -121,9 +121,6 @@
                         <goals>
                             <goal>instrument</goal>
                         </goals>
-                        <configuration>
-                            <includes>**/io/squark/yggdrasil/core/main/Yggdrasil*</includes>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>post-integration-test</id>
