@@ -41,7 +41,7 @@ public class Bootstrap {
         try {
             logger.info("Bootstrapping Yggdrasil");
 
-            BootstrapClassLoader isolated = new BootstrapClassLoader(LibHelper.getOwnJar());
+            ClassLoader isolated = new BootstrapClassLoader(LibHelper.getOwnJar());
 
             Class<?> coreClassLoaderClass = isolated.loadClass(NestedJarClassLoader.class.getName());
             Constructor constructor = coreClassLoaderClass.getDeclaredConstructor(ClassLoader.class);

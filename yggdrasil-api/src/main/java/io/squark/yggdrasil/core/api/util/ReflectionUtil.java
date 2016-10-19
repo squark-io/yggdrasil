@@ -49,7 +49,7 @@ public class ReflectionUtil {
                 if (argsTypeOverrides == null) {
                     argsTypes[i] = args[i] == null ? null : args[i].getClass();
                 }
-                signature += '#' + argsTypes[i].getName();
+                signature += '#' + (argsTypes[i] != null ? argsTypes[i].getName() : "null");
             }
         }
 
@@ -71,6 +71,7 @@ public class ReflectionUtil {
             if (!method.isAccessible()) {
                 method.setAccessible(true);
             }
+
             cachedMethods.put(signature, method);
         }
         try {
