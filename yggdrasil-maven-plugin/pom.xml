@@ -176,6 +176,7 @@
                         <goal>clean</goal>
                         <goal>verify</goal>
                     </goals>
+                    <settingsFile>src/it/settings.xml</settingsFile>
                 </configuration>
                 <executions>
                     <execution>
