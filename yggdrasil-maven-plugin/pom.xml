@@ -171,7 +171,7 @@
                         <extraArtifact>io.squark.yggdrasil.yggdrasil-logging:yggdrasil-logging-module:${project.version}</extraArtifact>
                         <extraArtifact>io.squark.yggdrasil:yggdrasil-maven-provider:${project.version}</extraArtifact>
                     </extraArtifacts>
-                    <streamLogs>false</streamLogs>
+                    <streamLogs>true</streamLogs>
                     <goals>
                         <goal>clean</goal>
                         <goal>verify</goal>
