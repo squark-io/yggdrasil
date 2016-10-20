@@ -148,7 +148,7 @@
                 <artifactId>maven-invoker-plugin</artifactId>
                 <configuration>
                     <skipInvocation>${skipTests}</skipInvocation>
-                    <debug>true</debug>
+                    <debug>false</debug>
                     <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                     <scriptVariables>
                         <projectVersion>${project.version}</projectVersion>
