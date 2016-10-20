@@ -4,6 +4,7 @@ jdk:
 cache:
   directories:
     - $HOME/.m2
+before_install: cat /etc/mavenrc && sudo rm /etc/mavenrc
 script: mvn clean install
 after_success:
   - bash <(curl -s https://codecov.io/bash)
