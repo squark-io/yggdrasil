@@ -17,6 +17,10 @@
         Maven plugin for building fat-jars pre-configured for using Yggdrasil embedded container
     </description>
 
+    <properties>
+        <invoker.mavenOpts>${jacoco.argLine}</invoker.mavenOpts>
+    </properties>
+
     <dependencies>
         <!-- LOCAL DEPENDENCIES -->
 
@@ -132,18 +136,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>prepare</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <destFile>${project.build.directory}/jacoco-it.exec</destFile>
-                            <propertyName>invoker.mavenOpts</propertyName>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
