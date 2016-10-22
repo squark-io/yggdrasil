@@ -220,7 +220,9 @@ public class YggdrasilDependency implements Serializable {
         StringBuilder buffer = new StringBuilder(128);
         buffer.append(groupId);
         buffer.append(':').append(artifactId);
-        buffer.append(':').append(extension);
+        if (StringUtils.isNotEmpty(extension)) {
+            buffer.append(':').append(extension);
+        }
         if (StringUtils.isNotEmpty(classifier)) {
             buffer.append(':').append(classifier);
         }

@@ -29,9 +29,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class YggdrasilDependencyMavenUtil {
+public interface YggdrasilDependencyMavenUtil {
 
-    public static YggdrasilDependency fromDependencyNode(final DependencyNode dependencyNode,
+    static YggdrasilDependency fromDependencyNode(final DependencyNode dependencyNode,
         List<String> exclusions) {
         Artifact artifact = dependencyNode.getArtifact();
         String groupId = artifact != null ? artifact.getGroupId() : null;
