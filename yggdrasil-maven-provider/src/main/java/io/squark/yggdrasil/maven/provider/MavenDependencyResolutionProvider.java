@@ -115,6 +115,9 @@ public class MavenDependencyResolutionProvider implements DependencyResolutionPr
             boolean loadTransitiveProvidedDependencies) throws DependencyResolutionException
     {
 
+        if (dependencies == null) {
+            return Collections.emptySet();
+        }
         List<Dependency> mavenDependencies = new ArrayList<>();
         for (YggdrasilDependency dependency : dependencies) {
             Artifact aetherArtifact = new DefaultArtifact(dependency.getGroupId(), dependency.getArtifactId(),
