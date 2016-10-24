@@ -58,11 +58,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class RemoteDependencyLoader {
+ class RemoteDependencyLoader {
 
     private static final Logger logger = InternalLoggerBinder.getLogger(RemoteDependencyLoader.class);
 
     private RemoteDependencyLoader() {
+    }
+
+    static void loadDependencies(NestedJarClassLoader classLoader, NestedJarClassLoader helperClassLoader,
+        YggdrasilConfiguration yggdrasilConfiguration, Set<String> exclusions)
+        throws PropertyLoadException, DependencyResolutionException {
+
+        Collection<DependencyResolutionProvider> dependencyResolvers =
+            DependencyResolutionProviderFactory.getDependencyResolvers(helperClassLoader);
+        if (CollectionUtils.isEmpty(dependencyResolvers)) {
+            logger.warn("Failed to find implementations of " + DependencyResolutionProvider.class.getName());
+        }
+        final Set<YggdrasilDependency> dependencies = yggdrasilConfiguration.getDependencies();
+        Set<YggdrasilDependency> resolvedDependencies = new HashSet<>();
+        if (dependencies != null) {
+            for (DependencyResolutionProvider provider : dependencyResolvers) {
+                resolvedDependencies.addAll(
+                    provider.resolveDependencies(dependencies, yggdrasilConfiguration.isLoadTransitiveProvidedDependencies()));
+            }
+        }
+        try {
+            loadJars(resolvedDependencies, classLoader, yggdrasilConfiguration.isLoadTransitiveProvidedDependencies(),
+                exclusions);
+        } catch (IOException e) {
+            throw new DependencyResolutionException("Failed to resolve dependencies", e);
+        }
     }
 
     private static boolean anyParentIsProvided(YggdrasilDependency child) {
@@ -80,7 +105,7 @@ public class RemoteDependencyLoader {
         filterDependencies(flatDependencies, exclusions);
         for (YggdrasilDependency dependency : flatDependencies) {
             if ((!StringUtils.equals(dependency.getScope(), Scopes.PROVIDED) && !anyParentIsProvided(dependency)) ||
-                dependency.getOptional()) {
+                (dependency.getOptional() != null ? dependency.getOptional() : false)) {
                 logger.debug(
                     "Found dependency " + dependency.toShortString() + " of scope " + dependency.getScope() + " and optional=" +
                     dependency.getOptional() + ". Skipping.");
@@ -126,31 +151,6 @@ public class RemoteDependencyLoader {
         } catch (Throwable t) {
             logger.error("Failed to load JAR", t);
             throw new IOException(t);
-        }
-    }
-
-    static void loadDependencies(NestedJarClassLoader classLoader, NestedJarClassLoader helperClassLoader,
-        YggdrasilConfiguration yggdrasilConfiguration, Set<String> exclusions)
-        throws PropertyLoadException, DependencyResolutionException {
-
-        Collection<DependencyResolutionProvider> dependencyResolvers =
-            DependencyResolutionProviderFactory.getDependencyResolvers(helperClassLoader);
-        if (CollectionUtils.isEmpty(dependencyResolvers)) {
-            logger.warn("Failed to find implementations of " + DependencyResolutionProvider.class.getName());
-        }
-        final Set<YggdrasilDependency> dependencies = yggdrasilConfiguration.getDependencies();
-        Set<YggdrasilDependency> resolvedDependencies = new HashSet<>();
-        if (dependencies != null) {
-            for (DependencyResolutionProvider provider : dependencyResolvers) {
-                resolvedDependencies.addAll(
-                    provider.resolveDependencies(dependencies, yggdrasilConfiguration.isLoadTransitiveProvidedDependencies()));
-            }
-        }
-        try {
-            loadJars(resolvedDependencies, classLoader, yggdrasilConfiguration.isLoadTransitiveProvidedDependencies(),
-                exclusions);
-        } catch (IOException e) {
-            throw new DependencyResolutionException("Failed to resolve dependencies", e);
         }
     }
 
