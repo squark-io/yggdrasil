@@ -107,6 +107,12 @@
     <build>
         <plugins>
             <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipExec>true</skipExec>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <executions>
                     <execution>
@@ -118,10 +124,13 @@
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
-                        <configuration>
+                        <configuration combine.self="override">
                             <systemPropertyVariables>
                                 <jacoco-agent.destfile>target/jacoco-it.exec</jacoco-agent.destfile>
                             </systemPropertyVariables>
+                            <includes>
+                                <include>**/*Test.java</include>
+                            </includes>
                         </configuration>
                     </execution>
                 </executions>
