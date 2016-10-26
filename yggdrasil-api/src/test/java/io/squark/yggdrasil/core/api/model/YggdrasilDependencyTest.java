@@ -15,15 +15,15 @@
  */
 package io.squark.yggdrasil.core.api.model;
 
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 public class YggdrasilDependencyTest {
 
     private YggdrasilDependency yggdrasilDependency;
 
-    @BeforeMethod
+    @Before
     public void setupTest() {
         this.yggdrasilDependency = new YggdrasilDependency();
         yggdrasilDependency.setGroupId("groupId");

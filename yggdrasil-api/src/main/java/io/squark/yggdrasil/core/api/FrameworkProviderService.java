@@ -31,6 +31,7 @@
  */
 package io.squark.yggdrasil.core.api;
 
+import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import io.squark.yggdrasil.core.api.exception.YggdrasilException;
 import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
 import io.squark.yggdrasil.core.api.util.ConfigurationSerializer;
@@ -38,12 +39,10 @@ import io.squark.yggdrasil.core.api.util.FrameworkProviderComparator;
 import io.squark.yggdrasil.core.api.util.FrameworkProviderUtil;
 import io.squark.yggdrasil.core.api.util.ReflectionUtil;
 import io.squark.yggdrasil.logging.api.InternalLoggerBinder;
-import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.collections4.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceConfigurationError;
@@ -59,17 +58,18 @@ public class FrameworkProviderService {
         Thread.currentThread().setContextClassLoader(FrameworkProviderService.class.getClassLoader());
         YggdrasilConfiguration configuration = ConfigurationSerializer.deserializeConfig(configurationAsBytes);
 
+        try {
+
         final ServiceLoader<FrameworkProvider> loader = ServiceLoader.load(FrameworkProvider.class,
                 FrameworkProviderService.class.getClassLoader());
 
-        try {
             Iterator<FrameworkProvider> providerIterator = loader.iterator();
             if (!providerIterator.hasNext()) {
                 logger.info("No FrameworkProviders found");
             } else {
                 List<FrameworkProvider> providerList = IteratorUtils.toList(providerIterator);
                 FrameworkProviderUtil.validateDependencies(providerList);
-                Collections.sort(providerList, new FrameworkProviderComparator());
+                providerList.sort(new FrameworkProviderComparator());
 
                 for (FrameworkProvider provider : providerList) {
                     logger.info("Loading FrameworkProvider " + provider.getClass().getSimpleName());

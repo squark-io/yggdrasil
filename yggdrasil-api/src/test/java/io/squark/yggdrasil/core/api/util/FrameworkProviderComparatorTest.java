@@ -19,8 +19,8 @@ import io.squark.yggdrasil.core.api.FrameworkProvider;
 import io.squark.yggdrasil.core.api.exception.YggdrasilException;
 import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
 import org.jetbrains.annotations.Nullable;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,7 +114,7 @@ public class FrameworkProviderComparatorTest {
         Assert.assertTrue(list.get(2) == frameworkProvider3);
         Assert.assertTrue(list.get(3) == frameworkProvider4);
 
-        Collections.sort(list, new FrameworkProviderComparator());
+        list.sort(new FrameworkProviderComparator());
 
         Assert.assertTrue(list.get(0) == frameworkProvider3);
         Assert.assertTrue(list.get(1) == frameworkProvider2);

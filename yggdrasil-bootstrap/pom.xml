@@ -117,7 +117,7 @@
                 <executions>
                     <execution>
                         <id>instrument</id>
-                        <phase>process-classes</phase>
+                        <phase>pre-integration-test</phase>
                         <goals>
                             <goal>instrument</goal>
                         </goals>

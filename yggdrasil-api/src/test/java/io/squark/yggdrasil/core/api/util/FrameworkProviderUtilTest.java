@@ -16,17 +16,19 @@
 package io.squark.yggdrasil.core.api.util;
 
 import io.squark.yggdrasil.core.api.FrameworkProvider;
-import io.squark.yggdrasil.core.api.exception.YggdrasilException;
 import io.squark.yggdrasil.core.api.exception.FrameworkProviderException;
+import io.squark.yggdrasil.core.api.exception.YggdrasilException;
 import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
 import org.jetbrains.annotations.Nullable;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class FrameworkProviderUtilTest {
+
     @Test
     public void testValidateDependencies() throws Exception {
         List<FrameworkProvider> frameworkProviders = Arrays.asList(new DummyFrameworkProvider(), new FrameworkProviderWithNonOptionalDep());
@@ -34,11 +36,16 @@ public class FrameworkProviderUtilTest {
         FrameworkProviderUtil.validateDependencies(frameworkProviders);
     }
 
-    @Test(expectedExceptions = FrameworkProviderException.class)
+    @Test
     public void testFailOnDepNotFound() throws Exception {
-        List<FrameworkProvider> frameworkProviders = Collections.singletonList(new FrameworkProviderWithNonExistingDep());
+        try {
+            List<FrameworkProvider> frameworkProviders = Collections.singletonList(new FrameworkProviderWithNonExistingDep());
 
-        FrameworkProviderUtil.validateDependencies(frameworkProviders);
+            FrameworkProviderUtil.validateDependencies(frameworkProviders);
+        } catch (FrameworkProviderException e) {
+            return;
+        }
+        Assert.fail("Expected FrameworkProviderException");
     }
 
     private class DummyFrameworkProvider implements FrameworkProvider {
