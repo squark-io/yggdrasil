@@ -146,12 +146,12 @@
     <build>
         <plugins>
             <plugin>
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                        <skipExec>true</skipExec>
-                    </configuration>
-                </plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipExec>true</skipExec>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <executions>
                     <execution>
