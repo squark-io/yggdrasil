@@ -120,6 +120,7 @@
                         <phase>none</phase>
                     </execution>
                     <execution>
+                        <phase>test</phase>
                         <goals>
                             <goal>integration-test</goal>
                             <goal>verify</goal>
@@ -141,17 +142,16 @@
                 <executions>
                     <execution>
                         <id>instrument</id>
-                        <phase>pre-integration-test</phase>
+                        <phase>process-classes</phase>
                         <goals>
                             <goal>instrument</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>post-integration-test</id>
-                        <phase>post-integration-test</phase>
+                        <id>restore-instrumented-classes</id>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>restore-instrumented-classes</goal>
-                            <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
