@@ -42,7 +42,7 @@ import java.util.Date;
 
 public class CrappyLogger implements Logger {
 
-    private static final String YGGDRASIL_LOG_LEVEL = "yggdrasil.logLevel";
+    public static final String YGGDRASIL_LOG_LEVEL = "yggdrasil.logLevel";
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss.SSS");
     private boolean replaced;
     private String name;
@@ -126,7 +126,7 @@ public class CrappyLogger implements Logger {
             delegate.trace(msg, t);
             return;
         }
-        log(LogLevel.TRACE, null, t);
+        log(LogLevel.TRACE, msg, t);
     }
 
     @Override
@@ -607,12 +607,12 @@ public class CrappyLogger implements Logger {
         error(msg, t);
     }
 
-    private void log(LogLevel level, @Nullable String message, @Nullable Throwable throwable) {
-        if (logLevel == null) {
-            logLevel = LogLevel.INFO;
-            if (System.getProperty(YGGDRASIL_LOG_LEVEL) != null) {
-                logLevel = LogLevel.valueOf(System.getProperty(YGGDRASIL_LOG_LEVEL));
-            }
+    void log(LogLevel level, @Nullable String message, @Nullable Throwable throwable) {
+        if (System.getProperty(YGGDRASIL_LOG_LEVEL) != null) {
+            level = LogLevel.valueOf(System.getProperty(YGGDRASIL_LOG_LEVEL));
+        }
+        if (level == null) {
+            level = LogLevel.INFO;
         }
         if (level.intLevel() <= logLevel.intLevel()) {
             String combinedMessage = message != null ? message : "";

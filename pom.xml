@@ -303,6 +303,11 @@
                 <version>${version.slf4j}</version>
             </dependency>
             <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${version.slf4j}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
                 <version>${version.log4j}</version>
@@ -311,11 +316,6 @@
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-slf4j-impl</artifactId>
                 <version>${version.log4j}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>${version.slf4j}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -556,7 +556,6 @@
                                 <excludes>
                                     <exclude>**/HelpMojo*</exclude>
                                     <exclude>**/org/slf4j/impl/**</exclude>
-                                    <exclude>**/CrappyLogger*</exclude>
                                     <exclude>**/io/squark/yggdrasil/core/api/exception/**</exclude>
                                 </excludes>
                             </configuration>
