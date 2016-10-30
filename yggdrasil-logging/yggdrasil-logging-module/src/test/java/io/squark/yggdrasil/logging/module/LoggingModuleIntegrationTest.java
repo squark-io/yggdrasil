@@ -15,13 +15,14 @@
  */
 package io.squark.yggdrasil.logging.module;
 
+import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import io.squark.yggdrasil.core.api.Constants;
 import io.squark.yggdrasil.core.api.YggdrasilContext;
 import io.squark.yggdrasil.core.api.logging.LogHelper;
 import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
 import io.squark.yggdrasil.logging.api.CrappyLogger;
-import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import org.apache.commons.lang3.SerializationUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -48,13 +49,11 @@ public class LoggingModuleIntegrationTest {
         @Override
         public synchronized void write(byte[] b, int off, int len) {
             combined.write(b, off, len);
-            originalOut.write(b, off, len);
         }
 
         @Override
         public void write(byte[] b) throws IOException {
             combined.write(b);
-            originalOut.write(b);
         }
     };
     private static ByteArrayOutputStream err = new ByteArrayOutputStream() {
@@ -75,6 +74,12 @@ public class LoggingModuleIntegrationTest {
     public static void setUp() {
         System.setOut(new PrintStream(out));
         System.setErr(new PrintStream(err));
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        System.setOut(originalOut);
+        System.setErr(originalErr);
     }
 
     @Test
