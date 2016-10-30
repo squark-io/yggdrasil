@@ -16,6 +16,7 @@
 package io.squark.yggdrasil.logging.api;
 
 import org.jetbrains.annotations.Nullable;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +49,11 @@ public class CrappyLoggerTest {
     public void setup() {
         System.setProperty(CrappyLogger.YGGDRASIL_LOG_LEVEL, LogLevel.TRACE.name());
         crappyLogger = Mockito.spy(new CrappyLoggerTestImpl(CrappyLoggerTest.class.getName()));
+    }
+
+    @After
+    public void tearDown() {
+        System.clearProperty(CrappyLogger.YGGDRASIL_LOG_LEVEL);
     }
 
     @Test

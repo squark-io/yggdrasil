@@ -42,6 +42,7 @@ import java.util.Set;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DependencyResolutionProviderFactory.class)
 public class RemoteDependencyLoaderIntegrationTest {
+
     @Test
     public void loadDependencies() throws Exception {
         YggdrasilDependency compileDependency = new YggdrasilDependency("test", "test", "test", "test", new File("test"));
