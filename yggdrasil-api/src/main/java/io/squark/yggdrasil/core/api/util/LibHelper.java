@@ -46,7 +46,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Scanner;
@@ -67,7 +66,7 @@ public class LibHelper {
 
     public static URL[] getLibs(Class<?> caller, String path) throws YggdrasilException {
         try {
-            if (!path.endsWith(".jar") && !path.endsWith(".ref") && !path.endsWith("/")) {
+            if (!path.endsWith(".jar") && !path.endsWith(".ref") && !path.endsWith(".class") && !path.endsWith("/")) {
                 path = path + "/";
             }
             List<URL> libs;
@@ -111,7 +110,7 @@ public class LibHelper {
                     }
                 }
             }
-            Collections.sort(libs, (o1, o2) -> {
+            libs.sort((o1, o2) -> {
                 if (o1.getPath().contains("nested-jar-classloader")) {
                     return -1;
                 }
@@ -151,10 +150,12 @@ public class LibHelper {
                     URL url = file.toURI().toURL();
                     libs.add(url);
                 } else if (file.getName().endsWith(".ref")) {
+                    logger.debug("Found ref " + file.getName());
                     InputStream inputStream = new FileInputStream(file);
                     Scanner scanner = new Scanner(inputStream).useDelimiter("\\A");
                     if (scanner.hasNext()) {
                         String target = scanner.next();
+                        logger.debug("Ref " + file.getName() + " points to " + target);
                         URL url = new URL("file", "", target);
                         libs.add(url);
                     }
