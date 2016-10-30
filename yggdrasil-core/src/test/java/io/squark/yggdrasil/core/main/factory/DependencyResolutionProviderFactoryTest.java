@@ -18,6 +18,7 @@ package io.squark.yggdrasil.core.main.factory;
 import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import io.squark.yggdrasil.core.api.DependencyResolutionProvider;
 import io.squark.yggdrasil.core.api.exception.DependencyResolutionException;
+import io.squark.yggdrasil.core.api.model.YggdrasilDependency;
 import io.squark.yggdrasil.logging.api.CrappyLogger;
 import io.squark.yggdrasil.logging.api.LogLevel;
 import org.junit.After;
@@ -34,6 +35,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 /**
  * yggdrasil
@@ -57,7 +59,6 @@ public class DependencyResolutionProviderFactoryTest {
 
     @Test
     public void getDependencyResolvers() throws Exception {
-        DependencyResolutionProvider providerMock = PowerMockito.mock(DependencyResolutionProvider.class);
         PowerMockito.spy(DependencyResolutionProviderFactory.class);
         ServiceLoader mockServiceLoader = PowerMockito.mock(ServiceLoader.class);
         Mockito.when(mockServiceLoader.iterator()).thenReturn(new Iterator() {
@@ -72,7 +73,7 @@ public class DependencyResolutionProviderFactoryTest {
             @Override
             public Object next() {
                 returned = true;
-                return providerMock;
+                return new ProviderMock();
             }
         });
         PowerMockito.mockStatic(ServiceLoader.class, invocationOnMock -> {
@@ -89,6 +90,17 @@ public class DependencyResolutionProviderFactoryTest {
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
+        }
+    }
+
+    class ProviderMock implements DependencyResolutionProvider {
+
+        @Override
+        public Set<YggdrasilDependency> resolveDependencies(Set<YggdrasilDependency> dependencies,
+            boolean loadTransitiveProvidedDependencies) throws DependencyResolutionException {
+            //noop
+
+            return null;
         }
     }
 
