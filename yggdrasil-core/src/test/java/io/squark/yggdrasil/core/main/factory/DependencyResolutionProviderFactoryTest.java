@@ -17,6 +17,7 @@ package io.squark.yggdrasil.core.main.factory;
 
 import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import io.squark.yggdrasil.core.api.DependencyResolutionProvider;
+import io.squark.yggdrasil.core.api.exception.DependencyResolutionException;
 import io.squark.yggdrasil.logging.api.CrappyLogger;
 import io.squark.yggdrasil.logging.api.LogLevel;
 import org.junit.After;
@@ -81,9 +82,14 @@ public class DependencyResolutionProviderFactoryTest {
         });
 
 
-        Collection<DependencyResolutionProvider> list = DependencyResolutionProviderFactory
-            .getDependencyResolvers(new NestedJarClassLoader(this.getClass().getClassLoader()));
-        Assert.assertEquals(1, list.size());
+        try {
+            Collection<DependencyResolutionProvider> list = DependencyResolutionProviderFactory
+                .getDependencyResolvers(new NestedJarClassLoader(this.getClass().getClassLoader()));
+            Assert.assertEquals(1, list.size());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
 }
