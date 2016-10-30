@@ -82,15 +82,9 @@ public class DependencyResolutionProviderFactoryTest {
             } else return invocationOnMock.callRealMethod();
         });
 
-
-        try {
-            Collection<DependencyResolutionProvider> list = DependencyResolutionProviderFactory
-                .getDependencyResolvers(new NestedJarClassLoader(this.getClass().getClassLoader()));
-            Assert.assertEquals(1, list.size());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
+        Collection<DependencyResolutionProvider> list = DependencyResolutionProviderFactory
+            .getDependencyResolvers(new NestedJarClassLoader(this.getClass().getClassLoader()));
+        Assert.assertEquals(1, list.size());
     }
 
     class ProviderMock implements DependencyResolutionProvider {
