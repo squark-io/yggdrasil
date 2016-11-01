@@ -18,21 +18,28 @@ package io.squark.yggdrasil.core.main;
 import io.squark.yggdrasil.core.api.Constants;
 import io.squark.yggdrasil.core.api.YggdrasilContext;
 import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
+import io.squark.yggdrasil.core.api.util.LibHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.MockGateway;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import static org.powermock.api.mockito.PowerMockito.doReturn;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Yggdrasil.class})
+@PrepareForTest({Yggdrasil.class, LibHelper.class, JarFile.class})
 public class YggdrasilIntegrationTest {
 
     private InputStream yamlInputStream = getClass().getResourceAsStream(Constants.YAML_PROPERTIES_FILE);
@@ -67,6 +74,42 @@ public class YggdrasilIntegrationTest {
         yggdrasilConfiguration.setMainClass(TestMainClass.class.getName());
         loadMainClassMethod.invoke(null, this.getClass().getClassLoader(), yggdrasilConfiguration, new String[] {});
         Assert.assertTrue(TestMainClass.invoked);
+    }
+
+    @Test
+    public void getClassesJarTest() throws Exception {
+        YggdrasilConfiguration configuration = new YggdrasilConfiguration();
+        configuration.setClassesJar("dummy.jar");
+        URL jar = Yggdrasil.getClassesJar(configuration);
+        Assert.assertTrue(jar != null);
+        Assert.assertTrue(jar.getFile().endsWith("dummy.jar"));
+        URL ownJar = new File("").toURI().toURL();
+        PowerMockito.mockStatic(LibHelper.class, invocationOnMock -> {
+            if (invocationOnMock.getMethod().getName().equals("getOwnJar")) {
+                return ownJar;
+            }
+            return invocationOnMock.callRealMethod();
+        });
+        JarFile jarFileMock = Mockito.mock(JarFile.class);
+        PowerMockito.mockStatic(JarFile.class);
+        PowerMockito.whenNew(JarFile.class).withArguments(new File(ownJar.toURI())).then(invocationOnMock -> jarFileMock);
+        Mockito.when(jarFileMock.entries()).thenReturn(new Enumeration<JarEntry>() {
+
+            boolean returned = false;
+
+            @Override
+            public boolean hasMoreElements() {
+                return !returned;
+            }
+
+            @Override
+            public JarEntry nextElement() {
+                return new JarEntry("dummy.jar");
+            }
+        });
+        jar = Yggdrasil.getClassesJar(configuration);
+        Assert.assertNotNull(jar);
+        Assert.assertEquals("file:" + new File("").toURI().toURL().getFile() + "!/dummy.jar", jar.getFile());
     }
 
     private static class TestMainClass {

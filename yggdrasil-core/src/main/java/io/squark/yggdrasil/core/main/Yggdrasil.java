@@ -211,12 +211,12 @@ public final class Yggdrasil {
         return isolatedClassLoader;
     }
 
-    private static URL getClassesJar(YggdrasilConfiguration configuration) throws YggdrasilException {
+    static URL getClassesJar(YggdrasilConfiguration configuration) throws YggdrasilException {
         try {
             if (configuration.getClassesJar() == null) {
                 return null;
             }
-            URL location = Yggdrasil.class.getProtectionDomain().getCodeSource().getLocation();
+            URL location = LibHelper.getOwnJar();
             if (location == null) {
                 URL[] libs = LibHelper.getLibs(Yggdrasil.class, ".");
                 if (libs != null) {
