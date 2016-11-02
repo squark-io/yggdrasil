@@ -25,7 +25,7 @@
         <version>0.0.3-ALPHA-SNAPSHOT</version>
     </parent>
 
-    <groupId>io.squark.yggdrasil</groupId>
+    <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
     <artifactId>yggdrasil-cdi-provider</artifactId>
 
     <name>Yggdrasil CDI provider</name>
