@@ -22,7 +22,7 @@
     <parent>
         <artifactId>yggdrasil-framework-provider</artifactId>
         <groupId>io.squark.yggdrasil</groupId>
-        <version>0.0.2-ALPHA-SNAPSHOT</version>
+        <version>0.0.2-ALPHA</version>
     </parent>
 
     <groupId>io.squark.yggdrasil</groupId>

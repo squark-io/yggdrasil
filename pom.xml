@@ -21,7 +21,7 @@
 
     <groupId>io.squark</groupId>
     <artifactId>yggdrasil</artifactId>
-    <version>0.0.2-ALPHA-SNAPSHOT</version>
+    <version>0.0.2-ALPHA</version>
     <packaging>pom</packaging>
 
     <name>Yggdrasil Embedded Container</name>
@@ -619,6 +619,14 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-squark-io-squark.io</id>
+            <name>squark-io-squark.io</name>
+            <url>https://api.bintray.com/maven/squark-io/squark.io/yggdrasil/;publish=1</url>
+        </repository>
+    </distributionManagement>
 
     <licenses>
         <license>
