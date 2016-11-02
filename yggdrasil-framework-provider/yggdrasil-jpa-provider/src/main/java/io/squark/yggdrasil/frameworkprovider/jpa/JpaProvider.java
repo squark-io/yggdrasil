@@ -64,6 +64,6 @@ public class JpaProvider implements FrameworkProvider {
 
     @Override
     public List<ProviderDependency> runBefore() {
-        return Collections.singletonList(new ProviderDependency("WeldFrameworkProvider", true));
+        return Collections.singletonList(new ProviderDependency("CDIProvider", true));
     }
 }

@@ -176,6 +176,6 @@ public class JaxRsProvider implements FrameworkProvider {
 
     @Override
     public List<ProviderDependency> runAfter() {
-        return Collections.singletonList(new ProviderDependency("WeldFrameworkProvider", true));
+        return Collections.singletonList(new ProviderDependency("CDIProvider", true));
     }
 }
