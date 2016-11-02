@@ -24,7 +24,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.squark.yggdrasil.frameworkprovider</groupId>
+    <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
     <artifactId>yggdrasil-jpa-provider</artifactId>
 
     <name>Yggdrasil JPA provider</name>
