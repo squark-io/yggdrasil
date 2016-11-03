@@ -24,7 +24,7 @@
     <parent>
         <groupId>io.squark</groupId>
         <artifactId>yggdrasil</artifactId>
-        <version>0.0.3-ALPHA-SNAPSHOT</version>
+        <version>0.0.3-ALPHA</version>
     </parent>
 
     <name>Yggdrasil Maven Plugin</name>
