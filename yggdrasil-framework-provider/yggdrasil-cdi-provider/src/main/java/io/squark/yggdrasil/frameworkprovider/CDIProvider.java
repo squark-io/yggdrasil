@@ -51,6 +51,7 @@ public class CDIProvider implements FrameworkProvider {
         logger.info("Initializing Weld container...");
         System.setProperty("org.jboss.logging.provider", "slf4j");
         Weld weld = new Weld();
+        weld.property(Weld.ARCHIVE_ISOLATION_SYSTEM_PROPERTY, false);
         weld.setClassLoader(CDIProvider.class.getClassLoader());
         WeldContainer container = weld.initialize();
         YggdrasilContext.registerObject(BeanManager.class.getName(), container.getBeanManager());
