@@ -19,15 +19,20 @@ import com.jayway.restassured.http.ContentType;
 import io.squark.yggdrasil.core.api.Constants;
 import io.squark.yggdrasil.core.api.exception.YggdrasilException;
 import io.squark.yggdrasil.core.api.logging.LogHelper;
+import io.squark.yggdrasil.core.api.model.ProviderConfiguration;
 import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
-import io.squark.yggdrasil.frameworkprovider.JaxRsProvider;
 import io.squark.yggdrasil.frameworkprovider.CDIProvider;
-import org.jboss.weld.environment.se.Weld;
-import org.jboss.weld.environment.se.WeldContainer;
+import io.squark.yggdrasil.frameworkprovider.JaxRsProvider;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.enterprise.inject.spi.CDI;
 import javax.persistence.EntityManager;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -35,21 +40,30 @@ import static org.hamcrest.Matchers.equalTo;
 public class RequestScopeIntegrationTest {
 
     private static EntityManager entityManager;
+    private static int port;
 
     @BeforeClass
     public static void setup() throws YggdrasilException {
+        port = new Random().nextInt(8999) + 1000;
+        Set<ProviderConfiguration> config = new HashSet<>();
+        ProviderConfiguration jaxRsConfig = new ProviderConfiguration();
+        jaxRsConfig.setIdentifier(JaxRsProvider.class.getSimpleName());
+        Map<String, Object> jaxRsProperties = new HashMap<>();
+        jaxRsProperties.put("port", String.valueOf(port));
+        jaxRsConfig.setProperties(jaxRsProperties);
+        config.add(jaxRsConfig);
         System.setProperty(Constants.YGGDRASIL_LOG_LEVEL, "DEBUG");
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "DEBUG");
         YggdrasilConfiguration configuration = new YggdrasilConfiguration();
+        configuration.setProviderConfigurations(config);
         LogHelper.initiateLogging(configuration, RequestScopeIntegrationTest.class.getClassLoader(), null, true);
         new JpaProvider().provide(configuration);
         System.setProperty("org.jboss.logging.provider", "slf4j");
-        Weld weld = new Weld();
-        weld.setClassLoader(CDIProvider.class.getClassLoader());
-        WeldContainer container = weld.initialize();
+        new CDIProvider().provide(configuration);
         new JaxRsProvider().provide(configuration);
-        entityManager = container.select(JpaCDIServices.class).get().getEntityManagerFactoryRef(
-                "testPersistenceUnit").getInstance().createEntityManager();
+        entityManager =
+            CDI.current().select(JpaCDIServices.class).get().getEntityManagerFactoryRef("testPersistenceUnit").getInstance()
+                .createEntityManager();
     }
 
     @Test
@@ -61,6 +75,6 @@ public class RequestScopeIntegrationTest {
         entityManager.flush();
         entityManager.getTransaction().commit();
         entityManager.close();
-        given().contentType(ContentType.JSON).port(8080).get("/").then().assertThat().body("testColumn", equalTo("test value"));
+        given().contentType(ContentType.JSON).port(port).get("/").then().assertThat().body("testColumn", equalTo("test value"));
     }
 }

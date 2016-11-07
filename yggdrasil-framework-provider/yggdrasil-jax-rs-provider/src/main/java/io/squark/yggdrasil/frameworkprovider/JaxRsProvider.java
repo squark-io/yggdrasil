@@ -31,11 +31,11 @@
  */
 package io.squark.yggdrasil.frameworkprovider;
 
-import io.squark.yggdrasil.core.api.YggdrasilContext;
 import io.squark.yggdrasil.core.api.FrameworkProvider;
+import io.squark.yggdrasil.core.api.YggdrasilContext;
 import io.squark.yggdrasil.core.api.exception.YggdrasilException;
-import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
 import io.squark.yggdrasil.core.api.model.ProviderConfiguration;
+import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
 import io.squark.yggdrasil.frameworkprovider.exception.YggdrasilMultipleResourceException;
 import io.squark.yggdrasil.logging.api.InternalLoggerBinder;
 import io.undertow.Undertow;
@@ -43,6 +43,7 @@ import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.spec.ServletContextImpl;
 import org.jboss.resteasy.cdi.CdiInjectorFactory;
+import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
@@ -52,6 +53,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletContext;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -111,6 +113,11 @@ public class JaxRsProvider implements FrameworkProvider {
         Undertow.Builder serverBuilder = Undertow.builder().addHttpListener(port, "localhost");
         undertowJaxrsServer.start(serverBuilder);
 
+        ResteasyCdiExtension resteasyCdiExtension = getBean(beanManager, ResteasyCdiExtension.class);
+        if (resteasyCdiExtension == null) {
+            throw new YggdrasilException("Failed to load " + ResteasyCdiExtension.class.getName() + " bean");
+        }
+
         JaxRsCDIExtension jaxRsCDIExtension = getBean(beanManager, JaxRsCDIExtension.class);
         if (jaxRsCDIExtension == null) {
             throw new YggdrasilException("Failed to get JaxRsCDIExtension bean");
@@ -124,14 +131,13 @@ public class JaxRsProvider implements FrameworkProvider {
             logger.debug("Found Application class " + applications.get(0));
             deployment.setApplicationClass(applications.get(0));
         }
-        List<String> resources;
 
-        if ((resources = jaxRsCDIExtension.getResources()) != null && resources.size() > 0) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Found resource classes: " + concatListOfStrings(resources, 5));
-            }
-            deployment.setResourceClasses(resources);
+        List<Object> resourceInstances = new ArrayList<>();
+        for (Class<?> clazz : resteasyCdiExtension.getResources()) {
+            Object bean = getBean(beanManager, clazz);
+            resourceInstances.add(bean);
         }
+        deployment.setResources(resourceInstances);
 
         List<String> providers;
         if ((providers = jaxRsCDIExtension.getProviders()) != null && providers.size() > 0) {
@@ -178,4 +184,5 @@ public class JaxRsProvider implements FrameworkProvider {
     public List<ProviderDependency> runAfter() {
         return Collections.singletonList(new ProviderDependency("CDIProvider", true));
     }
+
 }
