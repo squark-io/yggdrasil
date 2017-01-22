@@ -222,7 +222,7 @@ public final class Yggdrasil {
                 if (libs != null) {
                     for (URL lib : libs) {
                         if (lib.getFile().endsWith(configuration.getClassesJar())) {
-                            return new URL(null, "jar:" + lib.toURI().toString(), new NestedJarURLStreamHandler());
+                            return new URL(null, "jar:" + lib.toURI().toString(), new NestedJarURLStreamHandler(false));
                         }
                     }
                 } else {
@@ -236,7 +236,7 @@ public final class Yggdrasil {
                     JarEntry entry = entries.nextElement();
                     if (entry.getName().endsWith(configuration.getClassesJar())) {
                         return new URL(null, "jar:" + ownFile.toURI().toString() + "!/" + entry.getName(),
-                            new NestedJarURLStreamHandler());
+                            new NestedJarURLStreamHandler(false));
                     }
                 }
             }
