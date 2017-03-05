@@ -26,10 +26,11 @@
 
     <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
     <artifactId>yggdrasil-servlet-provider</artifactId>
-    <properties>
-        <deltaspike.version>1.7.2</deltaspike.version>
-    </properties>
 
+    <name>Yggdrasil Servlet provider</name>
+    <description>
+        Servlet Provider using Undertow ${version.undertow} for Yggdrasil projects
+    </description>
 
     <dependencies>
         <dependency>
@@ -45,20 +46,21 @@
             <artifactId>undertow-servlet</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.deltaspike.modules</groupId>
-            <artifactId>deltaspike-servlet-module-api</artifactId>
-            <version>${deltaspike.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.deltaspike.modules</groupId>
-            <artifactId>deltaspike-servlet-module-impl</artifactId>
-            <version>${deltaspike.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.jboss.weld.servlet</groupId>
             <artifactId>weld-servlet-core</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
