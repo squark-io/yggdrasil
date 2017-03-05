@@ -20,7 +20,7 @@
     <parent>
         <artifactId>yggdrasil-framework-provider</artifactId>
         <groupId>io.squark.yggdrasil</groupId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -119,6 +119,10 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
+            <artifactId>yggdrasil-servlet-provider</artifactId>
         </dependency>
     </dependencies>
 

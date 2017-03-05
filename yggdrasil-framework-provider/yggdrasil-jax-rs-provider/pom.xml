@@ -20,7 +20,7 @@
     <parent>
         <artifactId>yggdrasil-framework-provider</artifactId>
         <groupId>io.squark.yggdrasil</groupId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -111,6 +111,16 @@
         <dependency>
             <groupId>io.squark.yggdrasil.yggdrasil-logging</groupId>
             <artifactId>yggdrasil-logging-fallback</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
+            <artifactId>yggdrasil-servlet-provider</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
+            <artifactId>yggdrasil-cdi-provider</artifactId>
             <scope>test</scope>
         </dependency>
 

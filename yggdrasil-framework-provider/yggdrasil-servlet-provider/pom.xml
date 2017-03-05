@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2016 Erik Håkansson, http://squark.io
+  ~ Copyright (c) 2017 Erik Håkansson, http://squark.io
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -17,74 +17,48 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <artifactId>yggdrasil-framework-provider</artifactId>
         <groupId>io.squark.yggdrasil</groupId>
         <version>0.1.1-SNAPSHOT</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
-    <artifactId>yggdrasil-cdi-provider</artifactId>
+    <artifactId>yggdrasil-servlet-provider</artifactId>
+    <properties>
+        <deltaspike.version>1.7.2</deltaspike.version>
+    </properties>
 
-    <name>Yggdrasil CDI provider</name>
-    <description>
-        CDI Provider using Weld ${version.weld} for Yggdrasil projects
-    </description>
 
     <dependencies>
-
-        <!-- INTERNAL DEPENDENCIES -->
         <dependency>
             <groupId>io.squark.yggdrasil</groupId>
             <artifactId>yggdrasil-api</artifactId>
         </dependency>
-
-        <!-- EXTERNAL DEPENDENCIES -->
         <dependency>
-            <groupId>org.jboss.weld.se</groupId>
-            <artifactId>weld-se-core</artifactId>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-servlet</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-        </dependency>
-
-        <!-- TEST DEPENDENCIES -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-exec</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.squark.yggdrasil.yggdrasil-logging</groupId>
-            <artifactId>yggdrasil-logging-fallback</artifactId>
-            <scope>test</scope>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-servlet-module-api</artifactId>
+            <version>${deltaspike.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-servlet-module-impl</artifactId>
+            <version>${deltaspike.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-core</artifactId>
+        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
 
 </project>

@@ -22,7 +22,7 @@ import io.squark.yggdrasil.core.api.logging.LogHelper;
 import io.squark.yggdrasil.core.api.model.ProviderConfiguration;
 import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
 import io.squark.yggdrasil.frameworkprovider.CDIProvider;
-import io.squark.yggdrasil.frameworkprovider.JaxRsProvider;
+import io.squark.yggdrasil.frameworkprovider.ServletDeploymentProvider;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -47,7 +47,7 @@ public class RequestScopeIntegrationTest {
         port = new Random().nextInt(8999) + 1000;
         Set<ProviderConfiguration> config = new HashSet<>();
         ProviderConfiguration jaxRsConfig = new ProviderConfiguration();
-        jaxRsConfig.setIdentifier(JaxRsProvider.class.getSimpleName());
+        jaxRsConfig.setIdentifier(ServletDeploymentProvider.class.getSimpleName());
         Map<String, Object> jaxRsProperties = new HashMap<>();
         jaxRsProperties.put("port", String.valueOf(port));
         jaxRsConfig.setProperties(jaxRsProperties);
@@ -60,7 +60,7 @@ public class RequestScopeIntegrationTest {
         new JpaProvider().provide(configuration);
         System.setProperty("org.jboss.logging.provider", "slf4j");
         new CDIProvider().provide(configuration);
-        new JaxRsProvider().provide(configuration);
+        new ServletDeploymentProvider().provide(configuration);
         entityManager =
             CDI.current().select(JpaCDIServices.class).get().getEntityManagerFactoryRef("testPersistenceUnit").getInstance()
                 .createEntityManager();
@@ -75,6 +75,6 @@ public class RequestScopeIntegrationTest {
         entityManager.flush();
         entityManager.getTransaction().commit();
         entityManager.close();
-        given().contentType(ContentType.JSON).port(port).get("/").then().assertThat().body("testColumn", equalTo("test value"));
+        given().contentType(ContentType.JSON).port(port).get("/rest").then().assertThat().body("testColumn", equalTo("test value"));
     }
 }

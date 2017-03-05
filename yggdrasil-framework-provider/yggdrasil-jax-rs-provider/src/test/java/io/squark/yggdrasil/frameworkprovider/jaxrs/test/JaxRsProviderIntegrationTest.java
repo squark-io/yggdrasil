@@ -37,7 +37,8 @@ import io.squark.yggdrasil.core.api.Constants;
 import io.squark.yggdrasil.core.api.logging.LogHelper;
 import io.squark.yggdrasil.core.api.model.ProviderConfiguration;
 import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
-import io.squark.yggdrasil.frameworkprovider.JaxRsProvider;
+import io.squark.yggdrasil.frameworkprovider.CDIProvider;
+import io.squark.yggdrasil.frameworkprovider.ServletDeploymentProvider;
 import org.hamcrest.Matchers;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -60,21 +61,21 @@ public class JaxRsProviderIntegrationTest {
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "DEBUG");
         YggdrasilConfiguration configuration = new YggdrasilConfiguration();
         Set<ProviderConfiguration> config = new HashSet<>();
-        ProviderConfiguration jaxRsConfig = new ProviderConfiguration();
-        jaxRsConfig.setIdentifier(JaxRsProvider.class.getSimpleName());
+        ProviderConfiguration servletDeploymentProviderConfig = new ProviderConfiguration();
+        servletDeploymentProviderConfig.setIdentifier(ServletDeploymentProvider.class.getSimpleName());
         Map<String, Object> jaxRsProperties = new HashMap<>();
         jaxRsProperties.put("port", String.valueOf(port));
-        jaxRsConfig.setProperties(jaxRsProperties);
-        config.add(jaxRsConfig);
+        servletDeploymentProviderConfig.setProperties(jaxRsProperties);
+        config.add(servletDeploymentProviderConfig);
         configuration.setProviderConfigurations(config);
         LogHelper.initiateLogging(configuration, JaxRsProviderIntegrationTest.class.getClassLoader(), null, true);
         System.setProperty("org.jboss.logging.provider", "slf4j");
-        new JaxRsProvider().provide(configuration);
+        new CDIProvider().provide(configuration);
+        new ServletDeploymentProvider().provide(configuration);
     }
 
     @Test
     public void testIntegrationTest() {
-        RestAssured.given().port(port).get("/").then().assertThat().body("get(0)", Matchers.equalTo("test this string"));
+        RestAssured.given().port(port).get("/rest").then().assertThat().body("get(0)", Matchers.equalTo("test this string"));
     }
-
 }

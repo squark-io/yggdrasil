@@ -21,7 +21,7 @@
 
     <groupId>io.squark</groupId>
     <artifactId>yggdrasil</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Yggdrasil Embedded Container</name>
@@ -143,6 +143,11 @@
             <dependency>
                 <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
                 <artifactId>yggdrasil-jax-rs-provider</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
+                <artifactId>yggdrasil-servlet-provider</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
