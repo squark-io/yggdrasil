@@ -19,7 +19,7 @@
 
     <groupId>io.squark</groupId>
     <artifactId>yggdrasil</artifactId>
-    <version>0.1.3-SNAPSHOT</version>
+    <version>0.1.3</version>
     <packaging>pom</packaging>
 
     <name>Yggdrasil Embedded Container</name>
@@ -678,7 +678,7 @@
     <scm>
         <url>https://github.com/squark-io/yggdrasil</url>
         <connection>scm:git:git@github.com:squark-io/yggdrasil.git</connection>
-        <tag>HEAD</tag>
+        <tag>yggdrasil-0.1.3</tag>
     </scm>
 
 </project>
