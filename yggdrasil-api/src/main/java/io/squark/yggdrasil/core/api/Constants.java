@@ -55,4 +55,5 @@ public interface Constants {
     String YGGDRASIL_LOG_LEVEL = "yggdrasil.logLevel";
     String NESTED_JAR_CLASSLOADER_GROUP_ID = "io.squark";
     String NESTED_JAR_CLASSLOADER_ARTIFACT_ID = "nested-jar-classloader";
+    String NESTED_JAR_CLASSLOADER_DEFAULT_VERSION = "0.1.10";
 }

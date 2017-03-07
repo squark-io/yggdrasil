@@ -153,6 +153,9 @@ public class PackageYggdrasilMojo extends AbstractMojo {
     private Multimap<String, String> duplicates = HashMultimap.create();
     private Map<String, AddedTarget> addedJars = new HashMap<>();
 
+    @Parameter(property = "yggdrasil.nestedJarClassLoaderVersion", defaultValue = Constants.NESTED_JAR_CLASSLOADER_DEFAULT_VERSION)
+    private String nestedJarClassLoaderVersion;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         File configFile = buildConfigurationFile();
@@ -478,7 +481,7 @@ public class PackageYggdrasilMojo extends AbstractMojo {
         org.apache.maven.model.Dependency coreDependency = new org.apache.maven.model.Dependency();
         coreDependency.setGroupId(Constants.NESTED_JAR_CLASSLOADER_GROUP_ID);
         coreDependency.setArtifactId(Constants.NESTED_JAR_CLASSLOADER_ARTIFACT_ID);
-        coreDependency.setVersion(yggdrasilVersion);
+        coreDependency.setVersion(nestedJarClassLoaderVersion);
         coreDependency.setScope(Scopes.COMPILE);
         return coreDependency;
     }
