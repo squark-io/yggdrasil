@@ -476,7 +476,7 @@ public class PackageYggdrasilMojo extends AbstractMojo {
     private org.apache.maven.model.Dependency getClassLoaderDependency() {
         String yggdrasilVersion = pluginDescriptor.getVersion();
         org.apache.maven.model.Dependency coreDependency = new org.apache.maven.model.Dependency();
-        coreDependency.setGroupId(Constants.YGGDRASIL_GROUP_ID);
+        coreDependency.setGroupId(Constants.NESTED_JAR_CLASSLOADER_GROUP_ID);
         coreDependency.setArtifactId(Constants.NESTED_JAR_CLASSLOADER_ARTIFACT_ID);
         coreDependency.setVersion(yggdrasilVersion);
         coreDependency.setScope(Scopes.COMPILE);

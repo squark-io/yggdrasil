@@ -53,5 +53,6 @@ public interface Constants {
     String YAML_PROPERTIES_FILE = "/META-INF/yggdrasil.yaml";
     String JSON_PROPERTIES_FILE = "/META-INF/yggdrasil.json";
     String YGGDRASIL_LOG_LEVEL = "yggdrasil.logLevel";
+    String NESTED_JAR_CLASSLOADER_GROUP_ID = "io.squark";
     String NESTED_JAR_CLASSLOADER_ARTIFACT_ID = "nested-jar-classloader";
 }
