@@ -39,7 +39,7 @@
             <artifactId>yggdrasil-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.squark.yggdrasil</groupId>
+            <groupId>io.squark</groupId>
             <artifactId>nested-jar-classloader</artifactId>
         </dependency>
         <dependency>

@@ -31,12 +31,12 @@
  */
 package io.squark.yggdrasil.core.main;
 
+import io.squark.nestedjarclassloader.BootstrapClassLoader;
+import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import io.squark.yggdrasil.core.api.Constants;
 import io.squark.yggdrasil.core.api.util.LibHelper;
 import io.squark.yggdrasil.core.api.util.ReflectionUtil;
 import io.squark.yggdrasil.logging.api.InternalLoggerBinder;
-import io.squark.nestedjarclassloader.BootstrapClassLoader;
-import io.squark.nestedjarclassloader.NestedJarClassLoader;
 import org.slf4j.Logger;
 
 import java.lang.reflect.Constructor;
@@ -60,8 +60,22 @@ public class Bootstrap {
             ClassLoader isolated = new BootstrapClassLoader(LibHelper.getOwnJar());
 
             Class<?> coreClassLoaderClass = isolated.loadClass(NestedJarClassLoader.class.getName());
-            Constructor constructor = coreClassLoaderClass.getDeclaredConstructor(ClassLoader.class);
-            ClassLoader coreClassLoader = (ClassLoader) constructor.newInstance(isolated);
+            Constructor constructor = null;
+            for (Constructor c : coreClassLoaderClass.getConstructors()) {
+                if (c.getParameterCount() == 2) {
+                    if (
+                      c.getParameterTypes()[0].getName().equals(ClassLoader.class.getName()) &&
+                      c.getParameterTypes()[1].getName().equals(Logger.class.getName())
+                      ) {
+                        constructor = c;
+                        break;
+                    }
+                }
+            }
+            if (constructor == null) {
+                throw new RuntimeException("Failed to get constructor for " + NestedJarClassLoader.class.getName());
+            }
+            ClassLoader coreClassLoader = (ClassLoader) constructor.newInstance(isolated, null);
 
             Method addURLs = coreClassLoaderClass.getDeclaredMethod("addURLs", URL[].class);
             addURLs.invoke(coreClassLoader, (Object) LibHelper.getLibs(Bootstrap.class, Constants.YGGDRASIL_RUNTIME_LIB_PATH));

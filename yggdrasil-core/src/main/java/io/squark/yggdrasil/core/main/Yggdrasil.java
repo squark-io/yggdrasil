@@ -150,7 +150,7 @@ public final class Yggdrasil {
     public static NestedJarClassLoader initiate(ClassLoader classLoader, YggdrasilConfiguration configuration)
         throws NestedJarClassLoaderException {
         if (!(classLoader instanceof NestedJarClassLoader)) {
-            classLoader = new NestedJarClassLoader(classLoader);
+            classLoader = new NestedJarClassLoader(classLoader, InternalLoggerBinder.getLogger(NestedJarClassLoader.class));
         }
 
         try {
@@ -173,7 +173,7 @@ public final class Yggdrasil {
 
         NestedJarClassLoader isolatedClassLoader;
         try {
-            isolatedClassLoader = new NestedJarClassLoader(null);
+            isolatedClassLoader = new NestedJarClassLoader(null, InternalLoggerBinder.getLogger(NestedJarClassLoader.class));
             isolatedClassLoader.addURLs(libs);
         } catch (IOException e) {
             throw new YggdrasilException(e);

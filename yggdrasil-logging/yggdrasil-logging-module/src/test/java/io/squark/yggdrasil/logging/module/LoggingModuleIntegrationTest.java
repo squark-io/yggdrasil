@@ -85,7 +85,7 @@ public class LoggingModuleIntegrationTest {
     @Test
     public void mainLazyLoadTest() throws Exception {
         System.setProperty(Constants.YGGDRASIL_LOG_LEVEL, "DEBUG");
-        NestedJarClassLoader nestedJarClassLoader = new NestedJarClassLoader(null);
+        NestedJarClassLoader nestedJarClassLoader = new NestedJarClassLoader(null, null);
         URL[] urls = ((URLClassLoader) this.getClass().getClassLoader()).getURLs();
 
         List<URL> urlList = new ArrayList<>();

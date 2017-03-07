@@ -65,6 +65,7 @@
         <version.maven.plugin.plugin>3.4</version.maven.plugin.plugin>
         <version.maven.source.plugin>3.0.1</version.maven.source.plugin>
         <version.maven.surefire.plugin>2.19.1</version.maven.surefire.plugin>
+        <version.nested-jar-classloader>0.1.10</version.nested-jar-classloader>
         <version.mockito>1.10.19</version.mockito>
         <version.plexus.utils>3.0.22</version.plexus.utils>
         <version.powermock>1.6.5</version.powermock>
@@ -91,7 +92,6 @@
         <module>yggdrasil-maven-plugin</module>
         <module>yggdrasil-maven-provider-api</module>
         <module>yggdrasil-framework-provider</module>
-        <module>nested-jar-classloader</module>
         <module>yggdrasil-bootstrap</module>
         <module>yggdrasil-coverage-report</module>
         <module>yggdrasil-logging</module>
@@ -116,9 +116,9 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.squark.yggdrasil</groupId>
+                <groupId>io.squark</groupId>
                 <artifactId>nested-jar-classloader</artifactId>
-                <version>${project.version}</version>
+                <version>${version.nested-jar-classloader}</version>
             </dependency>
             <dependency>
                 <groupId>io.squark.yggdrasil</groupId>
@@ -663,5 +663,11 @@
     </developers>
 
     <inceptionYear>2016</inceptionYear>
+
+    <scm>
+        <url>https://github.com/squark-io/yggdrasil</url>
+        <connection>scm:git:git@github.com:squark-io/yggdrasil.git</connection>
+        <tag>HEAD</tag>
+    </scm>
 
 </project>

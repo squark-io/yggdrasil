@@ -83,7 +83,7 @@ public class DependencyResolutionProviderFactoryTest {
         });
 
         Collection<DependencyResolutionProvider> list = DependencyResolutionProviderFactory
-            .getDependencyResolvers(new NestedJarClassLoader(this.getClass().getClassLoader()));
+            .getDependencyResolvers(new NestedJarClassLoader(this.getClass().getClassLoader(), null));
         Assert.assertEquals(1, list.size());
     }
 

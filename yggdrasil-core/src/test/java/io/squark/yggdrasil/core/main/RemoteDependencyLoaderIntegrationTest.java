@@ -72,7 +72,7 @@ public class RemoteDependencyLoaderIntegrationTest {
             return invocationOnMock.callRealMethod();
         });
 
-        NestedJarClassLoader nestedJarClassLoader = new NestedJarClassLoader(this.getClass().getClassLoader());
+        NestedJarClassLoader nestedJarClassLoader = new NestedJarClassLoader(this.getClass().getClassLoader(), null);
         RemoteDependencyLoader.loadDependencies(nestedJarClassLoader, nestedJarClassLoader, configuration,
             Collections.singleton("exclude"));
     }
