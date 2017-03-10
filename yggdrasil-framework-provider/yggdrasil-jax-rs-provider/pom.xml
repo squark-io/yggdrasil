@@ -37,6 +37,11 @@
             <artifactId>yggdrasil-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
+            <artifactId>yggdrasil-servlet-provider</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>io.undertow</groupId>
             <artifactId>undertow-core</artifactId>
         </dependency>
@@ -109,11 +114,6 @@
         <dependency>
             <groupId>io.squark.yggdrasil.yggdrasil-logging</groupId>
             <artifactId>yggdrasil-logging-fallback</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
-            <artifactId>yggdrasil-servlet-provider</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

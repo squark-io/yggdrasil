@@ -15,9 +15,7 @@
  */
 package io.squark.yggdrasil.frameworkprovider;
 
-import io.squark.yggdrasil.core.api.YggdrasilServletDeploymentInfo;
 import io.squark.yggdrasil.core.api.YggdrasilServletInfo;
-import io.squark.yggdrasil.core.api.ServletProvider;
 import io.squark.yggdrasil.core.api.exception.YggdrasilException;
 import io.squark.yggdrasil.core.api.model.ProviderConfiguration;
 import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
@@ -35,7 +33,7 @@ import java.util.List;
 
 public class JaxRsServletProvider implements ServletProvider {
 
-  private static final String PROPERTY_MAPPING = "mapping";
+  private static final String PROPERTY_MAPPING = "rest.mapping";
   private static final String DEFAULT_MAPPING = "/rest/*";
   private final Logger logger = LoggerFactory.getLogger(JaxRsServletProvider.class);
 

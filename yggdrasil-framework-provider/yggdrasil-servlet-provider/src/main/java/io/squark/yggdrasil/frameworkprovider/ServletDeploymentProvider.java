@@ -1,30 +1,33 @@
 package io.squark.yggdrasil.frameworkprovider;
 
 import io.squark.yggdrasil.core.api.FrameworkProvider;
-import io.squark.yggdrasil.core.api.ServletProvider;
 import io.squark.yggdrasil.core.api.YggdrasilContext;
-import io.squark.yggdrasil.core.api.YggdrasilServletDeploymentInfo;
 import io.squark.yggdrasil.core.api.YggdrasilServletInfo;
 import io.squark.yggdrasil.core.api.exception.YggdrasilException;
 import io.squark.yggdrasil.core.api.model.ProviderConfiguration;
 import io.squark.yggdrasil.core.api.model.YggdrasilConfiguration;
+import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
+import io.undertow.server.handlers.resource.ClassPathResourceManager;
+import io.undertow.server.handlers.resource.PathResourceManager;
 import io.undertow.server.handlers.resource.Resource;
 import io.undertow.server.handlers.resource.ResourceChangeListener;
+import io.undertow.server.handlers.resource.ResourceHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletInfo;
-import io.undertow.util.StatusCodes;
 import org.jboss.weld.environment.servlet.WeldServletLifecycle;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDIProvider;
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -71,6 +74,7 @@ public class ServletDeploymentProvider implements FrameworkProvider {
         .addInitParameter(WeldServletLifecycle.class.getPackage().getName() + ".archive.isolation", "false")
         .addServletContextAttribute(WeldServletLifecycle.BEAN_MANAGER_ATTRIBUTE_NAME, beanManager);
 
+    CombinedResourceManager combinedResourceManager = new CombinedResourceManager();
 
     Map<ServletProvider, YggdrasilServletDeploymentInfo> deploymentInfoMap = new HashMap<>();
     for (ServletProvider servletProvider : servletProviders) {
@@ -84,6 +88,9 @@ public class ServletDeploymentProvider implements FrameworkProvider {
       di.getInitParameters().forEach(deployment::addInitParameter);
       di.getListeners().forEach(listenerClass -> deployment.addListener(Servlets.listener(listenerClass)));
       di.getServletContextAttributes().forEach(deployment::addServletContextAttribute);
+      di.getClassPathResources().forEach(path -> combinedResourceManager.addResourceManager(new ClassPathResourceManager(this.getClass().getClassLoader(), path)));
+      di.getPathResources().forEach(path -> combinedResourceManager.addResourceManager(new PathResourceManager(Paths.get(path), 8092)));
+      deployment.setEagerFilterInit(di.isEagerFilterInit());
       deploymentInfoMap.put(servletProvider, di);
     }
 
@@ -116,6 +123,8 @@ public class ServletDeploymentProvider implements FrameworkProvider {
       patterns.add(Pattern.compile(regex.toString()));
     }
 
+    ResourceHandler resourceHandler = Handlers.resource(combinedResourceManager);
+
     HttpHandler handler = exchange -> {
       for (Pattern pattern : patterns) {
         if (pattern.matcher(exchange.getRequestURI()).matches()) {
@@ -123,8 +132,8 @@ public class ServletDeploymentProvider implements FrameworkProvider {
           return;
         }
       }
-      exchange.setStatusCode(StatusCodes.NOT_FOUND).endExchange();
-      //resourceHandler.handleRequest(exchange);
+      resourceHandler.handleRequest(exchange);
+      //exchange.setStatusCode(StatusCodes.NOT_FOUND).endExchange();
     };
     Undertow server = Undertow.builder().addHttpListener(Integer.parseInt(port), "localhost").setHandler(handler).build();
     server.start();
@@ -158,9 +167,7 @@ public class ServletDeploymentProvider implements FrameworkProvider {
     private List<ResourceManager> resourceManagers = new ArrayList<>();
 
     public CombinedResourceManager(ResourceManager... managers) {
-      for (ResourceManager manager : managers) {
-        resourceManagers.add(manager);
-      }
+      resourceManagers.addAll(Arrays.asList(managers));
     }
 
     @Override
@@ -204,6 +211,10 @@ public class ServletDeploymentProvider implements FrameworkProvider {
       for (ResourceManager resourceManager : resourceManagers) {
         resourceManager.removeResourceChangeListener(listener);
       }
+    }
+
+    public void addResourceManager(ResourceManager resourceManager) {
+      resourceManagers.add(resourceManager);
     }
   }
 }

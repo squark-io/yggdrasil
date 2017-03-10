@@ -31,6 +31,7 @@
  */
 package io.squark.yggdrasil.frameworkprovider;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
@@ -43,6 +44,7 @@ import javax.ws.rs.ext.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
+@ApplicationScoped
 public class JaxRsCDIExtension implements Extension {
 
     private List<String> resources;

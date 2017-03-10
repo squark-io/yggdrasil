@@ -13,7 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.squark.yggdrasil.core.api;
+
+/*
+ * Copyright (c) 2017 Erik Håkansson, http://squark.io
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.squark.yggdrasil.frameworkprovider;
+
+import io.squark.yggdrasil.core.api.YggdrasilServletInfo;
 
 import java.util.ArrayList;
 import java.util.EventListener;
@@ -24,14 +42,13 @@ import java.util.Map;
 public class YggdrasilServletDeploymentInfo {
   private Map<String, Object> servletContextAttributes = new HashMap<>();
   private List<Class<? extends EventListener>> listeners = new ArrayList<>();
-  private ClassLoader classLoader;
-  private String contextPath;
-  private String deploymentName;
   private Map<String, String> initParameters = new HashMap<>();
   private boolean eagerFilterInit;
   private List<YggdrasilServletInfo> servlets = new ArrayList<>();
   private List<String> welcomePages = new ArrayList<>();
   private Map<String, Object> contextObjects = new HashMap<>();
+  private List<String> classPathResources = new ArrayList<>();
+  private List<String> pathResources = new ArrayList<>();
 
   public YggdrasilServletDeploymentInfo addListener(Class<? extends EventListener> listenerClass) {
     this.listeners.add(listenerClass);
@@ -40,33 +57,6 @@ public class YggdrasilServletDeploymentInfo {
 
   public YggdrasilServletDeploymentInfo addServletContextAttribute(String name, Object deployment) {
     this.servletContextAttributes.put(name, deployment);
-    return this;
-  }
-
-  public ClassLoader getClassLoader() {
-    return classLoader;
-  }
-
-  public YggdrasilServletDeploymentInfo setClassLoader(ClassLoader classLoader) {
-    this.classLoader = classLoader;
-    return this;
-  }
-
-  public String getContextPath() {
-    return contextPath;
-  }
-
-  public YggdrasilServletDeploymentInfo setContextPath(String contextPath) {
-    this.contextPath = contextPath;
-    return this;
-  }
-
-  public String getDeploymentName() {
-    return deploymentName;
-  }
-
-  public YggdrasilServletDeploymentInfo setDeploymentName(String deploymentName) {
-    this.deploymentName = deploymentName;
     return this;
   }
 
@@ -91,6 +81,16 @@ public class YggdrasilServletDeploymentInfo {
 
   public YggdrasilServletDeploymentInfo setEagerFilterInit(boolean eagerFilterInit) {
     this.eagerFilterInit = eagerFilterInit;
+    return this;
+  }
+
+  public YggdrasilServletDeploymentInfo addClassPathResource(String resource) {
+    this.classPathResources.add(resource);
+    return this;
+  }
+
+  public YggdrasilServletDeploymentInfo addPathResource(String resource) {
+    this.pathResources.add(resource);
     return this;
   }
 
@@ -120,5 +120,13 @@ public class YggdrasilServletDeploymentInfo {
 
   public Object getContextObject(String name) {
     return this.contextObjects.get(name);
+  }
+
+  public List<String> getClassPathResources() {
+    return classPathResources;
+  }
+
+  public List<String> getPathResources() {
+    return pathResources;
   }
 }
