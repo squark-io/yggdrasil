@@ -20,7 +20,7 @@
     <parent>
         <artifactId>yggdrasil-framework-provider</artifactId>
         <groupId>io.squark.yggdrasil</groupId>
-        <version>0.1.5-SNAPSHOT</version>
+        <version>0.1.5</version>
     </parent>
 
     <groupId>io.squark.yggdrasil.yggdrasil-framework-provider</groupId>
