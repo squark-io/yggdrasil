@@ -1,0 +1,39 @@
+{
+    ":": {
+        "conventions": {
+            "base": "org.gradle.api.plugins.BasePluginConvention"
+        },
+        "extensions": {
+            "ext": "org.gradle.api.plugins.ExtraPropertiesExtension",
+            "defaultArtifacts": "org.gradle.api.internal.plugins.DefaultArtifactPublicationSet"
+        }
+    },
+    ":core": {
+        "conventions": {
+            "base": "org.gradle.api.plugins.BasePluginConvention",
+            "java": "org.gradle.api.plugins.JavaPluginConvention",
+            "application": "org.gradle.api.plugins.ApplicationPluginConvention"
+        },
+        "extensions": {
+            "ext": "org.gradle.api.plugins.ExtraPropertiesExtension",
+            "defaultArtifacts": "org.gradle.api.internal.plugins.DefaultArtifactPublicationSet",
+            "reporting": "org.gradle.api.reporting.ReportingExtension",
+            "distributions": "org.gradle.api.distribution.DistributionContainer",
+            "kotlin": "org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension",
+            "kapt": "org.jetbrains.kotlin.gradle.plugin.KaptExtension"
+        }
+    },
+    ":yggdrasil-gradle-plugin": {
+        "conventions": {
+            "base": "org.gradle.api.plugins.BasePluginConvention",
+            "java": "org.gradle.api.plugins.JavaPluginConvention"
+        },
+        "extensions": {
+            "ext": "org.gradle.api.plugins.ExtraPropertiesExtension",
+            "defaultArtifacts": "org.gradle.api.internal.plugins.DefaultArtifactPublicationSet",
+            "reporting": "org.gradle.api.reporting.ReportingExtension",
+            "kotlin": "org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension",
+            "kapt": "org.jetbrains.kotlin.gradle.plugin.KaptExtension"
+        }
+    }
+}

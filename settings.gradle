@@ -1,0 +1,10 @@
+rootProject.name = 'yggdrasil'
+def configureGradleScriptKotlinOn(ProjectDescriptor project) {
+  project.buildFileName = 'build.gradle.kts'
+  project.children.each { configureGradleScriptKotlinOn(it) }
+}
+
+include 'yggdrasil-bootstrap', 'yggdrasil-core', 'yggdrasil-gradle-plugin'
+
+configureGradleScriptKotlinOn rootProject
+
