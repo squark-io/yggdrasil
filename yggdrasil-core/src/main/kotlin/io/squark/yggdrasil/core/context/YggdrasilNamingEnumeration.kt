@@ -10,9 +10,9 @@ import javax.naming.NamingException
  * Created by Erik Håkansson on 2017-04-01.
  * Copyright 2017
  */
-class YggdrasilNamingEnumeration<T> constructor(list: Collection<T>): NamingEnumeration<T> {
+class YggdrasilNamingEnumeration<T> constructor(list: Collection<T>) : NamingEnumeration<T> {
 
-  var enumerator : Iterator<T>? = list.iterator()
+  var enumerator: Iterator<T>? = list.iterator()
   var closed = false
 
   override fun hasMore(): Boolean {

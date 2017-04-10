@@ -17,8 +17,7 @@ import java.io.File
  */
 class YggdrasilPlugin : Plugin<Project> {
 
-  override fun apply(project: Project)
-  {
+  override fun apply(project: Project) {
     project.plugins.apply(JavaPlugin::class.java)
 
     val javaConvention = project.convention.getPlugin(JavaPluginConvention::class.java)

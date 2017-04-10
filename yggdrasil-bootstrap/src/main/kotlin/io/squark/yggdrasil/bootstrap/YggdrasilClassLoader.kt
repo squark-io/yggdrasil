@@ -10,7 +10,8 @@ import java.net.URL
 import java.net.URLConnection
 import java.net.URLStreamHandler
 import java.nio.file.Paths
-import java.util.*
+import java.util.Collections
+import java.util.Enumeration
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarInputStream

@@ -1,4 +1,5 @@
 rootProject.name = 'yggdrasil-test'
+
 def configureGradleScriptKotlinOn(ProjectDescriptor project) {
   project.buildFileName = 'build.gradle.kts'
   project.children.each { configureGradleScriptKotlinOn(it) }

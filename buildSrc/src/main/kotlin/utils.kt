@@ -1,6 +1,7 @@
 import org.gradle.api.Project
-
-import org.gradle.script.lang.kotlin.*
+import org.gradle.script.lang.kotlin.compile
+import org.gradle.script.lang.kotlin.dependencies
+import org.gradle.script.lang.kotlin.kotlinModule
 
 /**
  * Configures the current project as a Kotlin project by applying the `kotlin`

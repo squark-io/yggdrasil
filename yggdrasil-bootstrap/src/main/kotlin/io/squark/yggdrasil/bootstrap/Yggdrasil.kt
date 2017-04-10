@@ -17,12 +17,12 @@ class Yggdrasil {
     val yggdrasilInternalClassName = "io.squark.yggdrasil.core.YggdrasilInternal"
 
     @JvmStatic
-    fun main(args : Array<String>) {
+    fun main(args: Array<String>) {
       initialize(args)
     }
 
     @JvmStatic
-    fun initialize(args : Array<String>?) {
+    fun initialize(args: Array<String>?) {
       val parentClassLoader = this::class.java.classLoader as URLClassLoader
       val classLoader = YggdrasilClassLoader(null, parentClassLoader.urLs)
       Thread.currentThread().contextClassLoader = classLoader
@@ -45,7 +45,7 @@ class Yggdrasil {
       }
       try {
         _initialize.invoke(instance, args, mapOf(Pair("TRACE", listOf(message))))
-      } catch (e : InvocationTargetException) {
+      } catch (e: InvocationTargetException) {
         throw RuntimeException(e)
       }
     }

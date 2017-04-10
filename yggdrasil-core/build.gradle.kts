@@ -1,4 +1,3 @@
-
 import org.gradle.script.lang.kotlin.compile
 import org.gradle.script.lang.kotlin.compileOnly
 import org.gradle.script.lang.kotlin.dependencies

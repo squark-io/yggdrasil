@@ -1,4 +1,3 @@
-
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.GradleBuild

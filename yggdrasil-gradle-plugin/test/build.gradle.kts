@@ -1,4 +1,3 @@
-
 import com.wiredforcode.gradle.spawn.KillProcessTask
 import com.wiredforcode.gradle.spawn.SpawnProcessTask
 import org.gradle.api.tasks.testing.Test
@@ -14,7 +13,7 @@ buildscript {
   repositories {
     mavenLocal()
     gradleScriptKotlin()
-    maven {setUrl("http://dl.bintray.com/vermeulen-mp/gradle-plugins")}
+    maven { setUrl("http://dl.bintray.com/vermeulen-mp/gradle-plugins") }
   }
   dependencies {
     classpath(kotlinModule("gradle-plugin"))

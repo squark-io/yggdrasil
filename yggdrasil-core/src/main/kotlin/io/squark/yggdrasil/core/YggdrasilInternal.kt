@@ -18,7 +18,7 @@ import org.jboss.resteasy.cdi.CdiInjectorFactory
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters
 import org.jboss.weld.environment.se.Weld
 import org.jboss.weld.environment.servlet.WeldServletLifecycle
-import java.util.*
+import java.util.ServiceLoader
 import javax.enterprise.inject.se.SeContainerInitializer
 import javax.enterprise.inject.spi.BeanManager
 import javax.naming.Binding

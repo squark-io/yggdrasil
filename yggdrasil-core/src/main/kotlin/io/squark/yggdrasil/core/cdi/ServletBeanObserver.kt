@@ -7,7 +7,7 @@ import io.undertow.servlet.api.ServletContainerInitializerInfo
 import io.undertow.servlet.api.ServletInfo
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher
 import java.lang.reflect.Modifier
-import java.util.*
+import java.util.EventListener
 import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.event.Observes
 import javax.enterprise.inject.spi.AnnotatedType
@@ -29,10 +29,10 @@ import kotlin.reflect.KClass
   //Blacklisted, most likely due to other initialization.
   val blackListedServlets = setOf<Class<*>>(HttpServlet30Dispatcher::class.java)
 
-  val servlets : MutableList<ServletInfo> = mutableListOf()
-  val filters : MutableList<Triple<FilterInfo, List<FilterMappingInfo>, Array<DispatcherType>>> = mutableListOf()
-  val listeners : MutableList<ListenerInfo> = mutableListOf()
-  val servletContainerInitializers : MutableList<ServletContainerInitializerInfo> = mutableListOf()
+  val servlets: MutableList<ServletInfo> = mutableListOf()
+  val filters: MutableList<Triple<FilterInfo, List<FilterMappingInfo>, Array<DispatcherType>>> = mutableListOf()
+  val listeners: MutableList<ListenerInfo> = mutableListOf()
+  val servletContainerInitializers: MutableList<ServletContainerInitializerInfo> = mutableListOf()
 
   fun observeWebServlets(@WithAnnotations(WebServlet::class) @Observes event: ProcessAnnotatedType<out Servlet>) {
     if (!blackListedServlets.contains(event.annotatedType.javaClass)) {
@@ -44,7 +44,8 @@ import kotlin.reflect.KClass
     filters += toFilterInfo(event.annotatedType)
   }
 
-  fun observeWebListeners(@WithAnnotations(WebListener::class) @Observes event: ProcessAnnotatedType<out EventListener>) {
+  fun observeWebListeners(@WithAnnotations(
+    WebListener::class) @Observes event: ProcessAnnotatedType<out EventListener>) {
     listeners += toListenerInfo(event.annotatedType)
   }
 
@@ -54,8 +55,8 @@ import kotlin.reflect.KClass
   }
 
   private fun toServletContainerInitializerInfo(annotatedType: AnnotatedType<out ServletContainerInitializer>): ServletContainerInitializerInfo {
-    val handlesTypesAnnotation : HandlesTypes? = annotatedType.getAnnotation(HandlesTypes::class.java)
-    val arrayOfKClasses : Array<KClass<*>>? = handlesTypesAnnotation?.value
+    val handlesTypesAnnotation: HandlesTypes? = annotatedType.getAnnotation(HandlesTypes::class.java)
+    val arrayOfKClasses: Array<KClass<*>>? = handlesTypesAnnotation?.value
     val arrayOfClasses = arrayOfKClasses?.map { it.java }
     return ServletContainerInitializerInfo(annotatedType.javaClass, arrayOfClasses?.toSet())
   }

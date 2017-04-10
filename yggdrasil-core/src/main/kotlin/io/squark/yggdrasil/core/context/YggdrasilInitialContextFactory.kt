@@ -1,6 +1,6 @@
 package io.squark.yggdrasil.core.context
 
-import java.util.*
+import java.util.Hashtable
 import javax.naming.Context
 import javax.naming.spi.InitialContextFactory
 
@@ -15,7 +15,7 @@ import javax.naming.spi.InitialContextFactory
 class YggdrasilInitialContextFactory : InitialContextFactory {
 
   private object ContextHolder {
-    val context : Context by lazy {
+    val context: Context by lazy {
       YggdrasilContext("")
     }
   }

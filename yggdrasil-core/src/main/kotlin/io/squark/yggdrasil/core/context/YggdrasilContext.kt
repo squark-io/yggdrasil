@@ -1,6 +1,7 @@
 package io.squark.yggdrasil.core.context
 
-import java.util.*
+import java.util.Hashtable
+import java.util.Properties
 import javax.naming.Binding
 import javax.naming.CompoundName
 import javax.naming.Context
@@ -21,12 +22,12 @@ import javax.naming.OperationNotSupportedException
  * Created by Erik Håkansson on 2017-04-01.
  * Copyright 2017
  */
-open class YggdrasilContext(val name : String, val parent : Context? = null) : Context {
+open class YggdrasilContext(val name: String, val parent: Context? = null) : Context {
 
-  val bindings : MutableMap<String, Binding> by lazy {
+  val bindings: MutableMap<String, Binding> by lazy {
     mutableMapOf<String, Binding>()
   }
-  val subContexts : MutableMap<String, YggdrasilContext> by lazy {
+  val subContexts: MutableMap<String, YggdrasilContext> by lazy {
     mutableMapOf<String, YggdrasilContext>()
   }
 
@@ -35,6 +36,7 @@ open class YggdrasilContext(val name : String, val parent : Context? = null) : C
       Hashtable<String, Any>()
     }
     @JvmStatic private val syntax = Properties()
+
     init {
       syntax.put("jndi.syntax.direction", "left_to_right")
       syntax.put("jndi.syntax.separator", "/")
@@ -161,7 +163,7 @@ open class YggdrasilContext(val name : String, val parent : Context? = null) : C
     val newSubContext = getSubContext(newName.getPrefix(newName.size() - 1))
     val newNameAsString = newName[newName.size() - 1]
     if (newSubContext.bindings.containsKey(newNameAsString)) throw NameAlreadyBoundException(newName.toString())
-    val oldBinding : Binding = oldSubContext.bindings[oldNameAsString] as Binding
+    val oldBinding: Binding = oldSubContext.bindings[oldNameAsString] as Binding
     newSubContext.bindings[newNameAsString] = Binding(newNameAsString, oldBinding.className, oldBinding.`object`)
     oldSubContext.bindings.remove(oldNameAsString)
   }
@@ -225,7 +227,7 @@ open class YggdrasilContext(val name : String, val parent : Context? = null) : C
   }
 
   private fun getSubContext(name: Name): YggdrasilContext {
-    var currentContext : YggdrasilContext? = this
+    var currentContext: YggdrasilContext? = this
     for (part in name.all) {
       currentContext = currentContext!!.subContexts[part]
       if (currentContext == null) {
