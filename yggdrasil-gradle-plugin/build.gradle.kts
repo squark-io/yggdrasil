@@ -10,6 +10,9 @@ import org.gradle.script.lang.kotlin.kotlinModule
 import org.gradle.script.lang.kotlin.project
 import org.gradle.script.lang.kotlin.repositories
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.util.Properties
 
 buildscript {
   repositories {
@@ -64,10 +67,18 @@ val itClean = tasks.create("it-clean", GradleBuild::class.java, {
 })
 tasks.getByName("clean").dependsOn(itClean)
 
+tasks.create("it-prepare") {
+  val prop = Properties()
+  val propFile = File("${projectDir}/test/gradle.properties")
+  prop.load(FileInputStream(propFile))
+  prop["version"] = version
+  prop.store(FileOutputStream(propFile), "Do not edit version. Will be overwritten by integration-tests")
+}
+
 tasks.create("it", GradleBuild::class.java, {
   setBuildFile("test/build.gradle.kts")
   getStartParameter().projectProperties["version"] = version as String
   setTasks(listOf("yggdrasil", "test"))
-  dependsOn("install")
+  dependsOn("install", "it-prepare")
 })
 tasks.getByName("test").finalizedBy("it")

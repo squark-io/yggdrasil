@@ -41,7 +41,7 @@ class YggdrasilPlugin : Plugin<Project> {
     val yggdrasil = project.tasks.create(YGGDRASIL_TASK, Jar::class.java, {
       it.description = YGGDRASIL_TASK_DESC
       it.group = YGGDRASIL_GROUP
-      it.baseName += "-yggdrasil"
+      it.classifier = "yggdrasil"
       it.dependsOn(prepareFiles)
       it.manifest.attributes["Main-Class"] = "io.squark.yggdrasil.bootstrap.Yggdrasil"
       it.from(stageDir)

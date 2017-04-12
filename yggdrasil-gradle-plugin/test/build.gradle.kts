@@ -1,6 +1,5 @@
 import com.wiredforcode.gradle.spawn.KillProcessTask
 import com.wiredforcode.gradle.spawn.SpawnProcessTask
-import org.gradle.api.tasks.testing.Test
 import org.gradle.script.lang.kotlin.compile
 import org.gradle.script.lang.kotlin.compileOnly
 import org.gradle.script.lang.kotlin.dependencies
@@ -8,6 +7,7 @@ import org.gradle.script.lang.kotlin.gradleScriptKotlin
 import org.gradle.script.lang.kotlin.kotlinModule
 import org.gradle.script.lang.kotlin.repositories
 import org.gradle.script.lang.kotlin.testCompile
+import org.gradle.script.lang.kotlin.testRuntime
 
 buildscript {
   repositories {
@@ -36,7 +36,7 @@ repositories {
 
 val startJvm = tasks.create("startJvm", SpawnProcessTask::class.java, {
   dependsOn("yggdrasil")
-  command = "java -jar ${projectDir}/build/libs/yggdrasil-test-yggdrasil.jar"
+  command = "java -jar ${projectDir}/build/libs/yggdrasil-test-${version}-yggdrasil.jar"
   ready = "Yggdrasil initiated"
 })
 afterEvaluate({
