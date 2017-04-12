@@ -70,3 +70,4 @@ tasks.create("it", GradleBuild::class.java, {
   startParameter.showStacktrace = project.gradle.startParameter.showStacktrace
   dependsOn("install")
 })
+tasks.getByName("test").finalizedBy("it")
