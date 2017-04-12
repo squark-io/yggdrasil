@@ -17,7 +17,7 @@ buildscript {
   }
   dependencies {
     classpath(kotlinModule("gradle-plugin"))
-    classpath("io.squark.yggdrasil:yggdrasil-gradle-plugin:0.0.1-SNAPSHOT")
+    classpath("io.squark.yggdrasil:yggdrasil-gradle-plugin:${version}")
     classpath("com.wiredforcode:gradle-spawn-plugin:0.6.0")
     classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.0-M4")
   }

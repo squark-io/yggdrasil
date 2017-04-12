@@ -66,8 +66,8 @@ tasks.getByName("clean").dependsOn(itClean)
 
 tasks.create("it", GradleBuild::class.java, {
   setBuildFile("test/build.gradle.kts")
+  getStartParameter().projectProperties["version"] = version as String
   setTasks(listOf("yggdrasil", "test"))
-  startParameter.showStacktrace = project.gradle.startParameter.showStacktrace
   dependsOn("install")
 })
 tasks.getByName("test").finalizedBy("it")
