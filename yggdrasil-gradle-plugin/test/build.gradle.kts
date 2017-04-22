@@ -36,7 +36,7 @@ repositories {
 
 val startJvm = tasks.create("startJvm", SpawnProcessTask::class.java, {
   dependsOn("yggdrasil")
-  command = "java -jar ${projectDir}/build/libs/yggdrasil-test-${version}-yggdrasil.jar"
+  command = "java -jar ${projectDir}/build/libs/yggdrasil-gradle-plugin-test-${version}-yggdrasil.jar"
   ready = "Yggdrasil initiated"
 })
 afterEvaluate({
