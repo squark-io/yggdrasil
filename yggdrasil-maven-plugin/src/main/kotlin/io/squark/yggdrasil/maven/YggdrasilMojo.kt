@@ -3,10 +3,11 @@ package io.squark.yggdrasil.maven
 import org.apache.commons.io.IOUtils
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugin.MojoExecutionException
-import org.apache.maven.plugin.descriptor.PluginDescriptor
+import org.apache.maven.plugins.annotations.Component
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
+import org.apache.maven.project.MavenProjectHelper
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -50,22 +51,20 @@ class YggdrasilMojo : AbstractMojo() {
   @Parameter(defaultValue = "\${project}", readonly = true, required = true)
   private lateinit var project: MavenProject
 
-  @Parameter(defaultValue = "\${plugin}", readonly = true)
-  private lateinit var pluginDescriptor: PluginDescriptor
+  @Component
+  private lateinit var mavenProjectHelper: MavenProjectHelper
 
   var classesDir: File? = null
 
   val addedResources = mutableListOf<String>()
 
   override fun execute() {
-
     classesDir = File(project.build.outputDirectory)
-
     val manifest = generateAndReturnManifest()
     val blacklist = listOf(YGGDRASIL_BOOTSTRAP_PATH)
-    val targetJar = createTargetJar(manifest)
-    val absolutePath = File(getTargetJarName()).absolutePath
-    log.info("Building jar: $absolutePath")
+    val targetFile = File(project.build.directory, getTargetJarName())
+    val targetJar = createTargetJar(targetFile, manifest)
+    log.info("Building jar: ${targetFile.absolutePath}")
     targetJar.use {
       addFile(classesDir!!, null, it, blacklist)
       val beansXML = File(classesDir, BEANS_XML)
@@ -76,26 +75,12 @@ class YggdrasilMojo : AbstractMojo() {
       addFromJar(YGGDRASIL_CORE_PATH, it, false, Paths.get(YGGDRASIL_CORE_PATH), YGGDRASIL_LIBS_PATH)
     }
     targetJar.close()
-    log.info("Built jar: $absolutePath")
-
-//    val prepareFiles: Task = project.tasks.create(YGGDRASIL_PREPARE_FILES, PrepareFiles::class.java)
-//    prepareFiles.description = YGGDRASIL_PREPARE_FILES_DESC
-//    prepareFiles.group = YGGDRASIL_GROUP
-//    prepareFiles.dependsOn(project.tasks.findByPath("classes"), project.tasks.findByPath("processResources"))
-//
-//    val yggdrasil = project.tasks.create(YGGDRASIL_TASK, Jar::class.java, {
-//      it.description = YGGDRASIL_TASK_DESC
-//      it.group = YGGDRASIL_GROUP
-//      it.classifier = "yggdrasil"
-//      it.dependsOn(prepareFiles)
-//      it.manifest.attributes["Main-Class"] = "io.squark.yggdrasil.bootstrap.Yggdrasil"
-//      it.from(stageDir)
-//    })
-//
-//    project.tasks.getByName("test").dependsOn(yggdrasil)
+    mavenProjectHelper.attachArtifact(project, project.artifact.type, "yggdrasil", targetFile)
+    log.info("Built jar: ${targetFile.absolutePath}")
   }
 
-  private fun addFromJar(jarFile: JarFile, entry: JarEntry, jarOutputStream: JarOutputStream, extract: Boolean, relativeTo: Path? = null, prefix: String? = null) {
+  private fun addFromJar(jarFile: JarFile, entry: JarEntry, jarOutputStream: JarOutputStream, extract: Boolean,
+                         relativeTo: Path? = null, prefix: String? = null) {
     val inputStream = jarFile.getInputStream(entry)
     if (extract) {
       val jarInputStream = JarInputStream(inputStream)
@@ -128,7 +113,8 @@ class YggdrasilMojo : AbstractMojo() {
     inputStream.close()
   }
 
-  private fun addFromJar(path: String, jarOutputStream: JarOutputStream, extract: Boolean, relativeTo: Path? = null, prefix: String? = null) {
+  private fun addFromJar(path: String, jarOutputStream: JarOutputStream, extract: Boolean, relativeTo: Path? = null,
+                         prefix: String? = null) {
     val resource = this::class.java.classLoader.getResource(path)
     if (resource.protocol != "jar") {
       throw MojoExecutionException("Failed to find $path in jar")
@@ -195,9 +181,8 @@ class YggdrasilMojo : AbstractMojo() {
   }
 
   @Throws(IOException::class)
-  private fun createTargetJar(manifest: Manifest): JarOutputStream {
-    val jarName = getTargetJarName()
-    return JarOutputStream(FileOutputStream(project.build.directory + "/" + jarName), manifest)
+  private fun createTargetJar(targetFile: File, manifest: Manifest): JarOutputStream {
+    return JarOutputStream(FileOutputStream(targetFile), manifest)
   }
 
   @Throws(MojoExecutionException::class)
