@@ -1,4 +1,4 @@
-import org.gradle.api.plugins.JavaPluginConvention
+
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.GradleBuild
 import org.gradle.script.lang.kotlin.compile
@@ -13,6 +13,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.Properties
+import kotlin.collections.set
 
 buildscript {
   repositories {
@@ -23,24 +24,19 @@ buildscript {
   }
 }
 
-plugins {
-  java
-}
-
 apply {
   plugin("kotlin")
   plugin("maven")
 }
 
-val javaConvention = project.convention.getPlugin(JavaPluginConvention::class.java)
 configurations.maybeCreate("yggdrasil-core")
 configurations.maybeCreate("yggdrasil-bootstrap")
-javaConvention.sourceSets.create("yggdrasil-core")
-javaConvention.sourceSets.create("yggdrasil-bootstrap")
+java.sourceSets.create("yggdrasil-core")
+java.sourceSets.create("yggdrasil-bootstrap")
 dependencies.add("yggdrasil-core", project(":yggdrasil-core"))
 dependencies.add("yggdrasil-bootstrap", project(":yggdrasil-bootstrap"))
 
-val resourcesDir = javaConvention.sourceSets.findByName("main").output.resourcesDir
+val resourcesDir = java.sourceSets.findByName("main").output.resourcesDir
 val copyCore = tasks.create("copyCore", Copy::class.java, {
   from(project.files(project.configurations.getByName("yggdrasil-core")))
   into(File(resourcesDir, "META-INF/yggdrasil-core"))

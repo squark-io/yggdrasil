@@ -1,4 +1,3 @@
-
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.MavenPluginConvention
 import org.gradle.api.tasks.Copy
@@ -43,18 +42,17 @@ repositories {
   gradleScriptKotlin()
 }
 
-val javaConvention = project.convention.getPlugin(JavaPluginConvention::class.java)
 configurations.maybeCreate("yggdrasil-core")
 configurations.maybeCreate("yggdrasil-bootstrap")
-javaConvention.sourceSets.create("yggdrasil-core")
-javaConvention.sourceSets.create("yggdrasil-bootstrap")
+java.sourceSets.create("yggdrasil-core")
+java.sourceSets.create("yggdrasil-bootstrap")
 dependencies.add("yggdrasil-core", project(":yggdrasil-core"))
 dependencies.add("yggdrasil-bootstrap", project(":yggdrasil-bootstrap"))
 
-val resourcesDir = javaConvention.sourceSets.findByName("main").output.resourcesDir
+val resourcesDir = java.sourceSets.findByName("main").output.resourcesDir
 val classesDir = File(buildDir, "target/classes")
 classesDir.mkdirs()
-javaConvention.sourceSets.findByName("main").output.setClassesDir(classesDir)
+java.sourceSets.findByName("main").output.setClassesDir(classesDir)
 val copyCore = tasks.create("copyCore", Copy::class.java, {
   from(project.files(project.configurations.getByName("yggdrasil-core")))
   into(File(resourcesDir, "META-INF/yggdrasil-core"))
@@ -96,19 +94,14 @@ val pomTask = task("pomTask") {
             }
           }
         }
-      }.writeTo("${buildDir}/pom.xml")
+      }.writeTo("$buildDir/pom.xml")
     }
   }
 }
 
-//val copyClassesForMaven = task<Copy>("copyClassesForMaven") {
-//  from(classesDir)
-//  into(File(buildDir, "target/classes"))
-//}
-
 val execMaven = task<Exec>("execMaven") {
   dependsOn(copyCore, copyBootstrap)
-  workingDir("${buildDir}")
+  workingDir("$buildDir")
   commandLine("mvn", "-B", "-U", "-e", "package")
   dependsOn(pomTask, "assemble")
 }
@@ -149,7 +142,7 @@ tasks.getByName("clean").dependsOn(itClean)
 
 tasks.create("it-prepare") {
   val prop = Properties()
-  val propFile = File("${projectDir}/test/gradle.properties")
+  val propFile = File("$projectDir/test/gradle.properties")
   prop.load(FileInputStream(propFile))
   prop["version"] = version
   prop.store(FileOutputStream(propFile), "Do not edit version. Will be overwritten by integration-tests")
@@ -157,7 +150,7 @@ tasks.create("it-prepare") {
 
 tasks.create("it", GradleBuild::class.java, {
   setBuildFile("test/build.gradle.kts")
-  getStartParameter().projectProperties["version"] = version as String
+  startParameter.projectProperties["version"] = version as String
   setTasks(listOf("execMaven", "test"))
   dependsOn("install", "it-prepare")
 })
