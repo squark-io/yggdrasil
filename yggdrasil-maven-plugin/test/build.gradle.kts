@@ -1,4 +1,3 @@
-
 import com.wiredforcode.gradle.spawn.KillProcessTask
 import com.wiredforcode.gradle.spawn.SpawnProcessTask
 import org.gradle.api.tasks.Exec
@@ -51,7 +50,7 @@ val execMaven = task<Exec>("execMaven") {
 
 val startJvm = tasks.create("startJvm", SpawnProcessTask::class.java, {
   dependsOn(execMaven)
-  command = "java -jar $projectDir/target/yggdrasil-maven-plugin-test-$version-yggdrasil.jar"
+  command = "java -jar $projectDir/target/yggdrasil-maven-plugin-test-$version-yggdrasil.jar $projectDir/build/test-results/main.log"
   ready = "Yggdrasil initiated"
 })
 afterEvaluate({
@@ -59,9 +58,12 @@ afterEvaluate({
     .finalizedBy(tasks.create("stopJvm", KillProcessTask::class.java))
 })
 
+tasks.getByName("jar").enabled = false
+
 dependencies {
   testCompile(kotlinModule("stdlib"))
   testCompile("org.junit.jupiter:junit-jupiter-api:5.0.0-M4")
   testCompile("io.rest-assured:rest-assured:3.0.2")
   testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0-M4")
+  testCompile("commons-io:commons-io:2.5")
 }

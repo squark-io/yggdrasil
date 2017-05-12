@@ -24,7 +24,7 @@ class Yggdrasil {
     @JvmStatic
     fun initialize(args: Array<String>?) {
       val parentClassLoader = this::class.java.classLoader as URLClassLoader
-      val classLoader = YggdrasilClassLoader(null, parentClassLoader.urLs)
+      val classLoader = YggdrasilClassLoader(parentClassLoader, parentClassLoader.urLs)
       Thread.currentThread().contextClassLoader = classLoader
       val yggdrasilClass = classLoader.loadClass(yggdrasilInternalClassName)
       val instance = yggdrasilClass.newInstance()

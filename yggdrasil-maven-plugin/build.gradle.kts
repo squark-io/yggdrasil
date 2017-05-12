@@ -1,4 +1,4 @@
-import org.gradle.api.plugins.JavaPluginConvention
+
 import org.gradle.api.plugins.MavenPluginConvention
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Exec
@@ -17,6 +17,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.Properties
+import kotlin.collections.set
 
 buildscript {
   repositories {
@@ -116,23 +117,7 @@ val copyLib = task<Copy>("copyMavenJar") {
   into(File(buildDir, "libs"))
   dependsOn(execMaven)
 }
-
 tasks.findByName("install").dependsOn(copyLib)
-
-val mavenVersion = "3.5.0"
-
-dependencies {
-  compile(gradleApi())
-  compile(kotlinModule("stdlib"))
-  compile("commons-io:commons-io:2.5")
-
-  compile("org.apache.maven:maven-core:$mavenVersion")
-  compile("org.apache.maven:maven-plugin-api:$mavenVersion")
-  compile("org.apache.maven.plugin-tools:maven-plugin-annotations:3.4")
-
-  compileOnly(project(":yggdrasil-core"))
-  compileOnly(project(":yggdrasil-bootstrap"))
-}
 
 val itClean = tasks.create("it-clean", GradleBuild::class.java, {
   setBuildFile("test/build.gradle.kts")
@@ -156,3 +141,19 @@ tasks.create("it", GradleBuild::class.java, {
 })
 tasks.getByName("test").finalizedBy("it")
 
+tasks.getByName("jar").enabled = false
+
+val mavenVersion = "3.5.0"
+
+dependencies {
+  compile(gradleApi())
+  compile(kotlinModule("stdlib"))
+  compile("commons-io:commons-io:2.5")
+
+  compile("org.apache.maven:maven-core:$mavenVersion")
+  compile("org.apache.maven:maven-plugin-api:$mavenVersion")
+  compile("org.apache.maven.plugin-tools:maven-plugin-annotations:3.4")
+
+  compileOnly(project(":yggdrasil-core"))
+  compileOnly(project(":yggdrasil-bootstrap"))
+}

@@ -23,17 +23,20 @@ import java.util.jar.JarInputStream
  * Copyright 2017
  *
  */
-class YggdrasilClassLoader(parent: ClassLoader?) : ClassLoader(parent) {
+class YggdrasilClassLoader(val delegate: ClassLoader, urls: Array<URL>) : ClassLoader(null) {
 
   val resources = mutableMapOf<String, MutableList<URL>>()
   val classBytes = mutableMapOf<String, ByteArray>()
   val duplicates = mutableMapOf<String, MutableList<URL>>()
 
-  constructor(parent: ClassLoader?, urls: Array<URL>) : this(parent) {
+  init {
     urls.forEach { addURL(it) }
   }
 
   override fun findClass(name: String): Class<*> {
+    if (name == javaClass.name) {
+      return delegate.loadClass(name)
+    }
     val bytes = classBytes[name] ?: return super.findClass(name)
     definePackageIfNecessary(name)
     return defineClass(name, bytes, 0, bytes.size, null)

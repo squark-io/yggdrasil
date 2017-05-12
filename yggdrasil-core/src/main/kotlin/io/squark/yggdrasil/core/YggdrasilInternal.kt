@@ -1,5 +1,6 @@
 package io.squark.yggdrasil.core
 
+import io.squark.yggdrasil.bootstrap.YggdrasilClassLoader
 import io.squark.yggdrasil.core.cdi.ServletBeanObserver
 import io.squark.yggdrasil.core.context.YggdrasilContext
 import io.squark.yggdrasil.core.context.YggdrasilInitialContextFactory
@@ -19,6 +20,7 @@ import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters
 import org.jboss.weld.environment.se.Weld
 import org.jboss.weld.environment.servlet.WeldServletLifecycle
 import java.util.ServiceLoader
+import java.util.jar.Manifest
 import javax.enterprise.inject.se.SeContainerInitializer
 import javax.enterprise.inject.spi.BeanManager
 import javax.naming.Binding
@@ -34,11 +36,16 @@ import org.jboss.weld.environment.servlet.Listener as WeldListener
  * Created by Erik Håkansson on 2017-03-24.
  * Copyright 2017
  */
+
+private const val DELEGATED_MAIN_CLASS = "Delegated-Main-Class"
+
 class YggdrasilInternal {
 
-  var logger: Logger? = null
+  private var logger: Logger? = null
+  private var isClassLoaderValidated = false
 
   private fun _initialize(args: Array<String>, messagesMap: Map<String, List<String>>) {
+    validateClassLoader()
     System.setProperty(Context.INITIAL_CONTEXT_FACTORY, YggdrasilInitialContextFactory::class.java.name)
 
     setupLogging()
@@ -57,6 +64,47 @@ class YggdrasilInternal {
     loadUndertow(context)
 
     logger!!.info("Yggdrasil initiated")
+
+    getClassLoader().getResource("META-INF/MANIFEST.MF")?.let {
+      it.openStream().use {
+        val manifest = Manifest(it)
+        manifest.mainAttributes.getValue(DELEGATED_MAIN_CLASS)?.let {
+          loadDelegatedClass(it, args)
+        }
+      }
+    }
+  }
+
+  private fun loadDelegatedClass(className: String, args: Array<String>) {
+    logger!!.info("Found $DELEGATED_MAIN_CLASS in Manifest. Loading $className")
+    val delegateClass = try {
+      getClassLoader().loadClass(className)
+    } catch (e: ClassNotFoundException) {
+      throw YggdrasilException("Could not find class $className from Manifest $DELEGATED_MAIN_CLASS", e)
+    }
+    val mainMethod = try {
+      delegateClass.getMethod("main", Array<String>::class.java)
+    } catch (e: NoSuchMethodException) {
+      throw YggdrasilException("Class $className has no valid main method", e)
+    }
+    mainMethod.invoke(null, args)
+    logger!!.info("$className loaded")
+  }
+
+  private fun getClassLoader(): YggdrasilClassLoader {
+    validateClassLoader()
+    return javaClass.classLoader as YggdrasilClassLoader
+  }
+
+  private fun validateClassLoader() {
+    if (!isClassLoaderValidated) {
+      if (javaClass.classLoader !is YggdrasilClassLoader) {
+        throw YggdrasilException("ClassLoader is not instance of ${YggdrasilClassLoader::class.java}. " +
+          "Found ${javaClass.classLoader::class.java}. Please initiate Yggdrasil with Yggdrasil.initialize(...) or Main-Class")
+      }
+    } else {
+      isClassLoaderValidated = true
+    }
   }
 
   private fun setupLogging() {
@@ -171,3 +219,5 @@ class YggdrasilInternal {
     server.start()
   }
 }
+
+class YggdrasilException(message: String?, cause: Throwable? = null) : Exception(message, cause)

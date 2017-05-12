@@ -1,4 +1,3 @@
-
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.GradleBuild
 import org.gradle.script.lang.kotlin.compile
@@ -57,15 +56,13 @@ dependencies {
   compileOnly(project(":yggdrasil-bootstrap"))
 }
 
-val itClean = tasks.create("it-clean", GradleBuild::class.java, {
-  setBuildFile("test/build.gradle.kts")
-  setTasks(listOf("clean"))
-})
-tasks.getByName("clean").dependsOn(itClean)
+tasks.getByName("clean").doFirst {
+  delete("$projectDir/test/build")
+}
 
 tasks.create("it-prepare") {
   val prop = Properties()
-  val propFile = File("${projectDir}/test/gradle.properties")
+  val propFile = File("$projectDir/test/gradle.properties")
   prop.load(FileInputStream(propFile))
   prop["version"] = version
   prop.store(FileOutputStream(propFile), "Do not edit version. Will be overwritten by integration-tests")

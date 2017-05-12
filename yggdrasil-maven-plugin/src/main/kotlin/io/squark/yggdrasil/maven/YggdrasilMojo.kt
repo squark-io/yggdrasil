@@ -24,12 +24,13 @@ import java.util.jar.JarInputStream
 import java.util.jar.JarOutputStream
 import java.util.jar.Manifest
 
-private val EMPTY_BEANS_XML = "META-INF/standins/empty-beans.xml"
-private val BEANS_XML = "META-INF/beans.xml"
-private val YGGDRASIL_BOOTSTRAP_PATH = "META-INF/yggdrasil-bootstrap/"
-private val YGGDRASIL_CORE_PATH = "META-INF/yggdrasil-core/"
-private val YGGDRASIL_LIBS_PATH = "META-INF/libs"
-private val YGGDRASIL_MAIN_CLASS = "io.squark.yggdrasil.bootstrap.Yggdrasil"
+private const val EMPTY_BEANS_XML = "META-INF/standins/empty-beans.xml"
+private const val BEANS_XML = "META-INF/beans.xml"
+private const val YGGDRASIL_BOOTSTRAP_PATH = "META-INF/yggdrasil-bootstrap/"
+private const val YGGDRASIL_CORE_PATH = "META-INF/yggdrasil-core/"
+private const val YGGDRASIL_LIBS_PATH = "META-INF/libs"
+private const val YGGDRASIL_MAIN_CLASS = "io.squark.yggdrasil.bootstrap.Yggdrasil"
+private const val DELEGATED_MAIN_CLASS = "Delegated-Main-Class"
 
 /**
  * yggdrasil
@@ -54,13 +55,13 @@ class YggdrasilMojo : AbstractMojo() {
   @Component
   private lateinit var mavenProjectHelper: MavenProjectHelper
 
-  var classesDir: File? = null
-
-  val addedResources = mutableListOf<String>()
+  private var classesDir: File? = null
+  private val addedResources = mutableListOf<String>()
 
   override fun execute() {
     classesDir = File(project.build.outputDirectory)
     val manifest = generateAndReturnManifest()
+    addedResources.add(JarFile.MANIFEST_NAME)
     val blacklist = listOf(YGGDRASIL_BOOTSTRAP_PATH)
     val targetFile = File(project.build.directory, getTargetJarName())
     val targetJar = createTargetJar(targetFile, manifest)
@@ -187,7 +188,7 @@ class YggdrasilMojo : AbstractMojo() {
 
   @Throws(MojoExecutionException::class)
   private fun generateAndReturnManifest(): Manifest {
-    val manifestFile = File(project.build.outputDirectory, "META-INF/MANIFEST.MF")
+    val manifestFile = File(project.build.outputDirectory, JarFile.MANIFEST_NAME)
     val manifest: Manifest
     if (manifestFile.exists()) {
       try {
@@ -198,10 +199,17 @@ class YggdrasilMojo : AbstractMojo() {
         log.error(e)
         throw MojoExecutionException(e.message)
       }
-
+      if (manifest.mainAttributes[Attributes.Name.MAIN_CLASS] != null) {
+        manifest.mainAttributes.putValue(DELEGATED_MAIN_CLASS,
+          manifest.mainAttributes[Attributes.Name.MAIN_CLASS].toString())
+      }
     } else {
       manifest = Manifest()
+    }
+    if (!manifest.mainAttributes.containsKey(Attributes.Name.MANIFEST_VERSION.toString())) {
       manifest.mainAttributes.put(Attributes.Name.MANIFEST_VERSION, "1.0")
+    }
+    if (!manifest.mainAttributes.containsKey("Build-Jdk")) {
       manifest.mainAttributes.put(Attributes.Name("Build-Jdk"), System.getProperty("java.version"))
     }
     manifest.mainAttributes.put(Attributes.Name.MAIN_CLASS, YGGDRASIL_MAIN_CLASS)
