@@ -53,7 +53,7 @@ afterEvaluate({
 
 dependencies {
   compile(kotlinModule("stdlib"))
-  compileOnly("javax.enterprise", "cdi-api", "2.0-PFD")
+  compileOnly("javax.enterprise", "cdi-api", "2.0")
   compileOnly("javax.ws.rs", "javax.ws.rs-api", "2.0.1")
   compileOnly("javax.json", "javax.json-api", "1.1.0-M1")
   compile("org.apache.logging.log4j", "log4j-api", "2.8.1")

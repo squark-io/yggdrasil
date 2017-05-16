@@ -17,6 +17,7 @@ import org.apache.logging.log4j.core.config.Configurator
 import org.apache.logging.log4j.core.config.DefaultConfiguration
 import org.jboss.resteasy.cdi.CdiInjectorFactory
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters
+import org.jboss.weld.environment.deployment.discovery.jandex.Jandex
 import org.jboss.weld.environment.se.Weld
 import org.jboss.weld.environment.servlet.WeldServletLifecycle
 import java.util.ServiceLoader
@@ -126,7 +127,7 @@ class YggdrasilInternal {
   private fun bootstrapCDI(context: YggdrasilContext) {
     val containerInitializer = SeContainerInitializer.newInstance()
     containerInitializer.addProperty(Weld.ARCHIVE_ISOLATION_SYSTEM_PROPERTY, false)
-    //containerInitializer.addProperty(Weld.JAVAX_ENTERPRISE_INJECT_SCAN_IMPLICIT, true)
+    containerInitializer.addProperty(Jandex.DISABLE_JANDEX_DISCOVERY_STRATEGY, true)
     val container = containerInitializer.initialize()
     context.bind("java:comp/BeanManager", Binding("BeanManager", BeanManager::class.java.name, container.beanManager))
   }

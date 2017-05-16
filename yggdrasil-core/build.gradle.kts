@@ -22,9 +22,9 @@ apply {
 
 dependencies {
   compile(kotlinModule("stdlib"))
-  compile("org.jboss.weld.se", "weld-se-core", "3.0.0.CR2")
-  compile("org.jboss.weld.servlet", "weld-servlet-core", "3.0.0.CR2")
-  compile("javax.enterprise", "cdi-api", "2.0-PFD")
+  compile("org.jboss.weld.se", "weld-se-core", "3.0.0.Final")
+  compile("org.jboss.weld.servlet", "weld-servlet-core", "3.0.0.Final")
+  compile("javax.enterprise", "cdi-api", "2.0")
   compile("javax.servlet", "javax.servlet-api", "3.1.0")
   compile("io.undertow", "undertow-servlet", "1.4.11.Final")
   compile("io.undertow", "undertow-core", "1.4.11.Final")
