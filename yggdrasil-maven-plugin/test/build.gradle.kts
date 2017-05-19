@@ -9,6 +9,7 @@ import org.gradle.script.lang.kotlin.repositories
 import org.gradle.script.lang.kotlin.task
 import org.gradle.script.lang.kotlin.testCompile
 import org.gradle.script.lang.kotlin.testRuntime
+import java.io.File
 import java.util.Random
 
 buildscript {
@@ -50,9 +51,13 @@ val execMaven = task<Exec>("execMaven") {
   dependsOn(updateVersion)
 }
 
+val deleteLogFile = tasks.create("deleteLogFile") {
+  File("$projectDir/build/test-results/main.log").takeIf { it.exists() }?.delete()
+}
+
 val port = Random().nextInt(2000) + 10000
 val startJvm = tasks.create("startJvm", SpawnProcessTask::class.java, {
-  dependsOn(execMaven)
+  dependsOn(execMaven, deleteLogFile)
   command = "java -Dio.squark.yggdrasil.port=$port -jar $projectDir/target/yggdrasil-maven-plugin-test-$version-yggdrasil.jar $projectDir/build/test-results/main.log"
   ready = "Yggdrasil initiated"
 })
