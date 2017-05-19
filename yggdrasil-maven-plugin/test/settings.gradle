@@ -1,4 +1,4 @@
-rootProject.name = 'yggdrasil-test'
+rootProject.name = 'yggdrasil-maven-plugin-test'
 
 def configureGradleScriptKotlinOn(ProjectDescriptor project) {
   project.buildFileName = 'build.gradle.kts'

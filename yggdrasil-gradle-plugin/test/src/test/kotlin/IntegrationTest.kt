@@ -17,7 +17,7 @@ import java.nio.charset.Charset
 class IntegrationTest {
 
   @Test fun testRest() {
-    RestAssured.port = 8080
+    RestAssured.port = System.getProperty("io.squark.yggdrasil.port").toInt()
     RestAssured.get("/rest").then().assertThat().body("test", RestAssuredMatchers.equalToPath("test"))
   }
 

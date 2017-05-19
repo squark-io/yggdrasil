@@ -1,6 +1,7 @@
 import com.wiredforcode.gradle.spawn.KillProcessTask
 import com.wiredforcode.gradle.spawn.SpawnProcessTask
 import org.gradle.api.tasks.Exec
+import org.gradle.api.tasks.JavaExec
 import org.gradle.script.lang.kotlin.dependencies
 import org.gradle.script.lang.kotlin.gradleScriptKotlin
 import org.gradle.script.lang.kotlin.kotlinModule
@@ -8,6 +9,7 @@ import org.gradle.script.lang.kotlin.repositories
 import org.gradle.script.lang.kotlin.task
 import org.gradle.script.lang.kotlin.testCompile
 import org.gradle.script.lang.kotlin.testRuntime
+import java.util.Random
 
 buildscript {
   repositories {
@@ -48,14 +50,18 @@ val execMaven = task<Exec>("execMaven") {
   dependsOn(updateVersion)
 }
 
+val port = Random().nextInt(2000) + 10000
 val startJvm = tasks.create("startJvm", SpawnProcessTask::class.java, {
   dependsOn(execMaven)
-  command = "java -jar $projectDir/target/yggdrasil-maven-plugin-test-$version-yggdrasil.jar $projectDir/build/test-results/main.log"
+  command = "java -Dio.squark.yggdrasil.port=$port -jar $projectDir/target/yggdrasil-maven-plugin-test-$version-yggdrasil.jar $projectDir/build/test-results/main.log"
   ready = "Yggdrasil initiated"
 })
 afterEvaluate({
-  tasks.getByName("junitPlatformTest").dependsOn(startJvm)
-    .finalizedBy(tasks.create("stopJvm", KillProcessTask::class.java))
+  (tasks.getByName("junitPlatformTest") as JavaExec).apply {
+    systemProperties.put("io.squark.yggdrasil.port", "$port")
+    dependsOn(startJvm)
+    finalizedBy(tasks.create("stopJvm", KillProcessTask::class.java))
+  }
 })
 
 tasks.getByName("jar").enabled = false

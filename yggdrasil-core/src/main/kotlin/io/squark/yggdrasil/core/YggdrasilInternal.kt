@@ -4,6 +4,7 @@ import io.squark.yggdrasil.bootstrap.YggdrasilClassLoader
 import io.squark.yggdrasil.core.cdi.ServletBeanObserver
 import io.squark.yggdrasil.core.context.YggdrasilContext
 import io.squark.yggdrasil.core.context.YggdrasilInitialContextFactory
+import io.squark.yggdrasil.core.exception.YggdrasilException
 import io.undertow.Undertow
 import io.undertow.server.HttpHandler
 import io.undertow.servlet.Servlets
@@ -37,16 +38,19 @@ import org.jboss.weld.environment.servlet.Listener as WeldListener
  * Created by Erik Håkansson on 2017-03-24.
  * Copyright 2017
  */
-
-private const val DELEGATED_MAIN_CLASS = "Delegated-Main-Class"
-
 class YggdrasilInternal {
+
+  companion object {
+    private val DELEGATED_MAIN_CLASS = "Delegated-Main-Class"
+    private val YGGDRASIL_PORT_PROPERTY = "io.squark.yggdrasil.port"
+  }
 
   private var logger: Logger? = null
   private var isClassLoaderValidated = false
 
   private fun _initialize(args: Array<String>, messagesMap: Map<String, List<String>>) {
     validateClassLoader()
+
     System.setProperty(Context.INITIAL_CONTEXT_FACTORY, YggdrasilInitialContextFactory::class.java.name)
 
     setupLogging()
@@ -81,7 +85,8 @@ class YggdrasilInternal {
     val delegateClass = try {
       getClassLoader().loadClass(className)
     } catch (e: ClassNotFoundException) {
-      throw YggdrasilException("Could not find class $className from Manifest $DELEGATED_MAIN_CLASS", e)
+      throw YggdrasilException(
+        "Could not find class $className from Manifest $DELEGATED_MAIN_CLASS", e)
     }
     val mainMethod = try {
       delegateClass.getMethod("main", Array<String>::class.java)
@@ -100,8 +105,9 @@ class YggdrasilInternal {
   private fun validateClassLoader() {
     if (!isClassLoaderValidated) {
       if (javaClass.classLoader !is YggdrasilClassLoader) {
-        throw YggdrasilException("ClassLoader is not instance of ${YggdrasilClassLoader::class.java}. " +
-          "Found ${javaClass.classLoader::class.java}. Please initiate Yggdrasil with Yggdrasil.initialize(...) or Main-Class")
+        throw YggdrasilException(
+          "ClassLoader is not instance of ${YggdrasilClassLoader::class.java}. " +
+            "Found ${javaClass.classLoader::class.java}. Please initiate Yggdrasil with Yggdrasil.initialize(...) or Main-Class")
       }
     } else {
       isClassLoaderValidated = true
@@ -216,9 +222,12 @@ class YggdrasilInternal {
     val manager = Servlets.defaultContainer().addDeployment(deployment)
     manager.deploy()
     val servletHandler: HttpHandler = manager.start()
-    val server = Undertow.builder().addHttpListener(8080, "localhost").setHandler(servletHandler).build()
+    val server = Undertow.builder().addHttpListener(getProperty(YGGDRASIL_PORT_PROPERTY, 8080), "localhost").setHandler(
+      servletHandler).build()
     server.start()
   }
-}
 
-class YggdrasilException(message: String?, cause: Throwable? = null) : Exception(message, cause)
+  private fun getProperty(name: String, default: String? = null): String? = System.getProperty(name) ?: default
+  private fun getProperty(name: String, default: Int): Int = System.getProperty(name)?.toInt() ?: default
+
+}
