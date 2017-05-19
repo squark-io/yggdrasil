@@ -1,5 +1,7 @@
-
 import com.jfrog.bintray.gradle.BintrayExtension
+import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.plugins.JavaPluginConvention
+
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.script.lang.kotlin.archives
@@ -7,9 +9,11 @@ import org.gradle.script.lang.kotlin.base
 import org.gradle.script.lang.kotlin.closureOf
 import org.gradle.script.lang.kotlin.configure
 import org.gradle.script.lang.kotlin.dependencies
+import org.gradle.script.lang.kotlin.get
 import org.gradle.script.lang.kotlin.gradleScriptKotlin
 import org.gradle.script.lang.kotlin.java
 import org.gradle.script.lang.kotlin.repositories
+import org.gradle.script.lang.kotlin.task
 
 allprojects {
   group = "io.squark.yggdrasil"
@@ -91,7 +95,7 @@ configure(subprojects) {
     val sourcesJar = task<Jar>("sourcesJar") {
       classifier = "sources"
       dependsOn("classes")
-      from((java as JavaPluginConvention).sourceSets["main"].allSource)
+      from(java.sourceSets["main"].allSource)
     }
     val dokkaTask = task<org.jetbrains.dokka.gradle.DokkaTask>("dokkaTask") {
       outputFormat = "javadoc"

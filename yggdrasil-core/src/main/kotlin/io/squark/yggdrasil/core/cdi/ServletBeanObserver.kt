@@ -54,7 +54,8 @@ import kotlin.reflect.KClass
       servletContainerInitializers += toServletContainerInitializerInfo(event.annotatedType)
   }
 
-  private fun toServletContainerInitializerInfo(annotatedType: AnnotatedType<out ServletContainerInitializer>): ServletContainerInitializerInfo {
+  private fun toServletContainerInitializerInfo(
+    annotatedType: AnnotatedType<out ServletContainerInitializer>): ServletContainerInitializerInfo {
     val handlesTypesAnnotation: HandlesTypes? = annotatedType.getAnnotation(HandlesTypes::class.java)
     val arrayOfKClasses: Array<KClass<*>>? = handlesTypesAnnotation?.value
     val arrayOfClasses = arrayOfKClasses?.map { it.java }
@@ -78,7 +79,8 @@ import kotlin.reflect.KClass
     return servletInfo
   }
 
-  private fun toFilterInfo(annotatedType: AnnotatedType<out Filter>): Triple<FilterInfo, List<FilterMappingInfo>, Array<DispatcherType>> {
+  private fun toFilterInfo(
+    annotatedType: AnnotatedType<out Filter>): Triple<FilterInfo, List<FilterMappingInfo>, Array<DispatcherType>> {
     val webFilterAnnotation = annotatedType.getAnnotation(WebFilter::class.java)
     val filterInfo = Servlets.filter(webFilterAnnotation.filterName, annotatedType.javaClass)
     for (initParam in webFilterAnnotation.initParams) filterInfo.initParams += initParam.name to initParam.value

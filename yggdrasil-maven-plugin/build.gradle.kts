@@ -1,4 +1,3 @@
-
 import org.gradle.api.plugins.MavenPluginConvention
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Exec
@@ -53,7 +52,7 @@ dependencies.add("yggdrasil-bootstrap", project(":yggdrasil-bootstrap"))
 val resourcesDir = java.sourceSets.findByName("main").output.resourcesDir
 val classesDir = File(buildDir, "target/classes")
 classesDir.mkdirs()
-java.sourceSets.findByName("main").output.setClassesDir(classesDir)
+java.sourceSets.findByName("main").output.classesDir = classesDir
 val copyCore = tasks.create("copyCore", Copy::class.java, {
   from(project.files(project.configurations.getByName("yggdrasil-core")))
   into(File(resourcesDir, "META-INF/yggdrasil-core"))
@@ -121,7 +120,7 @@ tasks.findByName("install").dependsOn(copyLib)
 
 val itClean = tasks.create("it-clean", GradleBuild::class.java, {
   setBuildFile("test/build.gradle.kts")
-  setTasks(listOf("clean"))
+  tasks = listOf("clean")
 })
 tasks.getByName("clean").dependsOn(itClean)
 
@@ -136,7 +135,7 @@ tasks.create("it-prepare") {
 tasks.create("it", GradleBuild::class.java, {
   setBuildFile("test/build.gradle.kts")
   startParameter.projectProperties["version"] = version as String
-  setTasks(listOf("execMaven", "test"))
+  tasks = listOf("execMaven", "test")
   dependsOn("install", "it-prepare")
 })
 tasks.getByName("test").finalizedBy("it")

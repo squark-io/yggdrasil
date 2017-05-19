@@ -1,4 +1,3 @@
-
 import com.wiredforcode.gradle.spawn.KillProcessTask
 import com.wiredforcode.gradle.spawn.SpawnProcessTask
 import org.gradle.api.tasks.JavaExec

@@ -23,6 +23,10 @@ buildscript {
   }
 }
 
+plugins {
+  java
+}
+
 apply {
   plugin("kotlin")
   plugin("maven")
@@ -70,8 +74,8 @@ tasks.create("it-prepare") {
 
 tasks.create("it", GradleBuild::class.java, {
   setBuildFile("test/build.gradle.kts")
-  getStartParameter().projectProperties["version"] = version as String
-  setTasks(listOf("yggdrasil", "test"))
+  startParameter.projectProperties["version"] = version as String
+  tasks = listOf("yggdrasil", "test")
   dependsOn("install", "it-prepare")
 })
 tasks.getByName("test").finalizedBy("it")
