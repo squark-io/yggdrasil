@@ -73,11 +73,11 @@ val pomTask = task("pomTask") {
 
         this.withXml {
           asNode().appendNode("build").apply {
-            appendNode("resources").appendNode("resource").appendNode("directory", "${resourcesDir}")
+            appendNode("resources").appendNode("resource").appendNode("directory", "$resourcesDir")
             appendNode("plugins").appendNode("plugin").apply {
               this.appendNode("groupId", "org.apache.maven.plugins")
               this.appendNode("artifactId", "maven-plugin-plugin")
-              this.appendNode("version", "3.4")
+              this.appendNode("version", dependencyVersions["maven-plugin-plugin"])
               this.appendNode("configuration").apply {
                 this.appendNode("goalPrefix", "yggdrasil")
                 this.appendNode("skipErrorNoDescriptorsFound", "true")

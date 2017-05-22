@@ -51,7 +51,11 @@ val updateVersion = task<Exec>("updateVersion") {
 }
 
 val execMaven = task<Exec>("execMaven") {
-  commandLine("mvn", "-B", "-U", "-e", "clean", "package")
+  val depsAsStringList = dependencyVersions.entries.map { "-D${it.key}=${it.value}" }
+  val args = mutableListOf("mvn", "-B", "-U", "-e", "clean", "package")
+  args.addAll(depsAsStringList)
+  args.add("-Dkotlin.version=$embeddedKotlinVersion")
+  commandLine(args)
   dependsOn(updateVersion)
 }
 
