@@ -1,7 +1,7 @@
 import com.jfrog.bintray.gradle.BintrayExtension
 import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.plugins.JavaPluginConvention
 
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.script.lang.kotlin.archives
@@ -13,7 +13,8 @@ import org.gradle.script.lang.kotlin.get
 import org.gradle.script.lang.kotlin.gradleScriptKotlin
 import org.gradle.script.lang.kotlin.java
 import org.gradle.script.lang.kotlin.repositories
-import org.gradle.script.lang.kotlin.task
+
+val dependencyVersions: Map<String, String> by extra
 
 allprojects {
   group = "io.squark.yggdrasil"
@@ -33,19 +34,22 @@ allprojects {
       jcenter()
     }
     dependencies {
-      classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3")
-      classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.9.13")
+      classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:${dependencyVersions["gradle-bintray-plugin"]}")
+      classpath("org.jetbrains.dokka:dokka-gradle-plugin:${dependencyVersions["dokka-gradle-plugin"]}")
     }
   }
 }
 
 buildscript {
+  applyFrom("versions.gradle.kts")
+  val dependencyVersions: Map<String, String> by extra
+
   repositories {
     jcenter()
   }
   dependencies {
-    classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3")
-    classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.9.13")
+    classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:${dependencyVersions["gradle-bintray-plugin"]}")
+    classpath("org.jetbrains.dokka:dokka-gradle-plugin:${dependencyVersions["dokka-gradle-plugin"]}")
   }
 }
 
@@ -65,7 +69,6 @@ dependencies {
     archives(it)
   }
 }
-
 
 configure(subprojects) {
 
@@ -92,25 +95,26 @@ configure(subprojects) {
   }
 
   plugins.withType(JavaPlugin::class.java).whenPluginAdded {
-    val sourcesJar = task<Jar>("sourcesJar") {
-      classifier = "sources"
-      dependsOn("classes")
-      from(java.sourceSets["main"].allSource)
-    }
-    val dokkaTask = task<org.jetbrains.dokka.gradle.DokkaTask>("dokkaTask") {
-      outputFormat = "javadoc"
-      outputDirectory = "$buildDir/javadoc"
-    }
-    val javadocsJar = task<Jar>("javadocsJar") {
-      classifier = "javadoc"
-      dependsOn("javadoc", dokkaTask)
-      from((tasks.getByName("javadoc") as Javadoc).destinationDir, "$buildDir/javadoc")
-    }
-    artifacts {
-      add("archives", sourcesJar)
-      add("archives", javadocsJar)
+    tasks {
+      val sourcesJar by creating(Jar::class) {
+        classifier = "sources"
+        dependsOn("classes")
+        from(java.sourceSets["main"].allSource)
+      }
+      val dokkaTask by creating(DokkaTask::class) {
+        outputFormat = "javadoc"
+        outputDirectory = "$buildDir/javadoc"
+      }
+      val javadocsJar by creating(Jar::class) {
+        classifier = "javadoc"
+        dependsOn("javadoc", dokkaTask)
+        from((tasks.getByName("javadoc") as Javadoc).destinationDir, "$buildDir/javadoc")
+      }
+      artifacts {
+        add("archives", sourcesJar)
+        add("archives", javadocsJar)
+      }
+      findByName("bintrayUpload").dependsOn(subprojects.map { it.tasks.getByName("bintrayUpload") })
     }
   }
 }
-
-tasks.findByName("bintrayUpload").dependsOn(subprojects.map { it.tasks.getByName("bintrayUpload") })

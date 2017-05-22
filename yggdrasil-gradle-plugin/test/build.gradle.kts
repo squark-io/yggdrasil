@@ -12,7 +12,11 @@ import org.gradle.script.lang.kotlin.testRuntime
 import java.io.File
 import java.util.Random
 
+val dependencyVersions: Map<String, String> by extra
+
 buildscript {
+  applyFrom("../../versions.gradle.kts")
+  val dependencyVersions: Map<String, String> by extra
   repositories {
     mavenLocal()
     gradleScriptKotlin()
@@ -21,8 +25,8 @@ buildscript {
   dependencies {
     classpath(kotlinModule("gradle-plugin"))
     classpath("io.squark.yggdrasil:yggdrasil-gradle-plugin:${version}")
-    classpath("com.wiredforcode:gradle-spawn-plugin:0.6.0")
-    classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.0-M4")
+    classpath("com.wiredforcode:gradle-spawn-plugin:${dependencyVersions["gradle-spawn-plugin"]}")
+    classpath("org.junit.platform:junit-platform-gradle-plugin:${dependencyVersions["junit-platform-gradle-plugin"]}")
   }
 }
 
@@ -57,13 +61,13 @@ afterEvaluate({
 
 dependencies {
   compile(kotlinModule("stdlib"))
-  compileOnly("javax.enterprise", "cdi-api", "2.0")
-  compileOnly("javax.ws.rs", "javax.ws.rs-api", "2.0.1")
-  compileOnly("javax.json", "javax.json-api", "1.1.0-M1")
-  compile("org.apache.logging.log4j", "log4j-api", "2.8.1")
-  compileOnly("org.apache.logging.log4j", "log4j-core", "2.8.1")
-  testCompile("org.junit.jupiter:junit-jupiter-api:5.0.0-M4")
-  testCompile("io.rest-assured:rest-assured:3.0.2")
-  testCompile("commons-io:commons-io:2.5")
-  testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0-M4")
+  compileOnly("javax.enterprise", "cdi-api", dependencyVersions["cdi-api"])
+  compileOnly("javax.ws.rs", "javax.ws.rs-api", dependencyVersions["rs-api"])
+  compileOnly("javax.json", "javax.json-api", dependencyVersions["javax.json"])
+  compile("org.apache.logging.log4j", "log4j-api", dependencyVersions["log4j"])
+  compileOnly("org.apache.logging.log4j", "log4j-core", dependencyVersions["log4j"])
+  testCompile("commons-io", "commons-io", dependencyVersions["commons-io"])
+  testCompile("io.rest-assured", "rest-assured", dependencyVersions["rest-assured"])
+  testCompile("org.junit.jupiter", "junit-jupiter-api", dependencyVersions["junit-jupiter"])
+  testRuntime("org.junit.jupiter", "junit-jupiter-engine", dependencyVersions["junit-jupiter"])
 }

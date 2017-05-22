@@ -16,7 +16,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.Properties
-import kotlin.collections.set
+
+val dependencyVersions: Map<String, String> by extra
 
 buildscript {
   repositories {
@@ -142,16 +143,14 @@ tasks.getByName("test").finalizedBy("it")
 
 tasks.getByName("jar").enabled = false
 
-val mavenVersion = "3.5.0"
-
 dependencies {
   compile(gradleApi())
   compile(kotlinModule("stdlib"))
-  compile("commons-io:commons-io:2.5")
+  compile("commons-io:commons-io:${dependencyVersions["commons-io"]}")
 
-  compile("org.apache.maven:maven-core:$mavenVersion")
-  compile("org.apache.maven:maven-plugin-api:$mavenVersion")
-  compile("org.apache.maven.plugin-tools:maven-plugin-annotations:3.4")
+  compile("org.apache.maven:maven-core:${dependencyVersions["maven"]}")
+  compile("org.apache.maven:maven-plugin-api:${dependencyVersions["maven"]}")
+  compile("org.apache.maven.plugin-tools:maven-plugin-annotations:${dependencyVersions["maven-plugin-annotations"]}")
 
   compileOnly(project(":yggdrasil-core"))
   compileOnly(project(":yggdrasil-bootstrap"))

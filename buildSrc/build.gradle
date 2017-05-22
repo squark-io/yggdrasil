@@ -2,17 +2,17 @@ import org.gradle.script.lang.kotlin.KotlinDependencyExtensionsKt as gsk
 import org.gradle.script.lang.kotlin.ProjectExtensionsKt as gskp
 
 buildscript {
-  dependencies {
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$gsk.embeddedKotlinVersion")
-  }
-  gsk.gradleScriptKotlin(repositories)
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$gsk.embeddedKotlinVersion")
+    }
+    gsk.gradleScriptKotlin(repositories)
 }
 
 apply plugin: 'kotlin'
 
 dependencies {
-  compile(gskp.gradleScriptKotlinApi(project))
-  compile("org.jetbrains.kotlin:kotlin-stdlib:$gsk.embeddedKotlinVersion")
+    compile(gskp.gradleScriptKotlinApi(project))
+    compile("org.jetbrains.kotlin:kotlin-stdlib:$gsk.embeddedKotlinVersion")
 }
 
 gsk.gradleScriptKotlin(repositories)

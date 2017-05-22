@@ -12,7 +12,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.Properties
-import kotlin.collections.set
+
+val dependencyVersions: Map<String, String> by extra
 
 buildscript {
   repositories {
@@ -54,8 +55,7 @@ tasks.findByName("jar").dependsOn(copyBootstrap)
 dependencies {
   compile(gradleApi())
   compile(kotlinModule("stdlib"))
-  compile("commons-io:commons-io:2.5")
-
+  compile("commons-io:commons-io:${dependencyVersions["commons-io"]}")
   compileOnly(project(":yggdrasil-core"))
   compileOnly(project(":yggdrasil-bootstrap"))
 }

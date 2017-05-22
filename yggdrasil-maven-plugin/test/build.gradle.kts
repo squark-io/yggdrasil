@@ -12,7 +12,11 @@ import org.gradle.script.lang.kotlin.testRuntime
 import java.io.File
 import java.util.Random
 
+val dependencyVersions: Map<String, String> by extra
+
 buildscript {
+  applyFrom("../../versions.gradle.kts")
+  val dependencyVersions: Map<String, String> by extra
   repositories {
     mavenLocal()
     gradleScriptKotlin()
@@ -20,8 +24,8 @@ buildscript {
   }
   dependencies {
     classpath(kotlinModule("gradle-plugin"))
-    classpath("com.wiredforcode:gradle-spawn-plugin:0.6.0")
-    classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.0-M4")
+    classpath("com.wiredforcode:gradle-spawn-plugin:${dependencyVersions["gradle-spawn-plugin"]}")
+    classpath("org.junit.platform:junit-platform-gradle-plugin:${dependencyVersions["junit-platform-gradle-plugin"]}")
   }
 }
 
@@ -73,8 +77,8 @@ tasks.getByName("jar").enabled = false
 
 dependencies {
   testCompile(kotlinModule("stdlib"))
-  testCompile("org.junit.jupiter:junit-jupiter-api:5.0.0-M4")
-  testCompile("io.rest-assured:rest-assured:3.0.2")
-  testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0-M4")
-  testCompile("commons-io:commons-io:2.5")
+  testCompile("org.junit.jupiter", "junit-jupiter-api", dependencyVersions["junit-jupiter"])
+  testCompile("io.rest-assured", "rest-assured", dependencyVersions["rest-assured"])
+  testRuntime("org.junit.jupiter", "junit-jupiter-engine", dependencyVersions["junit-jupiter"])
+  testCompile("commons-io", "commons-io", dependencyVersions["commons-io"])
 }
