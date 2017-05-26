@@ -138,7 +138,7 @@ tasks.create("it-prepare") {
   val propFile = File("$projectDir/test/gradle.properties")
   prop.load(FileInputStream(propFile))
   prop["version"] = version
-  prop.store(FileOutputStream(propFile), "Do not edit version. Will be overwritten by integration-tests")
+  propFile.writeText(prop.entries.joinToString(separator = "\n", transform = {"${it.key}=${it.value}"}))
 }
 
 tasks.create("it", GradleBuild::class.java, {
