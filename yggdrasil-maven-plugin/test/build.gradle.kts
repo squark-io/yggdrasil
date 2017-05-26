@@ -6,7 +6,6 @@ import org.gradle.script.lang.kotlin.dependencies
 import org.gradle.script.lang.kotlin.gradleScriptKotlin
 import org.gradle.script.lang.kotlin.kotlinModule
 import org.gradle.script.lang.kotlin.repositories
-import org.gradle.script.lang.kotlin.task
 import org.gradle.script.lang.kotlin.testCompile
 import org.gradle.script.lang.kotlin.testRuntime
 import java.io.File
@@ -39,46 +38,46 @@ repositories {
   mavenLocal()
 }
 
-tasks.findByName("clean").doFirst({
-  delete("$projectDir/target")
-})
-
-tasks.findByName("compileKotlin").enabled = false
-
-val depsAsStringList = dependencyVersions.entries.map { "-D${it.key}=${it.value}" }
-
-val updateVersion = task<Exec>("updateVersion") {
-  val args = mutableListOf("mvn", "-B", "-U", "-e", "versions:set", "-DnewVersion=$version", "versions:commit")
-  args.addAll(depsAsStringList)
-  commandLine(args)
-  dependsOn("assemble")
-}
-val execMaven = task<Exec>("execMaven") {
-  val args = mutableListOf("mvn", "-B", "-U", "-e", "clean", "package")
-  args.addAll(depsAsStringList)
-  commandLine(args)
-  dependsOn(updateVersion)
-}
-
-val deleteLogFile = tasks.create("deleteLogFile") {
-  File("$projectDir/build/test-results/main.log").takeIf { it.exists() }?.delete()
-}
-
-val port = Random().nextInt(2000) + 10000
-val startJvm = tasks.create("startJvm", SpawnProcessTask::class.java, {
-  dependsOn(execMaven, deleteLogFile)
-  command = "java -Dio.squark.yggdrasil.port=$port -jar $projectDir/target/yggdrasil-maven-plugin-test-$version-yggdrasil.jar $projectDir/build/test-results/main.log"
-  ready = "Yggdrasil initiated"
-})
-afterEvaluate({
-  (tasks.getByName("junitPlatformTest") as JavaExec).apply {
-    systemProperties.put("io.squark.yggdrasil.port", "$port")
-    dependsOn(startJvm)
-    finalizedBy(tasks.create("stopJvm", KillProcessTask::class.java))
+tasks {
+  "clean" {
+    doFirst {
+      delete("$projectDir/target")
+    }
   }
-})
+  "compileKotlin" { enabled = false }
+  val depsAsStringList = dependencyVersions.entries.map { "-D${it.key}=${it.value}" }
 
-tasks.getByName("jar").enabled = false
+  val updateVersion by creating(Exec::class) {
+    val args = mutableListOf("mvn", "-B", "-U", "-e", "versions:set", "-DnewVersion=$version", "versions:commit")
+    args.addAll(depsAsStringList)
+    commandLine(args)
+    dependsOn("assemble")
+  }
+  val execMaven by creating(Exec::class) {
+    val args = mutableListOf("mvn", "-B", "-U", "-e", "clean", "package")
+    args.addAll(depsAsStringList)
+    commandLine(args)
+    dependsOn(updateVersion)
+  }
+  val deleteLogFile by creating {
+    File("$projectDir/build/test-results/main.log").takeIf { it.exists() }?.delete()
+  }
+  val port = Random().nextInt(2000) + 10000
+  val startJvm by creating(SpawnProcessTask::class) {
+    dependsOn(execMaven, deleteLogFile)
+    command = "java -Dio.squark.yggdrasil.port=$port -jar $projectDir/target/yggdrasil-maven-plugin-test-$version-yggdrasil.jar $projectDir/build/test-results/main.log"
+    ready = "Yggdrasil initiated"
+  }
+  afterEvaluate({
+    "junitPlatformTest"(JavaExec::class) {
+      systemProperties.put("io.squark.yggdrasil.port", "$port")
+      dependsOn(startJvm)
+      val killTask by creating(KillProcessTask::class)
+      finalizedBy(killTask)
+    }
+  })
+  "jar" { enabled = false }
+}
 
 dependencies {
   testCompile(kotlinModule("stdlib", dependencyVersions["kotlin"]))

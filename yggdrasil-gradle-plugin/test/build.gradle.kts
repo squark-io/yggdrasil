@@ -41,23 +41,25 @@ repositories {
   mavenLocal()
 }
 
-val deleteLogFile = tasks.create("deleteLogFile") {
-  File("$projectDir/build/test-results/main.log").takeIf { it.exists() }?.delete()
-}
-
-val port = Random().nextInt(2000) + 10000
-val startJvm = tasks.create("startJvm", SpawnProcessTask::class.java, {
-  dependsOn("yggdrasil", deleteLogFile)
-  command = "java -Dio.squark.yggdrasil.port=$port -jar $projectDir/build/libs/yggdrasil-gradle-plugin-test-${version}-yggdrasil.jar $projectDir/build/test-results/main.log"
-  ready = "Yggdrasil initiated"
-})
-afterEvaluate({
-  (tasks.getByName("junitPlatformTest") as JavaExec).apply {
-    systemProperties.put("io.squark.yggdrasil.port", "$port")
-    dependsOn(startJvm)
-    finalizedBy(tasks.create("stopJvm", KillProcessTask::class.java))
+tasks {
+  val deleteLogFile by creating {
+    File("$projectDir/build/test-results/main.log").takeIf { it.exists() }?.delete()
   }
-})
+  val port = Random().nextInt(2000) + 10000
+  val startJvm by creating(SpawnProcessTask::class) {
+    dependsOn("yggdrasil", deleteLogFile)
+    command = "java -Dio.squark.yggdrasil.port=$port -jar $projectDir/build/libs/yggdrasil-gradle-plugin-test-${version}-yggdrasil.jar $projectDir/build/test-results/main.log"
+    ready = "Yggdrasil initiated"
+  }
+  afterEvaluate {
+    "junitPlatformTest"(JavaExec::class) {
+      systemProperties.put("io.squark.yggdrasil.port", "$port")
+      dependsOn(startJvm)
+      val killTask by creating(KillProcessTask::class)
+      finalizedBy(killTask)
+    }
+  }
+}
 
 dependencies {
   compile(kotlinModule("stdlib", dependencyVersions["kotlin"]))
