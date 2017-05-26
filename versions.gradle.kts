@@ -18,6 +18,7 @@ allprojects {
     "gradle-spawn-plugin" to "0.6.0",
     "junit-platform-gradle-plugin" to "1.0.0-M4",
     "junit-jupiter" to "5.0.0-M4",
-    "rest-assured" to "3.0.2"
+    "rest-assured" to "3.0.2",
+    "kotlin" to "1.1.2-4"
   )
 }

@@ -23,7 +23,7 @@ buildscript {
     maven { setUrl("http://dl.bintray.com/vermeulen-mp/gradle-plugins") }
   }
   dependencies {
-    classpath(kotlinModule("gradle-plugin"))
+    classpath(kotlinModule("gradle-plugin", dependencyVersions["kotlin"]))
     classpath("com.wiredforcode:gradle-spawn-plugin:${dependencyVersions["gradle-spawn-plugin"]}")
     classpath("org.junit.platform:junit-platform-gradle-plugin:${dependencyVersions["junit-platform-gradle-plugin"]}")
   }
@@ -45,16 +45,17 @@ tasks.findByName("clean").doFirst({
 
 tasks.findByName("compileKotlin").enabled = false
 
+val depsAsStringList = dependencyVersions.entries.map { "-D${it.key}=${it.value}" }
+
 val updateVersion = task<Exec>("updateVersion") {
-  commandLine("mvn", "-B", "-U", "-e", "versions:set", "-DnewVersion=$version", "versions:commit")
+  val args = mutableListOf("mvn", "-B", "-U", "-e", "versions:set", "-DnewVersion=$version", "versions:commit")
+  args.addAll(depsAsStringList)
+  commandLine(args)
   dependsOn("assemble")
 }
-
 val execMaven = task<Exec>("execMaven") {
-  val depsAsStringList = dependencyVersions.entries.map { "-D${it.key}=${it.value}" }
   val args = mutableListOf("mvn", "-B", "-U", "-e", "clean", "package")
   args.addAll(depsAsStringList)
-  args.add("-Dkotlin.version=$embeddedKotlinVersion")
   commandLine(args)
   dependsOn(updateVersion)
 }
@@ -80,7 +81,7 @@ afterEvaluate({
 tasks.getByName("jar").enabled = false
 
 dependencies {
-  testCompile(kotlinModule("stdlib"))
+  testCompile(kotlinModule("stdlib", dependencyVersions["kotlin"]))
   testCompile("org.junit.jupiter", "junit-jupiter-api", dependencyVersions["junit-jupiter"])
   testCompile("io.rest-assured", "rest-assured", dependencyVersions["rest-assured"])
   testRuntime("org.junit.jupiter", "junit-jupiter-engine", dependencyVersions["junit-jupiter"])

@@ -23,7 +23,7 @@ buildscript {
     maven { setUrl("http://dl.bintray.com/vermeulen-mp/gradle-plugins") }
   }
   dependencies {
-    classpath(kotlinModule("gradle-plugin"))
+    classpath(kotlinModule("gradle-plugin", dependencyVersions["kotlin"]))
     classpath("io.squark.yggdrasil:yggdrasil-gradle-plugin:${version}")
     classpath("com.wiredforcode:gradle-spawn-plugin:${dependencyVersions["gradle-spawn-plugin"]}")
     classpath("org.junit.platform:junit-platform-gradle-plugin:${dependencyVersions["junit-platform-gradle-plugin"]}")
@@ -60,7 +60,7 @@ afterEvaluate({
 })
 
 dependencies {
-  compile(kotlinModule("stdlib"))
+  compile(kotlinModule("stdlib", dependencyVersions["kotlin"]))
   compileOnly("javax.enterprise", "cdi-api", dependencyVersions["cdi-api"])
   compileOnly("javax.ws.rs", "javax.ws.rs-api", dependencyVersions["rs-api"])
   compileOnly("javax.json", "javax.json-api", dependencyVersions["javax.json"])

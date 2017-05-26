@@ -40,9 +40,9 @@ class YggdrasilPlugin : Plugin<Project> {
     stageDir.mkdirs()
 
     project.tasks.withType(PrepareFiles::class.java).whenTaskAdded({
-      val output = javaConvention.sourceSets.findByName("main").output
-      it.classesDir = output.classesDir
-      it.resourcesDir = output.resourcesDir
+      val mainSourceSet = javaConvention.sourceSets.findByName("main")
+      it.classesDir = mainSourceSet.java.outputDir
+      it.resourcesDir = mainSourceSet.output.resourcesDir
       it.stageDir = stageDir
     })
 

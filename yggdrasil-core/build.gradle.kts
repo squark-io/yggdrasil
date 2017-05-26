@@ -9,11 +9,12 @@ import org.gradle.script.lang.kotlin.repositories
 val dependencyVersions: Map<String, String> by extra
 
 buildscript {
+  val dependencyVersions: Map<String, String> by extra
   repositories {
     gradleScriptKotlin()
   }
   dependencies {
-    classpath(kotlinModule("gradle-plugin"))
+    classpath(kotlinModule("gradle-plugin", dependencyVersions["kotlin"]))
   }
 }
 
@@ -23,7 +24,7 @@ apply {
 }
 
 dependencies {
-  compile(kotlinModule("stdlib"))
+  compile(kotlinModule("stdlib", dependencyVersions["kotlin"]))
   compile("org.jboss.weld.se", "weld-se-core", dependencyVersions["weld"])
   compile("org.jboss.weld.servlet", "weld-servlet-core", dependencyVersions["weld"])
   compile("javax.enterprise", "cdi-api", dependencyVersions["cdi-api"])

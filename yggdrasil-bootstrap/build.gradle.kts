@@ -4,12 +4,14 @@ import org.gradle.script.lang.kotlin.gradleScriptKotlin
 import org.gradle.script.lang.kotlin.kotlinModule
 import org.gradle.script.lang.kotlin.repositories
 
+val dependencyVersions: Map<String, String> by extra
 buildscript {
+  val dependencyVersions: Map<String, String> by extra
   repositories {
     gradleScriptKotlin()
   }
   dependencies {
-    classpath(kotlinModule("gradle-plugin"))
+    classpath(kotlinModule("gradle-plugin", dependencyVersions["kotlin"]))
   }
 }
 
@@ -19,5 +21,5 @@ apply {
 }
 
 dependencies {
-  compile(kotlinModule("stdlib"))
+  compile(kotlinModule("stdlib", dependencyVersions["kotlin"]))
 }

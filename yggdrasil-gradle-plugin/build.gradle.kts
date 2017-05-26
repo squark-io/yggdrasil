@@ -16,11 +16,12 @@ import java.util.Properties
 val dependencyVersions: Map<String, String> by extra
 
 buildscript {
+  val dependencyVersions: Map<String, String> by extra
   repositories {
     gradleScriptKotlin()
   }
   dependencies {
-    classpath(kotlinModule("gradle-plugin"))
+    classpath(kotlinModule("gradle-plugin", dependencyVersions["kotlin"]))
   }
 }
 
@@ -54,7 +55,7 @@ tasks.findByName("jar").dependsOn(copyBootstrap)
 
 dependencies {
   compile(gradleApi())
-  compile(kotlinModule("stdlib"))
+  compile(kotlinModule("stdlib", dependencyVersions["kotlin"]))
   compile("commons-io:commons-io:${dependencyVersions["commons-io"]}")
   compileOnly(project(":yggdrasil-core"))
   compileOnly(project(":yggdrasil-bootstrap"))

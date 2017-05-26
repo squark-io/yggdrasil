@@ -20,12 +20,13 @@ import java.util.Properties
 val dependencyVersions: Map<String, String> by extra
 
 buildscript {
+  val dependencyVersions: Map<String, String> by extra
   repositories {
     gradleScriptKotlin()
     mavenLocal()
   }
   dependencies {
-    classpath(kotlinModule("gradle-plugin"))
+    classpath(kotlinModule("gradle-plugin", dependencyVersions["kotlin"]))
   }
 }
 
@@ -53,7 +54,14 @@ dependencies.add("yggdrasil-bootstrap", project(":yggdrasil-bootstrap"))
 val resourcesDir = java.sourceSets.findByName("main").output.resourcesDir
 val classesDir = File(buildDir, "target/classes")
 classesDir.mkdirs()
-java.sourceSets.findByName("main").output.classesDir = classesDir
+
+java {
+  sourceSets {
+    "main" {
+      java.outputDir = classesDir
+    }
+  }
+}
 val copyCore = tasks.create("copyCore", Copy::class.java, {
   from(project.files(project.configurations.getByName("yggdrasil-core")))
   into(File(resourcesDir, "META-INF/yggdrasil-core"))
@@ -145,7 +153,7 @@ tasks.getByName("jar").enabled = false
 
 dependencies {
   compile(gradleApi())
-  compile(kotlinModule("stdlib"))
+  compile(kotlinModule("stdlib", dependencyVersions["kotlin"]))
   compile("commons-io:commons-io:${dependencyVersions["commons-io"]}")
 
   compile("org.apache.maven:maven-core:${dependencyVersions["maven"]}")
