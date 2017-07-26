@@ -1,0 +1,219 @@
+{
+    ":": {
+        "conventions": {
+            "base": "org.gradle.api.plugins.BasePluginConvention",
+            "java": "org.gradle.api.plugins.JavaPluginConvention"
+        },
+        "configurations": [
+            "apiElements",
+            "archives",
+            "compile",
+            "compileClasspath",
+            "compileOnly",
+            "default",
+            "implementation",
+            "runtime",
+            "runtimeClasspath",
+            "runtimeElements",
+            "runtimeOnly",
+            "testCompile",
+            "testCompileClasspath",
+            "testCompileOnly",
+            "testImplementation",
+            "testRuntime",
+            "testRuntimeClasspath",
+            "testRuntimeOnly"
+        ],
+        "extensions": {
+            "ext": "org.gradle.api.plugins.ExtraPropertiesExtension",
+            "defaultArtifacts": "org.gradle.api.internal.plugins.DefaultArtifactPublicationSet",
+            "reporting": "org.gradle.api.reporting.ReportingExtension",
+            "bintray": "com.jfrog.bintray.gradle.BintrayExtension"
+        }
+    },
+    ":yggdrasil-bootstrap": {
+        "conventions": {
+            "base": "org.gradle.api.plugins.BasePluginConvention",
+            "maven": "org.gradle.api.plugins.MavenPluginConvention",
+            "java": "org.gradle.api.plugins.JavaPluginConvention"
+        },
+        "configurations": [
+            "apiElements",
+            "archives",
+            "compile",
+            "compileClasspath",
+            "compileOnly",
+            "default",
+            "implementation",
+            "kapt",
+            "kaptTest",
+            "runtime",
+            "runtimeClasspath",
+            "runtimeElements",
+            "runtimeOnly",
+            "testCompile",
+            "testCompileClasspath",
+            "testCompileOnly",
+            "testImplementation",
+            "testRuntime",
+            "testRuntimeClasspath",
+            "testRuntimeOnly"
+        ],
+        "extensions": {
+            "ext": "org.gradle.api.plugins.ExtraPropertiesExtension",
+            "defaultArtifacts": "org.gradle.api.internal.plugins.DefaultArtifactPublicationSet",
+            "bintray": "com.jfrog.bintray.gradle.BintrayExtension",
+            "kotlin": "org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension",
+            "kapt": "org.jetbrains.kotlin.gradle.plugin.KaptExtension",
+            "reporting": "org.gradle.api.reporting.ReportingExtension"
+        }
+    },
+    ":yggdrasil-core": {
+        "conventions": {
+            "base": "org.gradle.api.plugins.BasePluginConvention",
+            "maven": "org.gradle.api.plugins.MavenPluginConvention",
+            "java": "org.gradle.api.plugins.JavaPluginConvention"
+        },
+        "configurations": [
+            "apiElements",
+            "archives",
+            "compile",
+            "compileClasspath",
+            "compileOnly",
+            "default",
+            "implementation",
+            "kapt",
+            "kaptTest",
+            "runtime",
+            "runtimeClasspath",
+            "runtimeElements",
+            "runtimeOnly",
+            "testCompile",
+            "testCompileClasspath",
+            "testCompileOnly",
+            "testImplementation",
+            "testRuntime",
+            "testRuntimeClasspath",
+            "testRuntimeOnly"
+        ],
+        "extensions": {
+            "ext": "org.gradle.api.plugins.ExtraPropertiesExtension",
+            "defaultArtifacts": "org.gradle.api.internal.plugins.DefaultArtifactPublicationSet",
+            "bintray": "com.jfrog.bintray.gradle.BintrayExtension",
+            "kotlin": "org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension",
+            "kapt": "org.jetbrains.kotlin.gradle.plugin.KaptExtension",
+            "reporting": "org.gradle.api.reporting.ReportingExtension"
+        }
+    },
+    ":yggdrasil-gradle-plugin": {
+        "conventions": {
+            "base": "org.gradle.api.plugins.BasePluginConvention",
+            "maven": "org.gradle.api.plugins.MavenPluginConvention",
+            "java": "org.gradle.api.plugins.JavaPluginConvention"
+        },
+        "configurations": [
+            "apiElements",
+            "archives",
+            "compile",
+            "compileClasspath",
+            "compileOnly",
+            "default",
+            "embeddedKotlin",
+            "implementation",
+            "kapt",
+            "kaptTest",
+            "kaptYggdrasil-bootstrap",
+            "kaptYggdrasil-core",
+            "runtime",
+            "runtimeClasspath",
+            "runtimeElements",
+            "runtimeOnly",
+            "testCompile",
+            "testCompileClasspath",
+            "testCompileOnly",
+            "testImplementation",
+            "testRuntime",
+            "testRuntimeClasspath",
+            "testRuntimeOnly",
+            "yggdrasil-bootstrap",
+            "yggdrasil-core",
+            "yggdrasilBootstrapCompile",
+            "yggdrasilBootstrapCompileClasspath",
+            "yggdrasilBootstrapCompileOnly",
+            "yggdrasilBootstrapImplementation",
+            "yggdrasilBootstrapRuntime",
+            "yggdrasilBootstrapRuntimeClasspath",
+            "yggdrasilBootstrapRuntimeOnly",
+            "yggdrasilCoreCompile",
+            "yggdrasilCoreCompileClasspath",
+            "yggdrasilCoreCompileOnly",
+            "yggdrasilCoreImplementation",
+            "yggdrasilCoreRuntime",
+            "yggdrasilCoreRuntimeClasspath",
+            "yggdrasilCoreRuntimeOnly"
+        ],
+        "extensions": {
+            "ext": "org.gradle.api.plugins.ExtraPropertiesExtension",
+            "defaultArtifacts": "org.gradle.api.internal.plugins.DefaultArtifactPublicationSet",
+            "bintray": "com.jfrog.bintray.gradle.BintrayExtension",
+            "kotlin": "org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension",
+            "kapt": "org.jetbrains.kotlin.gradle.plugin.KaptExtension",
+            "reporting": "org.gradle.api.reporting.ReportingExtension"
+        }
+    },
+    ":yggdrasil-maven-plugin": {
+        "conventions": {
+            "base": "org.gradle.api.plugins.BasePluginConvention",
+            "maven": "org.gradle.api.plugins.MavenPluginConvention",
+            "java": "org.gradle.api.plugins.JavaPluginConvention"
+        },
+        "configurations": [
+            "apiElements",
+            "archives",
+            "compile",
+            "compileClasspath",
+            "compileOnly",
+            "default",
+            "implementation",
+            "kapt",
+            "kaptTest",
+            "kaptYggdrasil-bootstrap",
+            "kaptYggdrasil-core",
+            "runtime",
+            "runtimeClasspath",
+            "runtimeElements",
+            "runtimeOnly",
+            "testCompile",
+            "testCompileClasspath",
+            "testCompileOnly",
+            "testImplementation",
+            "testRuntime",
+            "testRuntimeClasspath",
+            "testRuntimeOnly",
+            "yggdrasil-bootstrap",
+            "yggdrasil-core",
+            "yggdrasilBootstrapCompile",
+            "yggdrasilBootstrapCompileClasspath",
+            "yggdrasilBootstrapCompileOnly",
+            "yggdrasilBootstrapImplementation",
+            "yggdrasilBootstrapRuntime",
+            "yggdrasilBootstrapRuntimeClasspath",
+            "yggdrasilBootstrapRuntimeOnly",
+            "yggdrasilCoreCompile",
+            "yggdrasilCoreCompileClasspath",
+            "yggdrasilCoreCompileOnly",
+            "yggdrasilCoreImplementation",
+            "yggdrasilCoreRuntime",
+            "yggdrasilCoreRuntimeClasspath",
+            "yggdrasilCoreRuntimeOnly"
+        ],
+        "extensions": {
+            "ext": "org.gradle.api.plugins.ExtraPropertiesExtension",
+            "defaultArtifacts": "org.gradle.api.internal.plugins.DefaultArtifactPublicationSet",
+            "bintray": "com.jfrog.bintray.gradle.BintrayExtension",
+            "kotlin": "org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension",
+            "kapt": "org.jetbrains.kotlin.gradle.plugin.KaptExtension",
+            "reporting": "org.gradle.api.reporting.ReportingExtension"
+        }
+    }
+}

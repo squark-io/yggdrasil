@@ -2,15 +2,15 @@ import org.gradle.api.plugins.MavenPluginConvention
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.GradleBuild
-import org.gradle.script.lang.kotlin.compile
-import org.gradle.script.lang.kotlin.compileOnly
-import org.gradle.script.lang.kotlin.configure
-import org.gradle.script.lang.kotlin.dependencies
-import org.gradle.script.lang.kotlin.gradleScriptKotlin
-import org.gradle.script.lang.kotlin.java
-import org.gradle.script.lang.kotlin.kotlinModule
-import org.gradle.script.lang.kotlin.project
-import org.gradle.script.lang.kotlin.repositories
+import org.gradle.kotlin.dsl.compile
+import org.gradle.kotlin.dsl.compileOnly
+import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.gradleScriptKotlin
+import org.gradle.kotlin.dsl.java
+import org.gradle.kotlin.dsl.kotlinModule
+import org.gradle.kotlin.dsl.project
+import org.gradle.kotlin.dsl.repositories
 import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
@@ -18,25 +18,22 @@ import java.util.Properties
 val dependencyVersions: Map<String, String> by extra
 
 buildscript {
-  val dependencyVersions: Map<String, String> by extra
   repositories {
-    gradleScriptKotlin()
     mavenLocal()
   }
   dependencies {
-    classpath(kotlinModule("gradle-plugin", dependencyVersions["kotlin"]))
+    classpath(kotlin("gradle-plugin"))
   }
 }
 
-apply {
-  plugin("kotlin")
-  plugin("maven")
-  plugin("java")
+plugins {
+  kotlin("jvm")
+  maven
+  java
 }
 
 repositories {
   mavenLocal()
-  gradleScriptKotlin()
 }
 
 tasks {
@@ -52,7 +49,7 @@ tasks {
   java.sourceSets.create("yggdrasil-bootstrap")
   dependencies.add("yggdrasil-core", project(":yggdrasil-core"))
   dependencies.add("yggdrasil-bootstrap", project(":yggdrasil-bootstrap"))
-  val resourcesDir = java.sourceSets.findByName("main").output.resourcesDir
+  val resourcesDir = java.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME].output.resourcesDir
   val classesDir = File(buildDir, "target/classes")
   classesDir.mkdirs()
   java {
@@ -70,8 +67,9 @@ tasks {
     from(project.files(bootstrapConfig))
     into(File(resourcesDir, "META-INF/yggdrasil-bootstrap"))
   }
-
+  val assembleTask = tasks.findByName("assemble")
   val pomTask by creating {
+    inputs.files()
     doLast {
       configure<MavenPluginConvention> {
         pom().apply {
@@ -103,45 +101,62 @@ tasks {
         }.writeTo("$buildDir/pom.xml")
       }
     }
+    inputs.files(copyCore.outputs.files, copyBootstrap.outputs.files, assembleTask.outputs.files)
+    outputs.files("$buildDir/pom.xml")
+    outputs.upToDateWhen { File("$buildDir/pom.xml").exists() }
   }
-  val execMaven by creating(Exec::class) {
+  val mavenPackage by creating(Exec::class) {
     workingDir("$buildDir")
     commandLine("mvn", "-B", "-U", "-e", "package")
-    dependsOn(copyCore, copyBootstrap, pomTask, "assemble")
+    inputs.files(copyCore.outputs.files, copyBootstrap.outputs.files, assembleTask.outputs.files)
+    outputs.files("$buildDir/target/${project.name}-${project.version}.jar")
+    outputs.upToDateWhen { File("$buildDir/target/${project.name}-${project.version}.jar").exists() }
+    dependsOn(copyCore, copyBootstrap, pomTask, assembleTask)
   }
   val copyLib by creating(Copy::class) {
     from(File(buildDir, "target")) {
       include("*.jar")
     }
     from(buildDir) {
-      include("*.pom")
+      include("pom.xml")
     }
     into(File(buildDir, "libs"))
-    dependsOn(execMaven)
+    dependsOn(mavenPackage)
   }
-  "install" { dependsOn(copyLib) }
+  "install" {
+    dependsOn(copyLib)
+    outputs.files("$projectDir/test/build/test-results")
+  }
   val itPrepare by creating {
-    val prop = Properties()
     val propFile = File("$projectDir/test/gradle.properties")
-    prop.load(FileInputStream(propFile))
-    prop["version"] = version
-    propFile.writeText(prop.entries.joinToString(separator = "\n", transform = { "${it.key}=${it.value}" }))
+    inputs.files("$buildDir/libs/${project.name}-${project.version}.jar", "$buildDir/libs/pom.xml")
+    outputs.file(propFile)
+    doFirst {
+      val prop = Properties()
+      prop.load(FileInputStream(propFile))
+      prop["version"] = version
+      propFile.writeText(prop.entries.joinToString(separator = "\n", transform = { "${it.key}=${it.value}" }))
+    }
   }
   val it by creating(GradleBuild::class) {
+    inputs.files("$buildDir/libs/${project.name}-${project.version}.jar", "$buildDir/libs/pom.xml", "$projectDir/test/src")
+    outputs.files("$projectDir/test/build/test-results")
     setBuildFile("test/build.gradle.kts")
     startParameter.projectProperties["version"] = version as String
     tasks = listOf("execMaven", "test")
     dependsOn("install", itPrepare)
   }
-  "test" { finalizedBy(it) }
+  "test"(Test::class) {
+    isScanForTestClasses = false
+    dependsOn(it)
+  }
   "jar" { enabled = false }
 }
 
 dependencies {
   compile(gradleApi())
-  compile(kotlinModule("stdlib", dependencyVersions["kotlin"]))
+  compile(kotlin("stdlib"))
   compile("commons-io:commons-io:${dependencyVersions["commons-io"]}")
-
   compile("org.apache.maven:maven-core:${dependencyVersions["maven"]}")
   compile("org.apache.maven:maven-plugin-api:${dependencyVersions["maven"]}")
   compile("org.apache.maven.plugin-tools:maven-plugin-annotations:${dependencyVersions["maven-plugin-annotations"]}")

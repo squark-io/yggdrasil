@@ -2,12 +2,12 @@ import com.wiredforcode.gradle.spawn.KillProcessTask
 import com.wiredforcode.gradle.spawn.SpawnProcessTask
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.JavaExec
-import org.gradle.script.lang.kotlin.dependencies
-import org.gradle.script.lang.kotlin.gradleScriptKotlin
-import org.gradle.script.lang.kotlin.kotlinModule
-import org.gradle.script.lang.kotlin.repositories
-import org.gradle.script.lang.kotlin.testCompile
-import org.gradle.script.lang.kotlin.testRuntime
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.gradleScriptKotlin
+import org.gradle.kotlin.dsl.kotlinModule
+import org.gradle.kotlin.dsl.repositories
+import org.gradle.kotlin.dsl.testCompile
+import org.gradle.kotlin.dsl.testRuntime
 import java.io.File
 import java.util.Random
 
@@ -18,24 +18,28 @@ buildscript {
   val dependencyVersions: Map<String, String> by extra
   repositories {
     mavenLocal()
-    gradleScriptKotlin()
     maven { setUrl("http://dl.bintray.com/vermeulen-mp/gradle-plugins") }
   }
   dependencies {
-    classpath(kotlinModule("gradle-plugin", dependencyVersions["kotlin"]))
+    classpath(kotlin("gradle-plugin"))
     classpath("com.wiredforcode:gradle-spawn-plugin:${dependencyVersions["gradle-spawn-plugin"]}")
     classpath("org.junit.platform:junit-platform-gradle-plugin:${dependencyVersions["junit-platform-gradle-plugin"]}")
   }
 }
 
+val junitVersion: String = dependencyVersions["junit-platform-gradle-plugin"]!!
+
+plugins {
+  kotlin("jvm")
+}
+
 apply {
-  plugin("kotlin")
   plugin("org.junit.platform.gradle.plugin")
 }
 
 repositories {
-  gradleScriptKotlin()
   mavenLocal()
+  jcenter()
 }
 
 tasks {
@@ -45,7 +49,8 @@ tasks {
     }
   }
   "compileKotlin" { enabled = false }
-  val depsAsStringList = dependencyVersions.entries.map { "-D${it.key}=${it.value}" }
+  val depsAsStringList = dependencyVersions.entries.map { "-D${it.key}=${it.value}" }.toMutableList()
+  depsAsStringList.add("-Dkotlin=$embeddedKotlinVersion")
 
   val updateVersion by creating(Exec::class) {
     val args = mutableListOf("mvn", "-B", "-U", "-e", "versions:set", "-DnewVersion=$version", "versions:commit")
@@ -80,7 +85,7 @@ tasks {
 }
 
 dependencies {
-  testCompile(kotlinModule("stdlib", dependencyVersions["kotlin"]))
+  testCompile(kotlin("stdlib"))
   testCompile("org.junit.jupiter", "junit-jupiter-api", dependencyVersions["junit-jupiter"])
   testCompile("io.rest-assured", "rest-assured", dependencyVersions["rest-assured"])
   testRuntime("org.junit.jupiter", "junit-jupiter-engine", dependencyVersions["junit-jupiter"])

@@ -1,14 +1,13 @@
 import com.wiredforcode.gradle.spawn.KillProcessTask
 import com.wiredforcode.gradle.spawn.SpawnProcessTask
 import org.gradle.api.tasks.JavaExec
-import org.gradle.script.lang.kotlin.compile
-import org.gradle.script.lang.kotlin.compileOnly
-import org.gradle.script.lang.kotlin.dependencies
-import org.gradle.script.lang.kotlin.gradleScriptKotlin
-import org.gradle.script.lang.kotlin.kotlinModule
-import org.gradle.script.lang.kotlin.repositories
-import org.gradle.script.lang.kotlin.testCompile
-import org.gradle.script.lang.kotlin.testRuntime
+import org.gradle.kotlin.dsl.compile
+import org.gradle.kotlin.dsl.compileOnly
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.gradleScriptKotlin
+import org.gradle.kotlin.dsl.repositories
+import org.gradle.kotlin.dsl.testCompile
+import org.gradle.kotlin.dsl.testRuntime
 import java.io.File
 import java.util.Random
 
@@ -23,15 +22,18 @@ buildscript {
     maven { setUrl("http://dl.bintray.com/vermeulen-mp/gradle-plugins") }
   }
   dependencies {
-    classpath(kotlinModule("gradle-plugin", dependencyVersions["kotlin"]))
+    classpath(kotlin("gradle-plugin", dependencyVersions["kotlin"]))
     classpath("io.squark.yggdrasil:yggdrasil-gradle-plugin:${version}")
     classpath("com.wiredforcode:gradle-spawn-plugin:${dependencyVersions["gradle-spawn-plugin"]}")
     classpath("org.junit.platform:junit-platform-gradle-plugin:${dependencyVersions["junit-platform-gradle-plugin"]}")
   }
 }
 
+plugins {
+  kotlin("jvm")
+}
+
 apply {
-  plugin("kotlin")
   plugin("io.squark.yggdrasil.yggdrasil-gradle-plugin")
   plugin("org.junit.platform.gradle.plugin")
 }
@@ -62,7 +64,7 @@ tasks {
 }
 
 dependencies {
-  compile(kotlinModule("stdlib", dependencyVersions["kotlin"]))
+  compile(kotlin("stdlib", dependencyVersions["kotlin"]))
   compileOnly("javax.enterprise", "cdi-api", dependencyVersions["cdi-api"])
   compileOnly("javax.ws.rs", "javax.ws.rs-api", dependencyVersions["rs-api"])
   compileOnly("javax.json", "javax.json-api", dependencyVersions["javax.json"])

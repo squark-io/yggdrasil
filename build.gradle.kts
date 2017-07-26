@@ -4,15 +4,15 @@ import org.gradle.api.plugins.JavaPlugin
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.javadoc.Javadoc
-import org.gradle.script.lang.kotlin.archives
-import org.gradle.script.lang.kotlin.base
-import org.gradle.script.lang.kotlin.closureOf
-import org.gradle.script.lang.kotlin.configure
-import org.gradle.script.lang.kotlin.dependencies
-import org.gradle.script.lang.kotlin.get
-import org.gradle.script.lang.kotlin.gradleScriptKotlin
-import org.gradle.script.lang.kotlin.java
-import org.gradle.script.lang.kotlin.repositories
+import org.gradle.kotlin.dsl.archives
+import org.gradle.kotlin.dsl.base
+import org.gradle.kotlin.dsl.closureOf
+import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.gradleScriptKotlin
+import org.gradle.kotlin.dsl.java
+import org.gradle.kotlin.dsl.repositories
 
 val dependencyVersions: Map<String, String> by extra
 
@@ -99,7 +99,7 @@ configure(subprojects) {
       val sourcesJar by creating(Jar::class) {
         classifier = "sources"
         dependsOn("classes")
-        from(java.sourceSets["main"].allSource)
+        from(java.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME].allSource)
       }
       val dokkaTask by creating(DokkaTask::class) {
         outputFormat = "javadoc"
