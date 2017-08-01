@@ -69,7 +69,7 @@ tasks {
     outputs.files("$projectDir/test/build/test-results")
     setBuildFile("test/build.gradle.kts")
     startParameter.projectProperties["version"] = version as String
-    tasks = listOf("yggdrasil", "test")
+    tasks = listOf("clean", "yggdrasil", "test")
     dependsOn(install, itPrepare)
   }
   "test"(Test::class) {

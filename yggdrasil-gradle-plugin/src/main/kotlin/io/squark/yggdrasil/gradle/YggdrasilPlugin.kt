@@ -1,6 +1,7 @@
 package io.squark.yggdrasil.gradle
 
 import org.apache.commons.io.IOUtils
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
@@ -49,25 +50,6 @@ class YggdrasilPlugin : Plugin<Project> {
     val classesDir = mainSourceSet.java.outputDir
     val resourcesDir = mainSourceSet.output.resourcesDir
 
-    val beansXML = File(stageDir, "META-INF/beans.xml")
-    if (!beansXML.exists()) {
-      beansXML.parentFile.mkdirs()
-      beansXML.createNewFile()
-      val standin = this::class.java.getResourceAsStream("/META-INF/standins/empty-beans.xml")
-      val bytes = IOUtils.toByteArray(standin)
-      beansXML.writeBytes(bytes)
-    }
-
-    val yggdrasilCoreDir = javaClass.getResource("/META-INF/yggdrasil-core/")
-    if (yggdrasilCoreDir == null || yggdrasilCoreDir.protocol != "jar") {
-      throw UnknownError("Failed to find META-INF/yggdrasil-core/")
-    }
-    copyJarPath(yggdrasilCoreDir, stageDir, false)
-    val yggdrasilBootstrapDir = javaClass.getResource("/META-INF/yggdrasil-bootstrap/")
-    if (yggdrasilBootstrapDir == null || yggdrasilBootstrapDir.protocol != "jar") {
-      throw UnknownError("Failed to find META-INF/yggdrasil-bootstrap/")
-    }
-    copyJarPath(yggdrasilBootstrapDir, stageDir, true)
 
     project.run {
       tasks {
@@ -77,8 +59,32 @@ class YggdrasilPlugin : Plugin<Project> {
           classifier = "yggdrasil"
           dependsOn("classes")
 
+          inputs.files(classesDir, resourcesDir)
+
           from(stageDir)
           doFirst {
+
+            val beansXML = File(stageDir, "META-INF/beans.xml")
+            if (!beansXML.exists()) {
+              beansXML.parentFile.mkdirs()
+              beansXML.createNewFile()
+              val standin = this@YggdrasilPlugin.javaClass.getResourceAsStream(
+                "/META-INF/standins/empty-beans.xml") ?: throw GradleException(
+                "Failed to find /META-INF/standins/empty-beans.xml")
+              val bytes = IOUtils.toByteArray(standin)
+              beansXML.writeBytes(bytes)
+            }
+
+            val yggdrasilCoreDir = this@YggdrasilPlugin.javaClass.getResource("/META-INF/yggdrasil-core/")
+            if (yggdrasilCoreDir == null || yggdrasilCoreDir.protocol != "jar") {
+              throw GradleException("Failed to find META-INF/yggdrasil-core/")
+            }
+            copyJarPath(yggdrasilCoreDir, stageDir, false)
+            val yggdrasilBootstrapDir = this@YggdrasilPlugin.javaClass.getResource("/META-INF/yggdrasil-bootstrap/")
+            if (yggdrasilBootstrapDir == null || yggdrasilBootstrapDir.protocol != "jar") {
+              throw GradleException("Failed to find META-INF/yggdrasil-bootstrap/")
+            }
+            copyJarPath(yggdrasilBootstrapDir, stageDir, true)
 
             val files = getYggdrasilFiles(classesDir, resourcesDir, project)
 
@@ -86,8 +92,7 @@ class YggdrasilPlugin : Plugin<Project> {
               from(files)
               into(stageDir)
             }
-            val output = mainSourceSet.output
-            val manifestFile = File(output.resourcesDir, JarFile.MANIFEST_NAME)
+            val manifestFile = File(resourcesDir, JarFile.MANIFEST_NAME)
             var delegatedMainClass: String? = null
             if (manifestFile.exists()) {
               val fileInputStream = FileInputStream(manifestFile)
@@ -108,7 +113,6 @@ class YggdrasilPlugin : Plugin<Project> {
             if (!manifest.attributes.containsKey("Build-Jdk")) {
               manifest.attributes["Build-Jdk"] = System.getProperty("java.version")
             }
-
           }
         }
       }

@@ -13,6 +13,7 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.gradleScriptKotlin
 import org.gradle.kotlin.dsl.java
 import org.gradle.kotlin.dsl.repositories
+import org.jetbrains.dokka.gradle.LinkMapping
 
 val dependencyVersions: Map<String, String> by extra
 
@@ -104,6 +105,12 @@ configure(subprojects) {
       val dokkaTask by creating(DokkaTask::class) {
         outputFormat = "javadoc"
         outputDirectory = "$buildDir/javadoc"
+//        linkMapping(closureOf<LinkMapping> {
+//          dir = "src/main/kotlin"
+//          url = "https://github.com/squark-io/yggdrasil"
+//          suffix = "#L"
+//        })
+
       }
       val javadocsJar by creating(Jar::class) {
         classifier = "javadoc"

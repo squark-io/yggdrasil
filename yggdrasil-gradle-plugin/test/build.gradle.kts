@@ -18,11 +18,10 @@ buildscript {
   val dependencyVersions: Map<String, String> by extra
   repositories {
     mavenLocal()
-    gradleScriptKotlin()
     maven { setUrl("http://dl.bintray.com/vermeulen-mp/gradle-plugins") }
   }
   dependencies {
-    classpath(kotlin("gradle-plugin", dependencyVersions["kotlin"]))
+    classpath(kotlin("gradle-plugin"))
     classpath("io.squark.yggdrasil:yggdrasil-gradle-plugin:${version}")
     classpath("com.wiredforcode:gradle-spawn-plugin:${dependencyVersions["gradle-spawn-plugin"]}")
     classpath("org.junit.platform:junit-platform-gradle-plugin:${dependencyVersions["junit-platform-gradle-plugin"]}")
@@ -39,8 +38,8 @@ apply {
 }
 
 repositories {
-  gradleScriptKotlin()
   mavenLocal()
+  jcenter()
 }
 
 tasks {
@@ -54,17 +53,17 @@ tasks {
     ready = "Yggdrasil initiated"
   }
   afterEvaluate {
+    val killTask by creating(KillProcessTask::class)
     "junitPlatformTest"(JavaExec::class) {
       systemProperties.put("io.squark.yggdrasil.port", "$port")
       dependsOn(startJvm)
-      val killTask by creating(KillProcessTask::class)
       finalizedBy(killTask)
     }
   }
 }
 
 dependencies {
-  compile(kotlin("stdlib", dependencyVersions["kotlin"]))
+  compile(kotlin("stdlib"))
   compileOnly("javax.enterprise", "cdi-api", dependencyVersions["cdi-api"])
   compileOnly("javax.ws.rs", "javax.ws.rs-api", dependencyVersions["rs-api"])
   compileOnly("javax.json", "javax.json-api", dependencyVersions["javax.json"])

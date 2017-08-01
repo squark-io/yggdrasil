@@ -10,7 +10,7 @@ allprojects {
     "jackson-datatype-jsr353" to "2.8.7",
     "log4j" to "2.8.1",
     "gradle-bintray-plugin" to "1.7.3",
-    "dokka-gradle-plugin" to "0.9.13",
+    "dokka-gradle-plugin" to "0.9.15",
     "commons-io" to "2.5",
     "maven" to "3.5.0",
     "maven-plugin-annotations" to "3.5",

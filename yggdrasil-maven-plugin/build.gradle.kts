@@ -143,7 +143,7 @@ tasks {
     outputs.files("$projectDir/test/build/test-results")
     setBuildFile("test/build.gradle.kts")
     startParameter.projectProperties["version"] = version as String
-    tasks = listOf("execMaven", "test")
+    tasks = listOf("clean", "execMaven", "test")
     dependsOn("install", itPrepare)
   }
   "test"(Test::class) {
