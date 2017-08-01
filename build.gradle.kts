@@ -22,7 +22,6 @@ allprojects {
   version = "0.2.0"
 
   repositories {
-    gradleScriptKotlin()
     jcenter()
     mavenLocal()
     maven({
@@ -105,12 +104,12 @@ configure(subprojects) {
       val dokkaTask by creating(DokkaTask::class) {
         outputFormat = "javadoc"
         outputDirectory = "$buildDir/javadoc"
-//        linkMapping(closureOf<LinkMapping> {
-//          dir = "src/main/kotlin"
-//          url = "https://github.com/squark-io/yggdrasil"
-//          suffix = "#L"
-//        })
-
+        val linkMapping = LinkMapping().apply {
+          dir = "src/main/kotlin"
+          url = "https://github.com/squark-io/yggdrasil"
+          suffix = "#L"
+        }
+        linkMappings.add(linkMapping)
       }
       val javadocsJar by creating(Jar::class) {
         classifier = "javadoc"

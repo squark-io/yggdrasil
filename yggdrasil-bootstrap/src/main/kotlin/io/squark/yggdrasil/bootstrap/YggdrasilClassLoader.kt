@@ -1,14 +1,9 @@
 package io.squark.yggdrasil.bootstrap
 
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.Closeable
 import java.io.File
 import java.io.FileNotFoundException
-import java.io.InputStream
 import java.net.URL
-import java.net.URLConnection
-import java.net.URLStreamHandler
 import java.nio.file.Paths
 import java.util.Collections
 import java.util.Enumeration
@@ -94,7 +89,8 @@ class YggdrasilClassLoader(val delegate: ClassLoader, urls: Array<URL>) : ClassL
   }
 
   private fun addEntry(jarFile: JarFile, entry: JarEntry, original: File) {
-    val url = URL("jar", "", -1, "${original.toURI()}!/${entry.name}", NestedJarStreamHandler())
+    val url = URL("jar", "", -1, "${original.toURI()}!/${entry.name}",
+      NestedJarStreamHandler())
     putResource(entry.name, url)
     if (entry.name.endsWith(".class")) {
       val entryInputStream = jarFile.getInputStream(entry)
@@ -111,7 +107,8 @@ class YggdrasilClassLoader(val delegate: ClassLoader, urls: Array<URL>) : ClassL
     var subEntry: JarEntry? = jarInputStream.nextJarEntry
     val buffer = ByteArray(2048)
     while (subEntry != null) {
-      val url = URL("jar", "", -1, "${original.toURI()}!/${entry.name}!/${subEntry.name}", NestedJarStreamHandler())
+      val url = URL("jar", "", -1, "${original.toURI()}!/${entry.name}!/${subEntry.name}",
+        NestedJarStreamHandler())
       putResource(subEntry.name, url)
       if (subEntry.name.endsWith(".class")) {
         val outputStream = ByteArrayOutputStream()
@@ -156,71 +153,3 @@ class YggdrasilClassLoader(val delegate: ClassLoader, urls: Array<URL>) : ClassL
   }
 }
 
-class NestedJarStreamHandler : URLStreamHandler() {
-  override fun openConnection(url: URL): URLConnection {
-    val connection = NestedJarURLConnection(url)
-    connection.connect()
-    return connection
-  }
-}
-
-class NestedJarURLConnection(url: URL) : URLConnection(url), Closeable {
-
-  private var _inputStream: InputStream? = null
-
-  override fun close() {
-    _inputStream ?: _inputStream!!.close()
-  }
-
-  override fun connect() {
-    if (url.protocol != "jar") {
-      throw NotImplementedError("Protocol ${url.protocol} not supported")
-    }
-    val parts = url.path.split("!/")
-    if (parts.size < 2 || parts.size > 3) {
-      throw IllegalArgumentException(
-        "URL should have jar part followed by entry and optional subentry (jar://path/to/jar.jar!/entry/in/jar!/sub/entry). Was \"${url.path}\"")
-    }
-    val jar = parts[0]
-    val entry = parts[1]
-    val jarFile = JarFile(File(URL(jar).file))
-    val jarEntry = jarFile.getJarEntry(entry)
-    if (parts.size == 3) {
-      val subEntryName = parts[2]
-      if (!jarEntry.name.endsWith(".jar")) {
-        throw IllegalArgumentException("Only JAR entries can hold subEntries. Was ${jarEntry.name}")
-      }
-      val jarInputStream = JarInputStream(jarFile.getInputStream(jarEntry))
-      var subEntry: JarEntry? = jarInputStream.nextJarEntry
-      var bytes: ByteArray? = null
-      while (subEntry != null) {
-        if (subEntryName == subEntry.name) {
-          val buffer = ByteArray(2048)
-          val outputStream = ByteArrayOutputStream()
-          var len = jarInputStream.read(buffer)
-          while (len > 0) {
-            outputStream.write(buffer, 0, len)
-            len = jarInputStream.read(buffer)
-          }
-          bytes = outputStream.toByteArray()
-          outputStream.close()
-          break
-        }
-        subEntry = jarInputStream.nextJarEntry
-        continue
-      }
-      if (bytes == null) {
-        throw FileNotFoundException("${url}")
-      }
-      _inputStream = ByteArrayInputStream(bytes)
-      jarInputStream.close()
-      jarFile.close()
-    } else {
-      _inputStream = jarFile.getInputStream(jarEntry)
-    }
-  }
-
-  override fun getInputStream(): InputStream? {
-    return _inputStream
-  }
-}
