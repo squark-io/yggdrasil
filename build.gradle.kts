@@ -10,7 +10,6 @@ import org.gradle.kotlin.dsl.closureOf
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.get
-import org.gradle.kotlin.dsl.gradleScriptKotlin
 import org.gradle.kotlin.dsl.java
 import org.gradle.kotlin.dsl.repositories
 import org.jetbrains.dokka.gradle.LinkMapping
