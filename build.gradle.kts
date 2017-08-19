@@ -20,7 +20,7 @@ val dependencyVersions: Map<String, String> by extra
 
 allprojects {
   group = "io.squark.yggdrasil"
-  version = "0.2.1"
+  version = "0.2.2-SNAPSHOT"
 
   repositories {
     jcenter()
@@ -104,7 +104,8 @@ configure(subprojects) {
           }
           asNode().apply {
             appendNode("name", project.name)
-            appendNode("description", subproject.description ?: throw GradleException("Project $subproject has not set required description"))
+            appendNode("description",
+              subproject.description ?: throw GradleException("Project $subproject has not set required description"))
             appendNode("url", "http://yggdrasil.squark.io")
             appendNode("inceptionYear", "2016")
             appendNode("distributionManagement").apply {

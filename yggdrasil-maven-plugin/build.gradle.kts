@@ -148,7 +148,8 @@ tasks {
     setBuildFile("test/build.gradle.kts")
     startParameter.projectProperties["version"] = version as String
     tasks = listOf("clean", "execMaven", "test")
-    dependsOn("publishToMavenLocal", itPrepare)
+    dependsOn("publishToMavenLocal", itPrepare, ":yggdrasil-core:publishToMavenLocal",
+      ":yggdrasil-bootstrap:publishToMavenLocal")
   }
   "test"(Test::class) {
     isScanForTestClasses = false
