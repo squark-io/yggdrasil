@@ -7,9 +7,10 @@ buildscript {
   }
 }
 
+description = "Bootstrapper for Yggdrasil projects"
+
 plugins {
   kotlin("jvm")
-  maven
 }
 
 dependencies {

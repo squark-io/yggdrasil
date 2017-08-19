@@ -1,14 +1,11 @@
-import org.gradle.api.plugins.MavenPluginConvention
+import org.gradle.api.publish.maven.internal.publication.DefaultMavenPublication
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.GradleBuild
 import org.gradle.kotlin.dsl.compile
-import org.gradle.kotlin.dsl.compileOnly
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.gradleScriptKotlin
 import org.gradle.kotlin.dsl.java
-import org.gradle.kotlin.dsl.kotlinModule
 import org.gradle.kotlin.dsl.project
 import org.gradle.kotlin.dsl.repositories
 import java.io.File
@@ -26,10 +23,10 @@ buildscript {
   }
 }
 
+description = "Yggdrasil Maven Plugin"
+
 plugins {
   kotlin("jvm")
-  maven
-  java
 }
 
 repositories {
@@ -37,11 +34,6 @@ repositories {
 }
 
 tasks {
-  val itClean by creating(GradleBuild::class) {
-    setBuildFile("test/build.gradle.kts")
-    tasks = listOf("clean")
-  }
-  "clean" { dependsOn(itClean) }
 
   val coreConfig = configurations.maybeCreate("yggdrasil-core")
   val bootstrapConfig = configurations.maybeCreate("yggdrasil-bootstrap")
@@ -67,51 +59,62 @@ tasks {
     from(project.files(bootstrapConfig))
     into(File(resourcesDir, "META-INF/yggdrasil-bootstrap"))
   }
-  val assembleTask = tasks.findByName("assemble")
   val pomTask by creating {
     inputs.files()
-    doLast {
-      configure<MavenPluginConvention> {
-        pom().apply {
-          packaging = "maven-plugin"
-          this.withXml {
-            asNode().appendNode("build").apply {
-              appendNode("resources").appendNode("resource").appendNode("directory", "$resourcesDir")
-              appendNode("plugins").appendNode("plugin").apply {
-                this.appendNode("groupId", "org.apache.maven.plugins")
-                this.appendNode("artifactId", "maven-plugin-plugin")
-                this.appendNode("version", dependencyVersions["maven-plugin-plugin"])
-                this.appendNode("configuration").apply {
-                  this.appendNode("goalPrefix", "yggdrasil")
-                  this.appendNode("skipErrorNoDescriptorsFound", "true")
-                }
-                this.appendNode("executions").apply {
-                  this.appendNode("execution").apply {
-                    this.appendNode("id", "descriptor")
-                    this.appendNode("goals").appendNode("goal", "descriptor")
+    configure<PublishingExtension> {
+      publications {
+        (findByName("MavenPublication") as DefaultMavenPublication).apply {
+          pom {
+            packaging = "maven-plugin"
+            withXml {
+              asNode().appendNode("build").apply {
+                appendNode("resources").appendNode("resource").appendNode("directory",
+                  "${resourcesDir.relativeTo(buildDir)}")
+                appendNode("plugins").appendNode("plugin").apply {
+                  this.appendNode("groupId", "org.apache.maven.plugins")
+                  this.appendNode("artifactId", "maven-plugin-plugin")
+                  this.appendNode("version", dependencyVersions["maven-plugin-plugin"])
+                  this.appendNode("configuration").apply {
+                    this.appendNode("goalPrefix", "yggdrasil")
+                    this.appendNode("skipErrorNoDescriptorsFound", "true")
                   }
-                  this.appendNode("execution").apply {
-                    this.appendNode("id", "help")
-                    this.appendNode("goals").appendNode("goal", "helpmojo")
+                  this.appendNode("executions").apply {
+                    this.appendNode("execution").apply {
+                      this.appendNode("id", "descriptor")
+                      this.appendNode("goals").appendNode("goal", "descriptor")
+                    }
+                    this.appendNode("execution").apply {
+                      this.appendNode("id", "help")
+                      this.appendNode("goals").appendNode("goal", "helpmojo")
+                    }
                   }
                 }
               }
             }
           }
-        }.writeTo("$buildDir/pom.xml")
+          doLast {
+            val pomFile = asNormalisedPublication().pomFile
+            copy {
+              from(pomFile)
+              into(buildDir)
+              rename { "pom.xml" }
+            }
+          }
+        }
       }
     }
-    inputs.files(copyCore.outputs.files, copyBootstrap.outputs.files, assembleTask.outputs.files)
+    inputs.files(copyCore.outputs.files, copyBootstrap.outputs.files)
     outputs.files("$buildDir/pom.xml")
     outputs.upToDateWhen { File("$buildDir/pom.xml").exists() }
+    dependsOn("generatePomFileForMavenPublicationPublication")
   }
   val mavenPackage by creating(Exec::class) {
     workingDir("$buildDir")
     commandLine("mvn", "-B", "-U", "-e", "package")
-    inputs.files(copyCore.outputs.files, copyBootstrap.outputs.files, assembleTask.outputs.files)
+    inputs.files(copyCore.outputs.files, copyBootstrap.outputs.files)
     outputs.files("$buildDir/target/${project.name}-${project.version}.jar")
     outputs.upToDateWhen { File("$buildDir/target/${project.name}-${project.version}.jar").exists() }
-    dependsOn(copyCore, copyBootstrap, pomTask, assembleTask)
+    dependsOn(copyCore, copyBootstrap, pomTask)
   }
   val copyLib by creating(Copy::class) {
     from(File(buildDir, "target")) {
@@ -123,7 +126,7 @@ tasks {
     into(File(buildDir, "libs"))
     dependsOn(mavenPackage)
   }
-  "install" {
+  "publishToMavenLocal" {
     dependsOn(copyLib)
     outputs.files("$projectDir/test/build/test-results")
   }
@@ -139,12 +142,13 @@ tasks {
     }
   }
   val it by creating(GradleBuild::class) {
-    inputs.files("$buildDir/libs/${project.name}-${project.version}.jar", "$buildDir/libs/pom.xml", "$projectDir/test/src")
+    inputs.files("$buildDir/libs/${project.name}-${project.version}.jar", "$buildDir/libs/pom.xml",
+      "$projectDir/test/src")
     outputs.files("$projectDir/test/build/test-results")
     setBuildFile("test/build.gradle.kts")
     startParameter.projectProperties["version"] = version as String
     tasks = listOf("clean", "execMaven", "test")
-    dependsOn("install", itPrepare)
+    dependsOn("publishToMavenLocal", itPrepare)
   }
   "test"(Test::class) {
     isScanForTestClasses = false
@@ -161,6 +165,6 @@ dependencies {
   compile("org.apache.maven:maven-plugin-api:${dependencyVersions["maven"]}")
   compile("org.apache.maven.plugin-tools:maven-plugin-annotations:${dependencyVersions["maven-plugin-annotations"]}")
 
-  compileOnly(project(":yggdrasil-core"))
-  compileOnly(project(":yggdrasil-bootstrap"))
+  provided(project(":yggdrasil-core"))
+  provided(project(":yggdrasil-bootstrap"))
 }

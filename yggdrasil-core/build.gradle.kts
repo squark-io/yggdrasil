@@ -1,24 +1,23 @@
 import org.gradle.kotlin.dsl.compile
-import org.gradle.kotlin.dsl.compileOnly
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.kotlinModule
 import org.gradle.kotlin.dsl.project
 
 val dependencyVersions: Map<String, String> by extra
 
 buildscript {
   dependencies {
-    classpath(kotlinModule("gradle-plugin"))
+    classpath(kotlin("gradle-plugin"))
   }
 }
 
+description = "Yggdrasil core"
+
 plugins {
   kotlin("jvm")
-  maven
 }
 
 dependencies {
-  compile(kotlinModule("stdlib", dependencyVersions["kotlin"]))
+  compile(kotlin("stdlib"))
   compile("org.jboss.weld.se", "weld-se-core", dependencyVersions["weld"])
   compile("org.jboss.weld.servlet", "weld-servlet-core", dependencyVersions["weld"])
   compile("javax.enterprise", "cdi-api", dependencyVersions["cdi-api"])
@@ -35,5 +34,5 @@ dependencies {
   compile("com.fasterxml.jackson.datatype", "jackson-datatype-jsr353", dependencyVersions["jackson-datatype-jsr353"])
   compile("org.apache.logging.log4j", "log4j-core", dependencyVersions["log4j"])
   compile("org.apache.logging.log4j", "log4j-web", dependencyVersions["log4j"])
-  compileOnly(project(":yggdrasil-bootstrap"))
+  provided(project(":yggdrasil-bootstrap"))
 }

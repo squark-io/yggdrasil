@@ -1,8 +1,6 @@
-import org.apache.maven.artifact.ant.InstallTask
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.GradleBuild
 import org.gradle.kotlin.dsl.compile
-import org.gradle.kotlin.dsl.compileOnly
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.java
 import org.gradle.kotlin.dsl.project
@@ -18,9 +16,10 @@ buildscript {
   }
 }
 
+description = "Yggdrasil Gradle Plugin"
+
 plugins {
   `kotlin-dsl`
-  maven
 }
 
 tasks {
@@ -61,7 +60,7 @@ tasks {
     }
     dependsOn(jar)
   }
-  val install = "install" (Upload::class) {
+  val publishToMavenLocal = "publishToMavenLocal" {
     outputs.files("$projectDir/test/build/test-results")
   }
   val it by creating(GradleBuild::class) {
@@ -70,7 +69,7 @@ tasks {
     setBuildFile("test/build.gradle.kts")
     startParameter.projectProperties["version"] = version as String
     tasks = listOf("clean", "yggdrasil", "test")
-    dependsOn(install, itPrepare)
+    dependsOn(publishToMavenLocal, itPrepare)
   }
   "test"(Test::class) {
     isScanForTestClasses = false
@@ -82,6 +81,6 @@ dependencies {
   compile(gradleApi())
   compile(kotlin("stdlib"))
   compile("commons-io:commons-io:${dependencyVersions["commons-io"]}")
-  compileOnly(project(":yggdrasil-core"))
-  compileOnly(project(":yggdrasil-bootstrap"))
+  provided(project(":yggdrasil-core"))
+  provided(project(":yggdrasil-bootstrap"))
 }

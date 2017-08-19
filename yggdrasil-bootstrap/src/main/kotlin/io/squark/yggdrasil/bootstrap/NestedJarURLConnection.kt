@@ -12,7 +12,7 @@ import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarInputStream
 
-class NestedJarURLConnection(url: URL) : URLConnection(url), Closeable {
+internal class NestedJarURLConnection(url: URL) : URLConnection(url), Closeable {
 
   private var _inputStream: InputStream? = null
 

@@ -47,6 +47,7 @@
             "implementation",
             "kapt",
             "kaptTest",
+            "provided",
             "runtime",
             "runtimeClasspath",
             "runtimeElements",
@@ -62,6 +63,7 @@
         "extensions": {
             "ext": "org.gradle.api.plugins.ExtraPropertiesExtension",
             "defaultArtifacts": "org.gradle.api.internal.plugins.DefaultArtifactPublicationSet",
+            "publishing": "org.gradle.api.publish.PublishingExtension",
             "bintray": "com.jfrog.bintray.gradle.BintrayExtension",
             "kotlin": "org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension",
             "kapt": "org.jetbrains.kotlin.gradle.plugin.KaptExtension",
@@ -84,6 +86,7 @@
             "implementation",
             "kapt",
             "kaptTest",
+            "provided",
             "runtime",
             "runtimeClasspath",
             "runtimeElements",
@@ -99,6 +102,7 @@
         "extensions": {
             "ext": "org.gradle.api.plugins.ExtraPropertiesExtension",
             "defaultArtifacts": "org.gradle.api.internal.plugins.DefaultArtifactPublicationSet",
+            "publishing": "org.gradle.api.publish.PublishingExtension",
             "bintray": "com.jfrog.bintray.gradle.BintrayExtension",
             "kotlin": "org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension",
             "kapt": "org.jetbrains.kotlin.gradle.plugin.KaptExtension",
@@ -124,6 +128,7 @@
             "kaptTest",
             "kaptYggdrasil-bootstrap",
             "kaptYggdrasil-core",
+            "provided",
             "runtime",
             "runtimeClasspath",
             "runtimeElements",
@@ -155,6 +160,7 @@
         "extensions": {
             "ext": "org.gradle.api.plugins.ExtraPropertiesExtension",
             "defaultArtifacts": "org.gradle.api.internal.plugins.DefaultArtifactPublicationSet",
+            "publishing": "org.gradle.api.publish.PublishingExtension",
             "bintray": "com.jfrog.bintray.gradle.BintrayExtension",
             "kotlin": "org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension",
             "kapt": "org.jetbrains.kotlin.gradle.plugin.KaptExtension",
@@ -179,6 +185,7 @@
             "kaptTest",
             "kaptYggdrasil-bootstrap",
             "kaptYggdrasil-core",
+            "provided",
             "runtime",
             "runtimeClasspath",
             "runtimeElements",
@@ -210,6 +217,7 @@
         "extensions": {
             "ext": "org.gradle.api.plugins.ExtraPropertiesExtension",
             "defaultArtifacts": "org.gradle.api.internal.plugins.DefaultArtifactPublicationSet",
+            "publishing": "org.gradle.api.publish.PublishingExtension",
             "bintray": "com.jfrog.bintray.gradle.BintrayExtension",
             "kotlin": "org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension",
             "kapt": "org.jetbrains.kotlin.gradle.plugin.KaptExtension",
