@@ -7,7 +7,7 @@ import java.net.URLStreamHandler
 /**
  * Helper class for handling nested jar streams
  */
-class NestedJarStreamHandler : URLStreamHandler() {
+internal class NestedJarStreamHandler : URLStreamHandler() {
   /**
    * @see java.net.URLStreamHandler.openConnection
    */

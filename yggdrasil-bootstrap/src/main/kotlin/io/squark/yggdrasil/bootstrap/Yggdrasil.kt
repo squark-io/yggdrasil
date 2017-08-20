@@ -4,25 +4,39 @@ import java.lang.reflect.InvocationTargetException
 import java.net.URLClassLoader
 
 /**
- * yggdrasil
+ * Main Yggdrasil initiation class. Always use this, either as Main-Class or through
+ * [initialize] to instantiate an Yggdrasil application
  *
  * Created by Erik Håkansson on 2017-04-08.
  * Copyright 2017
- *
  */
 class Yggdrasil {
 
+  /**
+   * @suppress
+   */
   companion object {
 
-    val yggdrasilInternalClassName = "io.squark.yggdrasil.core.YggdrasilInternal"
+    private const val yggdrasilInternalClassName = "io.squark.yggdrasil.core.YggdrasilInternal"
 
-    @JvmStatic
-    fun main(args: Array<String>) {
+    /**
+     * Standard main method. If manifest contains Delegated-Main-Class, the designated Class will be loaded after
+     * Yggdrasil initialization and args passed to it.
+     *
+     * @param args Array of strings to be passed to a delegated Main-Class
+     */
+    @JvmStatic fun main(args: Array<String>?) {
       initialize(args)
     }
 
-    @JvmStatic
-    fun initialize(args: Array<String>?) {
+    /**
+     * Main initialization method. Use this when initializing Yggdrasil manually.
+     * Method should *not* be used in conjunction with Delegated-Main-Class in Manifest as that may lead to a never ending loop of initializations.
+     * If method is used directly instead of through Main-Class [args] is not used.
+     *
+     * @param args unused
+     */
+    @JvmStatic fun initialize(args: Array<String>?) {
       val parentClassLoader = this::class.java.classLoader as URLClassLoader
       val classLoader = YggdrasilClassLoader(parentClassLoader, parentClassLoader.urLs)
       Thread.currentThread().contextClassLoader = classLoader

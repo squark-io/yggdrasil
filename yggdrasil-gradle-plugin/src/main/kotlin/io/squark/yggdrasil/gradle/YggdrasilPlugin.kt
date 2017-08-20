@@ -30,7 +30,10 @@ import java.util.jar.Manifest as JdkManifest
 
 
 /**
- * yggdrasil
+ * Yggdrasil Gradle Plugin
+ *
+ * Plugin for creating Yggdrasil applications conforming to the microprofile.io standard
+ * @see <a href="http://microprofile.io">microprofile.io</a>
  *
  * Created by Erik Håkansson on 2017-03-25.
  * Copyright 2017
@@ -38,6 +41,11 @@ import java.util.jar.Manifest as JdkManifest
  */
 class YggdrasilPlugin : Plugin<Project> {
 
+  /**
+   * Performs packaging of the Yggdrasil jar
+   *
+   * @param project The target object
+   */
   override fun apply(project: Project) {
     project.plugins.apply(JavaPlugin::class.java)
 
@@ -193,7 +201,7 @@ class YggdrasilPlugin : Plugin<Project> {
     }
   }
 
-  private companion object {
+  internal companion object {
     private const val DELEGATED_MAIN_CLASS = "Delegated-Main-Class"
     private const val YGGDRASIL_MAIN_CLASS = "io.squark.yggdrasil.bootstrap.Yggdrasil"
     private const val YGGDRASIL_GROUP = "build"

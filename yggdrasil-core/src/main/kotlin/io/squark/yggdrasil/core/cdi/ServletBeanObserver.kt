@@ -24,31 +24,49 @@ import javax.servlet.annotation.WebListener
 import javax.servlet.annotation.WebServlet
 import kotlin.reflect.KClass
 
+/**
+ * CDI Extension to observe for Servlet beans.
+ *
+ * Created by Erik Håkansson on 2017-04-05.
+ * Copyright 2017
+ */
 @ApplicationScoped class ServletBeanObserver : Extension {
 
   //Blacklisted, most likely due to other initialization.
-  val blackListedServlets = setOf<Class<*>>(HttpServlet30Dispatcher::class.java)
+  private val blackListedServlets = setOf<Class<*>>(HttpServlet30Dispatcher::class.java)
 
-  val servlets: MutableList<ServletInfo> = mutableListOf()
-  val filters: MutableList<Triple<FilterInfo, List<FilterMappingInfo>, Array<DispatcherType>>> = mutableListOf()
-  val listeners: MutableList<ListenerInfo> = mutableListOf()
-  val servletContainerInitializers: MutableList<ServletContainerInitializerInfo> = mutableListOf()
+  internal val servlets: MutableList<ServletInfo> = mutableListOf()
+  internal val filters: MutableList<Triple<FilterInfo, List<FilterMappingInfo>, Array<DispatcherType>>> = mutableListOf()
+  internal val listeners: MutableList<ListenerInfo> = mutableListOf()
+  internal val servletContainerInitializers: MutableList<ServletContainerInitializerInfo> = mutableListOf()
 
+  /**
+   * Method that observes for Servlet beans
+   */
   fun observeWebServlets(@WithAnnotations(WebServlet::class) @Observes event: ProcessAnnotatedType<out Servlet>) {
     if (!blackListedServlets.contains(event.annotatedType.javaClass)) {
       servlets += toServletInfo(event.annotatedType)
     }
   }
 
+  /**
+   * Method that observes for Filter beans
+   */
   fun observeWebFilters(@WithAnnotations(WebFilter::class) @Observes event: ProcessAnnotatedType<out Filter>) {
     filters += toFilterInfo(event.annotatedType)
   }
 
+  /**
+   * Method that observes for EventListener beans
+   */
   fun observeWebListeners(@WithAnnotations(
     WebListener::class) @Observes event: ProcessAnnotatedType<out EventListener>) {
     listeners += toListenerInfo(event.annotatedType)
   }
 
+  /**
+   * Method that observes for ServletContainerInitializer beans
+   */
   fun observerServletContainerInitializers(@Observes event: ProcessAnnotatedType<out ServletContainerInitializer>) {
     if (!event.annotatedType.javaClass.isInterface && !Modifier.isAbstract(event.annotatedType.javaClass.modifiers))
       servletContainerInitializers += toServletContainerInitializerInfo(event.annotatedType)
@@ -92,9 +110,9 @@ import kotlin.reflect.KClass
     return Triple(filterInfo, filterMappingInfos, webFilterAnnotation.dispatcherTypes)
   }
 
-  enum class FilterMappingType {
+  internal enum class FilterMappingType {
     URL, Servlet
   }
 
-  data class FilterMappingInfo(val type: FilterMappingType, val mapping: String)
+  internal data class FilterMappingInfo(val type: FilterMappingType, val mapping: String)
 }

@@ -33,14 +33,14 @@ import javax.servlet.annotation.HandlesTypes
 import org.jboss.weld.environment.servlet.Listener as WeldListener
 
 /**
- * yggdrasil
- * <p>
+ * Internal business class for Yggdrasil
+ *
  * Created by Erik Håkansson on 2017-03-24.
  * Copyright 2017
  */
-class YggdrasilInternal {
+internal class YggdrasilInternal {
 
-  companion object {
+  private companion object {
     private val DELEGATED_MAIN_CLASS = "Delegated-Main-Class"
     private val YGGDRASIL_PORT_PROPERTY = "io.squark.yggdrasil.port"
   }
@@ -116,13 +116,7 @@ class YggdrasilInternal {
 
   private fun setupLogging() {
     val suffixes = listOf("properties", "yaml", "yml", "json", "json")
-    var foundConfig = false
-    for (suffix in suffixes) {
-      if (Thread.currentThread().contextClassLoader.getResource("log4j2.${suffix}") != null) {
-        foundConfig = true
-        break
-      }
-    }
+    val foundConfig = suffixes.any { Thread.currentThread().contextClassLoader.getResource("log4j2.${it}") != null }
     if (!foundConfig) {
       Configurator.initialize(DefaultConfiguration())
       Configurator.setRootLevel(Level.INFO)
@@ -153,14 +147,14 @@ class YggdrasilInternal {
     }
     deployment.addListeners(servletBeanObserver.listeners)
     deployment.addServlets(servletBeanObserver.servlets)
-    for (triple in servletBeanObserver.filters) {
-      deployment.addFilter(triple.first)
-      for (dispatcherType in triple.third) {
-        for ((type, mapping) in triple.second) {
+    for ((first, second, third) in servletBeanObserver.filters) {
+      deployment.addFilter(first)
+      for (dispatcherType in third) {
+        for ((type, mapping) in second) {
           when (type) {
-            ServletBeanObserver.FilterMappingType.URL -> deployment.addFilterUrlMapping(triple.first.name, mapping,
+            ServletBeanObserver.FilterMappingType.URL -> deployment.addFilterUrlMapping(first.name, mapping,
               dispatcherType)
-            ServletBeanObserver.FilterMappingType.Servlet -> deployment.addFilterServletNameMapping(triple.first.name,
+            ServletBeanObserver.FilterMappingType.Servlet -> deployment.addFilterServletNameMapping(first.name,
               mapping, dispatcherType)
           }
         }
@@ -191,9 +185,7 @@ class YggdrasilInternal {
       val types: MutableList<Class<out Any>> = mutableListOf()
       for (annotation in initializer.javaClass.annotations) {
         if (annotation is HandlesTypes) {
-          for (`class` in annotation.value) {
-            types.add(`class`.java)
-          }
+          annotation.value.mapTo(types) { it.java }
           break
         }
       }
@@ -227,7 +219,6 @@ class YggdrasilInternal {
     server.start()
   }
 
-  private fun getProperty(name: String, default: String? = null): String? = System.getProperty(name) ?: default
   private fun getProperty(name: String, default: Int): Int = System.getProperty(name)?.toInt() ?: default
 
 }

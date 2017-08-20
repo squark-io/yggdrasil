@@ -3,6 +3,7 @@ package io.squark.yggdrasil.bootstrap
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
+import java.io.IOException
 import java.net.URL
 import java.nio.file.Paths
 import java.util.Collections
@@ -12,22 +13,43 @@ import java.util.jar.JarFile
 import java.util.jar.JarInputStream
 
 /**
- * yggdrasil
+ * ClassLoader for Yggdrasil applications
  *
  * Created by Erik Håkansson on 2017-04-07.
  * Copyright 2017
  *
+ * @property delegate {@link java.lang.ClassLoader <tt>ClassLoader</tt>} to delegate. Must not be null.
+ * @param urls Array of {@link java.net.URL <tt>URL</tt>}s to add to ClassLoader
+ * @suppress
  */
-class YggdrasilClassLoader(val delegate: ClassLoader, urls: Array<URL>) : ClassLoader(null) {
+class YggdrasilClassLoader(private val delegate: ClassLoader, urls: Array<URL>) : ClassLoader(null) {
 
-  val resources = mutableMapOf<String, MutableList<URL>>()
-  val classBytes = mutableMapOf<String, ByteArray>()
-  val duplicates = mutableMapOf<String, MutableList<URL>>()
+  private val resources = mutableMapOf<String, MutableList<URL>>()
+  private val classBytes = mutableMapOf<String, ByteArray>()
+  internal val duplicates = mutableMapOf<String, MutableList<URL>>()
 
   init {
     urls.forEach { addURL(it) }
   }
 
+  /**
+   * Finds the class with the specified <a href="#name">binary name</a>.
+   * This method should be overridden by class loader implementations that
+   * follow the delegation model for loading classes, and will be invoked by
+   * the [loadClass] method after checking the
+   * parent class loader for the requested class.  The default implementation
+   * throws a <tt>ClassNotFoundException</tt>.
+   *
+   * @param  name
+   *         The <a href="#name">binary name</a> of the class
+   *
+   * @return  The resulting <tt>Class</tt> object
+   *
+   * @throws  ClassNotFoundException
+   *          If the class could not be found
+   *
+   * @since  1.2
+   */
   override fun findClass(name: String): Class<*> {
     if (name == javaClass.name) {
       return delegate.loadClass(name)
@@ -37,22 +59,51 @@ class YggdrasilClassLoader(val delegate: ClassLoader, urls: Array<URL>) : ClassL
     return defineClass(name, bytes, 0, bytes.size, null)
   }
 
+  /**
+   * Returns an enumeration of {@link java.net.URL <tt>URL</tt>} objects
+   * representing all the resources with the given name. Class loader
+   * implementations should override this method to specify where to load
+   * resources from.
+   *
+   * @param  name
+   *         The resource name
+   *
+   * @return  An enumeration of {@link java.net.URL <tt>URL</tt>} objects for
+   *          the resources
+   *
+   * @throws  IOException
+   *          If I/O errors occur
+   *
+   * @since  1.2
+   */
   override fun findResources(name: String): Enumeration<URL> {
     val list = resources[name] ?: emptyList<URL>()
     return Collections.enumeration(list)
   }
 
+  /**
+   * Finds the resource with the given name. Class loader implementations
+   * should override this method to specify where to find resources.
+   *
+   * @param  name
+   *         The resource name
+   *
+   * @return  A <tt>URL</tt> object for reading the resource, or
+   *          <tt>null</tt> if the resource could not be found
+   *
+   * @since  1.2
+   */
   override fun findResource(name: String): URL? {
     val list = resources[name] ?: emptyList<URL>()
     return list.firstOrNull()
   }
 
   private fun duplicate(name: String, url: URL) {
-    duplicates.computeIfAbsent(name, { mutableListOf<URL>() }).add(url)
+    duplicates.computeIfAbsent(name, { mutableListOf() }).add(url)
   }
 
   private fun putResource(name: String, url: URL) {
-    resources.computeIfAbsent(name, { mutableListOf<URL>() }).add(url)
+    resources.computeIfAbsent(name, { mutableListOf() }).add(url)
   }
 
   private fun addURL(url: URL) {

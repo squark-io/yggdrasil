@@ -3,6 +3,7 @@ package io.squark.yggdrasil.maven
 import org.apache.commons.io.IOUtils
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugin.MojoExecutionException
+import org.apache.maven.plugin.MojoFailureException
 import org.apache.maven.plugins.annotations.Component
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
@@ -33,7 +34,10 @@ private const val YGGDRASIL_MAIN_CLASS = "io.squark.yggdrasil.bootstrap.Yggdrasi
 private const val DELEGATED_MAIN_CLASS = "Delegated-Main-Class"
 
 /**
- * yggdrasil
+ * Yggdrasil Maven Plugin
+ *
+ * Plugin for creating Yggdrasil applications conforming to the microprofile.io standard
+ * @see <a href="http://microprofile.io">microprofile.io</a>
  *
  * Created by Erik Håkansson on 2017-03-25.
  * Copyright 2017
@@ -54,10 +58,17 @@ class YggdrasilMojo : AbstractMojo() {
 
   @Component
   private lateinit var mavenProjectHelper: MavenProjectHelper
-
   private var classesDir: File? = null
   private val addedResources = mutableListOf<String>()
 
+  /**
+   * Performs packaging of the Yggdrasil jar
+   *
+   * @throws MojoExecutionException if an unexpected problem occurs.
+   * Throwing this exception causes a "BUILD ERROR" message to be displayed.
+   * @throws MojoFailureException if an expected problem (such as a compilation failure) occurs.
+   * Throwing this exception causes a "BUILD FAILURE" message to be displayed.
+   */
   override fun execute() {
     classesDir = File(project.build.outputDirectory)
     val manifest = generateAndReturnManifest()

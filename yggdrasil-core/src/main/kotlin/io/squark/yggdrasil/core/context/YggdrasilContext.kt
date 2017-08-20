@@ -16,18 +16,17 @@ import javax.naming.OperationNotSupportedException
 
 
 /**
- * yggdrasil
- *
+ * Sort of implementation of JNDI context
  *
  * Created by Erik Håkansson on 2017-04-01.
  * Copyright 2017
  */
-open class YggdrasilContext(val name: String, val parent: Context? = null) : Context {
+internal class YggdrasilContext(val name: String, val parent: Context? = null) : Context {
 
-  val bindings: MutableMap<String, Binding> by lazy {
+  private val bindings: MutableMap<String, Binding> by lazy {
     mutableMapOf<String, Binding>()
   }
-  val subContexts: MutableMap<String, YggdrasilContext> by lazy {
+  private val subContexts: MutableMap<String, YggdrasilContext> by lazy {
     mutableMapOf<String, YggdrasilContext>()
   }
 

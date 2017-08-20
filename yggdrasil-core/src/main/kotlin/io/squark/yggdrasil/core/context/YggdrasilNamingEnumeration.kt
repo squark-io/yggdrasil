@@ -4,13 +4,12 @@ import javax.naming.NamingEnumeration
 import javax.naming.NamingException
 
 /**
- * yggdrasil
- *
+ * Naming enumerator for use with YggdrasilContext in the faux JNDI implementation
  *
  * Created by Erik Håkansson on 2017-04-01.
  * Copyright 2017
  */
-class YggdrasilNamingEnumeration<T> constructor(list: Collection<T>) : NamingEnumeration<T> {
+internal class YggdrasilNamingEnumeration<T> constructor(list: Collection<T>) : NamingEnumeration<T> {
 
   var enumerator: Iterator<T>? = list.iterator()
   var closed = false

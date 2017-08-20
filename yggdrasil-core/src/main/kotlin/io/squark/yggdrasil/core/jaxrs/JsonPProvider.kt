@@ -6,19 +6,19 @@ import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider
 import javax.ws.rs.ext.Provider
 
 /**
- * yggdrasil
- *
+ * JsonPProvider for Jackson2
  *
  * Created by Erik Håkansson on 2017-04-02.
  * Copyright 2017
  */
-@Provider
-open class JsonPProvider : ResteasyJackson2Provider {
+@Provider open class JsonPProvider : ResteasyJackson2Provider() {
 
-  open val mapper = ObjectMapper()
+  private val mapper = ObjectMapper()
 
-  constructor() {
+  init {
     mapper.registerModule(JSR353Module())
+    @Suppress("LeakingThis")
     setMapper(mapper)
   }
+
 }

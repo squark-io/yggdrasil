@@ -59,7 +59,7 @@ tasks {
     from(project.files(bootstrapConfig))
     into(File(resourcesDir, "META-INF/yggdrasil-bootstrap"))
   }
-  val pomTask by creating {
+  val generatePom by creating {
     inputs.files()
     configure<PublishingExtension> {
       publications {
@@ -114,7 +114,7 @@ tasks {
     inputs.files(copyCore.outputs.files, copyBootstrap.outputs.files)
     outputs.files("$buildDir/target/${project.name}-${project.version}.jar")
     outputs.upToDateWhen { File("$buildDir/target/${project.name}-${project.version}.jar").exists() }
-    dependsOn(copyCore, copyBootstrap, pomTask)
+    dependsOn(copyCore, copyBootstrap, generatePom)
   }
   val copyLib by creating(Copy::class) {
     from(File(buildDir, "target")) {
