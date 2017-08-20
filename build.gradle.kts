@@ -20,7 +20,7 @@ val dependencyVersions: Map<String, String> by extra
 
 allprojects {
   group = "io.squark.yggdrasil"
-  version = "0.2.2-SNAPSHOT"
+  version = "0.2.2"
 
   repositories {
     jcenter()
@@ -138,6 +138,11 @@ configure(subprojects) {
                 appendNode("name", "Erik Håkansson")
                 appendNode("email", "erik@squark.io")
               }
+            }
+            appendNode("scm").apply {
+              appendNode("url", "https://github.com/squark-io/yggdrasil")
+              appendNode("connection", "scm:git:git@github.com:squark-io/yggdrasil.git")
+              appendNode("tag", "HEAD")
             }
           }
         }
