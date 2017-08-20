@@ -118,17 +118,13 @@ tasks {
   }
   val copyLib by creating(Copy::class) {
     from(File(buildDir, "target")) {
-      include("*.jar")
+      include("${project.name}-${project.version}.jar")
     }
     from(buildDir) {
       include("pom.xml")
     }
     into(File(buildDir, "libs"))
     dependsOn(mavenPackage)
-  }
-  "publishToMavenLocal" {
-    dependsOn(copyLib)
-    outputs.files("$projectDir/test/build/test-results")
   }
   val itPrepare by creating {
     val propFile = File("$projectDir/test/gradle.properties")
@@ -155,7 +151,10 @@ tasks {
     isScanForTestClasses = false
     dependsOn(it)
   }
-  "jar" { enabled = false }
+  "jar" {
+    enabled = false
+    dependsOn(copyLib)
+  }
 }
 
 dependencies {
