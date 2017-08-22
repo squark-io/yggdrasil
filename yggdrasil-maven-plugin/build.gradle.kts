@@ -59,6 +59,14 @@ tasks {
     from(project.files(bootstrapConfig))
     into(File(resourcesDir, "META-INF/yggdrasil-bootstrap"))
   }
+  val copyCoreToLocalRepo by creating(Copy::class) {
+    from(project.files(coreConfig.copy().setTransitive(false)))
+    into(File(buildDir, "build-repo/io/squark/yggdrasil/yggdrasil-core/$version"))
+  }
+  val copyBootstrapToLocalRepo by creating(Copy::class) {
+    from(project.files(bootstrapConfig.copy().setTransitive(false)))
+    into(File(buildDir, "build-repo/io/squark/yggdrasil/yggdrasil-bootstrap/$version"))
+  }
   val generatePom by creating {
     inputs.files()
     configure<PublishingExtension> {
@@ -67,27 +75,33 @@ tasks {
           pom {
             packaging = "maven-plugin"
             withXml {
-              asNode().appendNode("build").apply {
-                appendNode("resources").appendNode("resource").appendNode("directory",
-                  "${resourcesDir.relativeTo(buildDir)}")
-                appendNode("plugins").appendNode("plugin").apply {
-                  this.appendNode("groupId", "org.apache.maven.plugins")
-                  this.appendNode("artifactId", "maven-plugin-plugin")
-                  this.appendNode("version", dependencyVersions["maven-plugin-plugin"])
-                  this.appendNode("configuration").apply {
-                    this.appendNode("goalPrefix", "yggdrasil")
-                    this.appendNode("skipErrorNoDescriptorsFound", "true")
-                  }
-                  this.appendNode("executions").apply {
-                    this.appendNode("execution").apply {
-                      this.appendNode("id", "descriptor")
-                      this.appendNode("goals").appendNode("goal", "descriptor")
+              asNode().apply{
+                appendNode("build").apply {
+                  appendNode("resources").appendNode("resource").appendNode("directory",
+                    "${resourcesDir.relativeTo(buildDir)}")
+                  appendNode("plugins").appendNode("plugin").apply {
+                    this.appendNode("groupId", "org.apache.maven.plugins")
+                    this.appendNode("artifactId", "maven-plugin-plugin")
+                    this.appendNode("version", dependencyVersions["maven-plugin-plugin"])
+                    this.appendNode("configuration").apply {
+                      this.appendNode("goalPrefix", "yggdrasil")
+                      this.appendNode("skipErrorNoDescriptorsFound", "true")
                     }
-                    this.appendNode("execution").apply {
-                      this.appendNode("id", "help")
-                      this.appendNode("goals").appendNode("goal", "helpmojo")
+                    this.appendNode("executions").apply {
+                      this.appendNode("execution").apply {
+                        this.appendNode("id", "descriptor")
+                        this.appendNode("goals").appendNode("goal", "descriptor")
+                      }
+                      this.appendNode("execution").apply {
+                        this.appendNode("id", "help")
+                        this.appendNode("goals").appendNode("goal", "helpmojo")
+                      }
                     }
                   }
+                }
+                appendNode("repositories").appendNode("repository").apply {
+                  appendNode("id", "localRepo")
+                  appendNode("url", "file://\${basedir}/build-repo")
                 }
               }
             }
@@ -114,7 +128,7 @@ tasks {
     inputs.files(copyCore.outputs.files, copyBootstrap.outputs.files)
     outputs.files("$buildDir/target/${project.name}-${project.version}.jar")
     outputs.upToDateWhen { File("$buildDir/target/${project.name}-${project.version}.jar").exists() }
-    dependsOn(copyCore, copyBootstrap, generatePom)
+    dependsOn(copyCore, copyBootstrap, copyCoreToLocalRepo, copyBootstrapToLocalRepo, generatePom)
   }
   val copyLib by creating(Copy::class) {
     from(File(buildDir, "target")) {
