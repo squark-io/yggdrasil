@@ -16,8 +16,8 @@ allprojects {
     "maven-plugin-annotations" to "3.5",
     "maven-plugin-plugin" to "3.5",
     "gradle-spawn-plugin" to "0.6.0",
-    "junit-platform-gradle-plugin" to "1.0.0-M6",
-    "junit-jupiter" to "5.0.0-M6",
+    "junit-platform-gradle-plugin" to "1.0.0",
+    "junit-jupiter" to "5.0.0",
     "rest-assured" to "3.0.2"
   )
 }
