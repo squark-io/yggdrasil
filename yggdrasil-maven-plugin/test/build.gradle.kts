@@ -14,7 +14,9 @@ import java.util.Random
 val dependencyVersions: Map<String, String> by extra
 
 buildscript {
-  applyFrom("../../versions.gradle.kts")
+  project.apply {
+    from("../../versions.gradle.kts")
+  }
   val dependencyVersions: Map<String, String> by extra
   repositories {
     mavenLocal()

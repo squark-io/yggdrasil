@@ -44,12 +44,10 @@ tasks {
   val resourcesDir = java.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME].output.resourcesDir
   val classesDir = File(buildDir, "target/classes")
   classesDir.mkdirs()
-  java {
-    sourceSets {
-      "main" {
-        java.outputDir = classesDir
-      }
-    }
+
+  val copyClasses by creating(Copy::class) {
+    from(java.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME].output.classesDirs)
+    into(classesDir)
   }
   val copyCore by creating(Copy::class) {
     from(project.files(coreConfig))
@@ -128,7 +126,7 @@ tasks {
     inputs.files(copyCore.outputs.files, copyBootstrap.outputs.files)
     outputs.files("$buildDir/target/${project.name}-${project.version}.jar")
     outputs.upToDateWhen { File("$buildDir/target/${project.name}-${project.version}.jar").exists() }
-    dependsOn(copyCore, copyBootstrap, copyCoreToLocalRepo, copyBootstrapToLocalRepo, generatePom)
+    dependsOn(copyClasses, copyCore, copyBootstrap, copyCoreToLocalRepo, copyBootstrapToLocalRepo, generatePom)
   }
   val copyLib by creating(Copy::class) {
     from(File(buildDir, "target")) {

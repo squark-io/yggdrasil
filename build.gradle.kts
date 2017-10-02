@@ -39,7 +39,9 @@ allprojects {
 }
 
 buildscript {
-  applyFrom("versions.gradle.kts")
+  project.apply {
+    from("versions.gradle.kts")
+  }
   val dependencyVersions: Map<String, String> by extra
 
   repositories {
@@ -54,11 +56,7 @@ buildscript {
 apply {
   plugin("com.jfrog.bintray")
   plugin("java")
-}
-
-plugins {
-  base
-  java
+  plugin("base")
 }
 
 dependencies {
@@ -197,7 +195,7 @@ configure(subprojects) {
         dependsOn("javadoc", dokkaTask)
         from((tasks.getByName("javadoc") as Javadoc).destinationDir, dokkaTask.outputDirectory)
       }
-      findByName("bintrayUpload").dependsOn(subprojects.map { it.tasks.getByName("bintrayUpload") })
+      findByName("bintrayUpload")!!.dependsOn(subprojects.map { it.tasks.getByName("bintrayUpload") })
     }
   }
 }

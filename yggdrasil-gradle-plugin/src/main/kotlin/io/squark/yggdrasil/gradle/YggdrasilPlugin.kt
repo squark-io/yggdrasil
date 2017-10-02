@@ -9,6 +9,7 @@ import org.gradle.api.file.FileTree
 import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
 import org.gradle.api.internal.java.JavaLibrary
 import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
@@ -25,6 +26,7 @@ import java.util.jar.Attributes
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarInputStream
+import javax.inject.Inject
 import kotlin.collections.set
 import java.util.jar.Manifest as JdkManifest
 
@@ -38,8 +40,10 @@ import java.util.jar.Manifest as JdkManifest
  * Created by Erik Håkansson on 2017-03-25.
  * Copyright 2017
  *
+ * @property objectFactory Gradle injected ObjectFactory
+ *
  */
-class YggdrasilPlugin : Plugin<Project> {
+class YggdrasilPlugin @Inject constructor(private val objectFactory: ObjectFactory) : Plugin<Project> {
 
   /**
    * Performs packaging of the Yggdrasil jar
@@ -51,13 +55,12 @@ class YggdrasilPlugin : Plugin<Project> {
 
     val javaConvention = project.convention.getPlugin(JavaPluginConvention::class.java)
 
-    val stageDir: File = File(project.buildDir, YGGDRASIL_STAGE_DIR)
+    val stageDir = File(project.buildDir, YGGDRASIL_STAGE_DIR)
     stageDir.mkdirs()
 
-    val mainSourceSet = javaConvention.sourceSets.findByName(SourceSet.MAIN_SOURCE_SET_NAME)
-    val classesDir = mainSourceSet.java.outputDir
+    val mainSourceSet = javaConvention.sourceSets.findByName(SourceSet.MAIN_SOURCE_SET_NAME)!!
+    val classesDirs = mainSourceSet.output.classesDirs
     val resourcesDir = mainSourceSet.output.resourcesDir
-
 
     project.run {
       tasks {
@@ -67,7 +70,7 @@ class YggdrasilPlugin : Plugin<Project> {
           classifier = "yggdrasil"
           dependsOn("classes")
 
-          inputs.files(classesDir, resourcesDir)
+          inputs.files(classesDirs, resourcesDir)
 
           from(stageDir)
           doFirst {
@@ -94,7 +97,7 @@ class YggdrasilPlugin : Plugin<Project> {
             }
             copyJarPath(yggdrasilBootstrapDir, stageDir, true)
 
-            val files = getYggdrasilFiles(classesDir, resourcesDir, project)
+            val files = getYggdrasilFiles(classesDirs, resourcesDir, project)
 
             project.copy {
               from(files)
@@ -129,15 +132,14 @@ class YggdrasilPlugin : Plugin<Project> {
     val yggdrasil = project.tasks.findByName(YGGDRASIL_TASK) as Jar
     val jarArtifact = ArchivePublishArtifact(yggdrasil)
     project.extensions.getByType(DefaultArtifactPublicationSet::class.java).addCandidate(jarArtifact)
-    project.components.add(JavaLibrary(project.configurations, jarArtifact))
+    project.components.add(JavaLibrary(objectFactory, project.configurations, jarArtifact))
 
     project.tasks.getByName(LifecycleBasePlugin.BUILD_TASK_NAME).dependsOn(yggdrasil)
   }
 
-  private fun getYggdrasilFiles(classesDir: File?, resourcesDir: File?, project: Project): FileCollection {
+  private fun getYggdrasilFiles(classesDirs: FileCollection, resourcesDir: File?, project: Project): FileCollection {
     val files = mutableSetOf<FileTree>()
-    if (classesDir != null && classesDir.exists())
-      files.add(project.fileTree(classesDir))
+    files.add(classesDirs.asFileTree)
     if (resourcesDir != null && resourcesDir.exists())
       files.add(project.fileTree(resourcesDir))
 
