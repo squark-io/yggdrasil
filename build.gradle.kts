@@ -21,7 +21,7 @@ val dependencyVersions: Map<String, String> by extra
 
 allprojects {
   group = "io.squark.yggdrasil"
-  version = "0.2.3"
+  version = "0.2.4-SNAPSHOT"
 
   repositories {
     jcenter()
