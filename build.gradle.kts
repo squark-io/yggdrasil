@@ -1,4 +1,5 @@
 import com.jfrog.bintray.gradle.BintrayExtension
+import com.jfrog.bintray.gradle.BintrayUploadTask
 import groovy.util.Node
 import groovy.util.NodeList
 import org.gradle.api.plugins.JavaPlugin
@@ -20,7 +21,7 @@ val dependencyVersions: Map<String, String> by extra
 
 allprojects {
   group = "io.squark.yggdrasil"
-  version = "0.2.3-SNAPSHOT"
+  version = "0.2.3"
 
   repositories {
     jcenter()
@@ -162,6 +163,13 @@ configure(subprojects) {
       vcsUrl = "https://github.com/squark-io/yggdrasil/"
     })
     setPublications("MavenPublication")
+  }
+  tasks.withType<BintrayUploadTask> {
+    doFirst {
+      if (user == null || apiKey == null) {
+        throw GradleException("For bintrayUpload, please supply -PbintrayUser=*** and -PbintrayApiKey=***")
+      }
+    }
   }
 
   plugins.withType(JavaPlugin::class.java).whenPluginAdded {
