@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.nio.charset.Charset
+import java.util.zip.ZipFile
 
 /**
  * yggdrasil
@@ -26,6 +27,14 @@ class IntegrationTest {
     Assertions.assertEquals(5, File(buildDir, "tmp/yggdrasil-stage/").listFiles().size)
     val files = File(buildDir, "tmp/yggdrasil-stage/").list()
     Assertions.assertFalse(files.asList().contains("javax"))
+    val guavaLib = File(buildDir, "tmp/yggdrasil-stage/META-INF/libs/guava-23.2-jre.jar")
+    Assertions.assertTrue(guavaLib.exists())
+  }
+
+  @Test fun testJar() {
+    val jar = File("./build/libs/yggdrasil-gradle-plugin-test-${System.getProperty("project-version")}-yggdrasil.jar")
+    Assertions.assertTrue(jar.exists())
+    Assertions.assertNotNull(ZipFile(jar).getEntry("META-INF/libs/guava-23.2-jre.jar"))
   }
 
   @Test fun testDelegatedMainClass() {

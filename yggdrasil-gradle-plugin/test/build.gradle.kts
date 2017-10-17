@@ -58,6 +58,7 @@ tasks {
     val killTask by creating(KillProcessTask::class)
     "junitPlatformTest"(JavaExec::class) {
       systemProperties.put("io.squark.yggdrasil.port", "$port")
+      systemProperties.put("project-version", "$version")
       dependsOn(startJvm)
       finalizedBy(killTask)
     }
@@ -69,8 +70,8 @@ dependencies {
   compileOnly("javax.enterprise", "cdi-api", dependencyVersions["cdi-api"])
   compileOnly("javax.ws.rs", "javax.ws.rs-api", dependencyVersions["rs-api"])
   compileOnly("javax.json", "javax.json-api", dependencyVersions["javax.json"])
-  compile("org.apache.logging.log4j", "log4j-api", dependencyVersions["log4j"])
   compileOnly("org.apache.logging.log4j", "log4j-core", dependencyVersions["log4j"])
+  compile("com.google.guava", "guava", "23.2-jre")
   testCompile("commons-io", "commons-io", dependencyVersions["commons-io"])
   testCompile("io.rest-assured", "rest-assured", dependencyVersions["rest-assured"])
   testCompile("org.junit.jupiter", "junit-jupiter-api", dependencyVersions["junit-jupiter"])

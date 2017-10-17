@@ -97,8 +97,13 @@ class YggdrasilPlugin @Inject constructor(private val objectFactory: ObjectFacto
             }
             copyJarPath(yggdrasilBootstrapDir, stageDir, true)
 
-            val files = getYggdrasilFiles(classesDirs, resourcesDir, project)
+            val dependencies = getProjectDependencies(project)
+            project.copy {
+              from(dependencies)
+              into(File(stageDir, "META-INF/libs"))
+            }
 
+            val files = getProjectFiles(classesDirs, resourcesDir, project)
             project.copy {
               from(files)
               into(stageDir)
@@ -137,7 +142,11 @@ class YggdrasilPlugin @Inject constructor(private val objectFactory: ObjectFacto
     project.tasks.getByName(LifecycleBasePlugin.BUILD_TASK_NAME).dependsOn(yggdrasil)
   }
 
-  private fun getYggdrasilFiles(classesDirs: FileCollection, resourcesDir: File?, project: Project): FileCollection {
+  private fun getProjectDependencies(project: Project): FileCollection {
+    return project.files(project.configurations.getAt("compile"))
+  }
+
+  private fun getProjectFiles(classesDirs: FileCollection, resourcesDir: File?, project: Project): FileCollection {
     val files = mutableSetOf<FileTree>()
     files.add(classesDirs.asFileTree)
     if (resourcesDir != null && resourcesDir.exists())
