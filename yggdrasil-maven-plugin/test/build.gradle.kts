@@ -32,7 +32,7 @@ buildscript {
 val junitVersion: String = dependencyVersions["junit-platform-gradle-plugin"]!!
 
 plugins {
-  kotlin("jvm")
+  kotlin("jvm") version "1.1.4-3"
 }
 
 apply {

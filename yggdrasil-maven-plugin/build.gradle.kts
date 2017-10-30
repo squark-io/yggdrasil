@@ -26,7 +26,7 @@ buildscript {
 description = "Yggdrasil Maven Plugin"
 
 plugins {
-  kotlin("jvm")
+  kotlin("jvm") version "1.1.4-3"
 }
 
 repositories {

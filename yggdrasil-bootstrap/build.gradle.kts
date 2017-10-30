@@ -10,7 +10,7 @@ buildscript {
 description = "Bootstrapper for Yggdrasil projects"
 
 plugins {
-  kotlin("jvm")
+  kotlin("jvm") version "1.1.4-3"
 }
 
 dependencies {
