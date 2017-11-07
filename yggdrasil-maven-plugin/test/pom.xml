@@ -8,11 +8,11 @@
     <version>0.2.4-SNAPSHOT</version>
 
     <properties>
-        <kotlin>0</kotlin>
-        <cdi-api>0</cdi-api>
-        <rs-api>0</rs-api>
-        <javax.json>0</javax.json>
-        <log4j>0</log4j>
+        <kotlin>1.1.4-3</kotlin>
+        <cdi-api>2.0</cdi-api>
+        <rs-api>2.0.1</rs-api>
+        <javax.json>1.1.0-M1</javax.json>
+        <log4j>2.8.1</log4j>
     </properties>
 
     <dependencies>
@@ -79,20 +79,32 @@
         <repository>
             <id>jcenter</id>
             <url>http://jcenter.bintray.com/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>gradle</id>
             <url>https://repo.gradle.org/gradle/repo/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>jcenter</id>
             <url>http://jcenter.bintray.com/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </pluginRepository>
         <pluginRepository>
             <id>gradle</id>
             <url>https://repo.gradle.org/gradle/repo/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
 </project>

@@ -3,7 +3,8 @@ allprojects {
     "weld" to "3.0.0.Final",
     "cdi-api" to "2.0",
     "servlet-api" to "3.1.0",
-    "undertow" to "1.4.11.Final",
+    "undertow" to "1.4.21.Final",
+    "xnio" to "3.3.8.Final", //NOTE! Must be updated if undertow is updated
     "rs-api" to "2.0.1",
     "resteasy" to "3.1.2.Final",
     "javax.json" to "1.1.0-M1",

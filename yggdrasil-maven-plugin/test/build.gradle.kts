@@ -3,8 +3,6 @@ import com.wiredforcode.gradle.spawn.SpawnProcessTask
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.JavaExec
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.gradleScriptKotlin
-import org.gradle.kotlin.dsl.kotlinModule
 import org.gradle.kotlin.dsl.repositories
 import org.gradle.kotlin.dsl.testCompile
 import org.gradle.kotlin.dsl.testRuntime
@@ -65,6 +63,7 @@ tasks {
     args.addAll(depsAsStringList)
     commandLine(args)
     dependsOn(updateVersion)
+    inputs.file("pom.xml")
   }
   val deleteLogFile by creating {
     File("$projectDir/build/test-results/main.log").takeIf { it.exists() }?.delete()

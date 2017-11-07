@@ -24,6 +24,7 @@ dependencies {
   compile("javax.servlet", "javax.servlet-api", dependencyVersions["servlet-api"])
   compile("io.undertow", "undertow-servlet", dependencyVersions["undertow"])
   compile("io.undertow", "undertow-core", dependencyVersions["undertow"])
+  compile("org.jboss.xnio", "xnio-nio", dependencyVersions["xnio"])
   compile("javax.ws.rs", "javax.ws.rs-api", dependencyVersions["rs-api"])
   compile("org.jboss.resteasy", "resteasy-jaxrs", dependencyVersions["resteasy"])
   compile("org.jboss.resteasy", "resteasy-cdi", dependencyVersions["resteasy"])
