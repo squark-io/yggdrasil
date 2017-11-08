@@ -1,5 +1,6 @@
 package io.squark.yggdrasil.bootstrap
 
+import io.squark.yggdrasil.bootstrap.Yggdrasil.Companion.initialize
 import java.lang.reflect.InvocationTargetException
 import java.net.URLClassLoader
 

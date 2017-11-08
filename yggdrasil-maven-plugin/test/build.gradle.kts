@@ -21,7 +21,6 @@ buildscript {
     maven { setUrl("http://dl.bintray.com/vermeulen-mp/gradle-plugins") }
   }
   dependencies {
-    classpath(kotlin("gradle-plugin"))
     classpath("com.wiredforcode:gradle-spawn-plugin:${dependencyVersions["gradle-spawn-plugin"]}")
     classpath("org.junit.platform:junit-platform-gradle-plugin:${dependencyVersions["junit-platform-gradle-plugin"]}")
   }
@@ -30,7 +29,7 @@ buildscript {
 val junitVersion: String = dependencyVersions["junit-platform-gradle-plugin"]!!
 
 plugins {
-  kotlin("jvm") version "1.1.4-3"
+  kotlin("jvm") version "1.1.51"
 }
 
 apply {
@@ -50,7 +49,7 @@ tasks {
   }
   "compileKotlin" { enabled = false }
   val depsAsStringList = dependencyVersions.entries.map { "-D${it.key}=${it.value}" }.toMutableList()
-  depsAsStringList.add("-Dkotlin=$embeddedKotlinVersion")
+  depsAsStringList.add("-Dkotlin=1.1.51")
 
   val updateVersion by creating(Exec::class) {
     val args = mutableListOf("mvn", "-B", "-U", "-e", "versions:set", "-DnewVersion=$version", "versions:commit")
@@ -63,7 +62,6 @@ tasks {
     args.addAll(depsAsStringList)
     commandLine(args)
     dependsOn(updateVersion)
-    inputs.file("pom.xml")
   }
   val deleteLogFile by creating {
     File("$projectDir/build/test-results/main.log").takeIf { it.exists() }?.delete()
@@ -77,6 +75,7 @@ tasks {
   afterEvaluate({
     "junitPlatformTest"(JavaExec::class) {
       systemProperties.put("io.squark.yggdrasil.port", "$port")
+      systemProperties.put("project-version", "$version")
       dependsOn(startJvm)
       val killTask by creating(KillProcessTask::class)
       finalizedBy(killTask)
@@ -86,7 +85,7 @@ tasks {
 }
 
 dependencies {
-  testCompile(kotlin("stdlib"))
+  testCompile(kotlin("stdlib", "1.1.51"))
   testCompile("org.junit.jupiter", "junit-jupiter-api", dependencyVersions["junit-jupiter"])
   testCompile("io.rest-assured", "rest-assured", dependencyVersions["rest-assured"])
   testRuntime("org.junit.jupiter", "junit-jupiter-engine", dependencyVersions["junit-jupiter"])

@@ -54,6 +54,10 @@ buildscript {
   }
 }
 
+plugins {
+  kotlin("jvm") version "1.1.51" apply false
+}
+
 apply {
   plugin("com.jfrog.bintray")
   plugin("java")

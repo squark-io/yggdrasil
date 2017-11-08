@@ -4,20 +4,14 @@ import org.gradle.kotlin.dsl.project
 
 val dependencyVersions: Map<String, String> by extra
 
-buildscript {
-  dependencies {
-    classpath(kotlin("gradle-plugin"))
-  }
-}
-
 description = "Yggdrasil core"
 
 plugins {
-  kotlin("jvm") version "1.1.4-3"
+  kotlin("jvm")
 }
 
 dependencies {
-  compile(kotlin("stdlib"))
+  compile(kotlin("stdlib", dependencyVersions["kotlin"]))
   compile("org.jboss.weld.se", "weld-se-core", dependencyVersions["weld"])
   compile("org.jboss.weld.servlet", "weld-servlet-core", dependencyVersions["weld"])
   compile("javax.enterprise", "cdi-api", dependencyVersions["cdi-api"])

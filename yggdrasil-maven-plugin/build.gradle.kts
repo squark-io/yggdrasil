@@ -5,7 +5,6 @@ import org.gradle.api.tasks.GradleBuild
 import org.gradle.kotlin.dsl.compile
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.java
 import org.gradle.kotlin.dsl.project
 import org.gradle.kotlin.dsl.repositories
 import java.io.File
@@ -18,15 +17,12 @@ buildscript {
   repositories {
     mavenLocal()
   }
-  dependencies {
-    classpath(kotlin("gradle-plugin"))
-  }
 }
 
 description = "Yggdrasil Maven Plugin"
 
 plugins {
-  kotlin("jvm") version "1.1.4-3"
+  kotlin("jvm")
 }
 
 repositories {
@@ -123,7 +119,6 @@ tasks {
   val it by creating(GradleBuild::class) {
     inputs.files("$buildDir/libs/${project.name}-${project.version}.jar", "$buildDir/libs/pom.xml",
       "$projectDir/test/src", "$projectDir/test/pom.xml")
-    outputs.files("$projectDir/test/build/test-results")
     setBuildFile("test/build.gradle.kts")
     startParameter.projectProperties["version"] = version as String
     tasks = listOf("clean", "execMaven", "test")
@@ -141,8 +136,7 @@ tasks {
 }
 
 dependencies {
-  compile(gradleApi())
-  compile(kotlin("stdlib"))
+  compile(kotlin("stdlib", dependencyVersions["kotlin"]))
   compile("commons-io:commons-io:${dependencyVersions["commons-io"]}")
   compile("org.apache.maven:maven-core:${dependencyVersions["maven"]}")
   compile("org.apache.maven:maven-plugin-api:${dependencyVersions["maven"]}")

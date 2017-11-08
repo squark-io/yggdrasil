@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import java.nio.charset.Charset
 import org.apache.commons.io.IOUtils
+import java.util.zip.ZipFile
 
 /**
  * yggdrasil
@@ -19,6 +20,12 @@ class IntegrationTest {
   @Test fun testRest() {
     RestAssured.port = System.getProperty("io.squark.yggdrasil.port").toInt()
     RestAssured.get("/rest").then().assertThat().body("test", RestAssuredMatchers.equalToPath("test"))
+  }
+
+  @Test fun testJar() {
+    val jar = File("./target/yggdrasil-maven-plugin-test-${System.getProperty("project-version")}-yggdrasil.jar")
+    Assertions.assertTrue(jar.exists(), "Failed to find ${jar.absolutePath}")
+    Assertions.assertNotNull(ZipFile(jar).getEntry("META-INF/libs/guava-23.2-jre.jar"))
   }
 
   @Test fun testDelegatedMainClass() {

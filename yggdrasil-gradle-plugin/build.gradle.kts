@@ -4,17 +4,12 @@ import org.gradle.kotlin.dsl.compile
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.java
 import org.gradle.kotlin.dsl.project
+import org.gradle.testfixtures.ProjectBuilder
 import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
 
 val dependencyVersions: Map<String, String> by extra
-
-buildscript {
-  dependencies {
-    classpath(kotlin("gradle-plugin"))
-  }
-}
 
 description = "Yggdrasil Gradle Plugin"
 
@@ -78,7 +73,6 @@ tasks {
 }
 
 dependencies {
-  compile(gradleApi())
   compile(kotlin("stdlib"))
   compile("commons-io:commons-io:${dependencyVersions["commons-io"]}")
   provided(project(":yggdrasil-core"))

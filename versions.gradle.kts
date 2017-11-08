@@ -1,5 +1,6 @@
 allprojects {
   extra["dependencyVersions"] = mapOf(
+    "kotlin" to "1.1.51",
     "weld" to "3.0.0.Final",
     "cdi-api" to "2.0",
     "servlet-api" to "3.1.0",

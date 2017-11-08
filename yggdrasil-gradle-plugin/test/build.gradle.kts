@@ -4,7 +4,6 @@ import org.gradle.api.tasks.JavaExec
 import org.gradle.kotlin.dsl.compile
 import org.gradle.kotlin.dsl.compileOnly
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.gradleScriptKotlin
 import org.gradle.kotlin.dsl.repositories
 import org.gradle.kotlin.dsl.testCompile
 import org.gradle.kotlin.dsl.testRuntime
@@ -19,19 +18,19 @@ buildscript {
   }
   val dependencyVersions: Map<String, String> by extra
   repositories {
+    jcenter()
     mavenLocal()
     maven { setUrl("http://dl.bintray.com/vermeulen-mp/gradle-plugins") }
   }
   dependencies {
-    classpath(kotlin("gradle-plugin"))
-    classpath("io.squark.yggdrasil:yggdrasil-gradle-plugin:${version}")
+    classpath("io.squark.yggdrasil:yggdrasil-gradle-plugin:$version")
     classpath("com.wiredforcode:gradle-spawn-plugin:${dependencyVersions["gradle-spawn-plugin"]}")
     classpath("org.junit.platform:junit-platform-gradle-plugin:${dependencyVersions["junit-platform-gradle-plugin"]}")
   }
 }
 
 plugins {
-  kotlin("jvm") version "1.1.4-3"
+  kotlin("jvm") version "1.1.51"
 }
 
 apply {
