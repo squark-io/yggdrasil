@@ -39,7 +39,7 @@ tasks {
     into(classesDir)
   }
   val generatePom by creating {
-    configure<PublishingExtension> {
+    publishing {
       publications {
         (findByName("MavenPublication") as DefaultMavenPublication).apply {
           pom {

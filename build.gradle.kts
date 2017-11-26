@@ -80,8 +80,8 @@ configure(subprojects) {
   }
 
   configure<PublishingExtension> {
-    publications {
-      this.create("MavenPublication", MavenPublication::class.java, {
+    (publications) {
+      "MavenPublication"(MavenPublication::class) {
         from(components["java"])
         artifact(tasks.getByPath("sourceJar"), {
           classifier = "sources"
@@ -149,11 +149,11 @@ configure(subprojects) {
             }
           }
         }
-      })
+      }
     }
   }
 
-  configure<BintrayExtension> {
+  bintray {
     user = if (project.hasProperty("bintrayUser")) (project.property("bintrayUser") as String) else System.getenv(
       "BINTRAY_USER")
     key = if (project.hasProperty("bintrayApiKey")) (project.property("bintrayApiKey") as String) else System.getenv(
