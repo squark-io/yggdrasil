@@ -57,7 +57,7 @@ tasks {
 }
 
 dependencies {
-  compile(kotlin("stdlib"))
+  compile(kotlin("stdlib", dependencyVersions["kotlin"]))
   compile("commons-io:commons-io:${dependencyVersions["commons-io"]}")
   provided(project(":yggdrasil-core"))
   provided(project(":yggdrasil-bootstrap"))

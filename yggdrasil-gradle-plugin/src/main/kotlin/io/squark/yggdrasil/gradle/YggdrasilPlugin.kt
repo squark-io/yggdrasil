@@ -3,6 +3,7 @@ package io.squark.yggdrasil.gradle
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
+import org.gradle.api.internal.attributes.ImmutableAttributesFactory
 import org.gradle.api.internal.java.JavaLibrary
 import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
 import org.gradle.api.model.ObjectFactory
@@ -22,9 +23,11 @@ import java.util.jar.Manifest as JdkManifest
  * Copyright 2017
  *
  * @property objectFactory Gradle injected ObjectFactory
+ * @property attributesFactory Gradle injected ImmutableAttributesFactory
  *
  */
-class YggdrasilPlugin @Inject constructor(private val objectFactory: ObjectFactory) : Plugin<Project> {
+class YggdrasilPlugin @Inject constructor(private val objectFactory: ObjectFactory,
+                                          private val attributesFactory: ImmutableAttributesFactory) : Plugin<Project> {
 
   /**
    * Performs packaging of the Yggdrasil jar
@@ -50,7 +53,7 @@ class YggdrasilPlugin @Inject constructor(private val objectFactory: ObjectFacto
     val yggdrasil = project.tasks.findByName(YGGDRASIL_TASK) as YggdrasilTask
     val jarArtifact = ArchivePublishArtifact(yggdrasil)
     project.extensions.getByType(DefaultArtifactPublicationSet::class.java).addCandidate(jarArtifact)
-    project.components.add(JavaLibrary(objectFactory, project.configurations, jarArtifact))
+    project.components.add(JavaLibrary(objectFactory, project.configurations, attributesFactory, jarArtifact))
 
     project.tasks.getByName(LifecycleBasePlugin.BUILD_TASK_NAME).dependsOn(yggdrasil)
   }
