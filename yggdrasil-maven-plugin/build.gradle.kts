@@ -11,8 +11,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
 
-val dependencyVersions: Map<String, String> by extra
-
 buildscript {
   repositories {
     mavenLocal()
@@ -33,7 +31,6 @@ tasks {
   val resourcesDir = java.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME].output.resourcesDir
   val classesDir = File(buildDir, "target/classes")
   classesDir.mkdirs()
-
   val copyClasses by creating(Copy::class) {
     from(java.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME].output.classesDirs)
     into(classesDir)
@@ -45,7 +42,7 @@ tasks {
           pom {
             packaging = "maven-plugin"
             withXml {
-              asNode().apply{
+              asNode().apply {
                 appendNode("prerequisites").appendNode("maven", "3.5.0")
                 appendNode("build").apply {
                   appendNode("resources").appendNode("resource").appendNode("directory",
@@ -53,7 +50,8 @@ tasks {
                   appendNode("plugins").appendNode("plugin").apply {
                     this.appendNode("groupId", "org.apache.maven.plugins")
                     this.appendNode("artifactId", "maven-plugin-plugin")
-                    this.appendNode("version", dependencyVersions["maven-plugin-plugin"])
+                    this.appendNode("version",
+                      dependencyManagement.managedVersions["org.apache.maven.plugins:maven-plugin-plugin"])
                     this.appendNode("configuration").apply {
                       this.appendNode("goalPrefix", "yggdrasil")
                       this.appendNode("skipErrorNoDescriptorsFound", "true")
@@ -84,7 +82,8 @@ tasks {
         }
       }
     }
-    inputs.files(java.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME].output.buildDependencies, java.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME].output.classesDirs)
+    inputs.files(java.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME].output.buildDependencies,
+      java.sourceSets[SourceSet.MAIN_SOURCE_SET_NAME].output.classesDirs)
     outputs.files("$buildDir/pom.xml")
     dependsOn("generatePomFileForMavenPublicationPublication")
   }
@@ -105,43 +104,34 @@ tasks {
     into(File(buildDir, "libs"))
     dependsOn(mavenPackage)
   }
-  val itPrepare by creating {
-    val propFile = File("$projectDir/test/gradle.properties")
-    inputs.files("$buildDir/libs/${project.name}-${project.version}.jar", "$buildDir/libs/pom.xml")
-    outputs.file(propFile)
-    doFirst {
-      val prop = Properties()
-      prop.load(FileInputStream(propFile))
-      prop["version"] = version
-      propFile.writeText(prop.entries.joinToString(separator = "\n", transform = { "${it.key}=${it.value}" }))
-    }
+  "jar" {
+    enabled = false
+    dependsOn(copyLib)
+  }
+  val publishToMavenLocal = "publishToMavenLocal" {
+    outputs.dirs("$projectDir/test/build/test-results")
+    dependsOn(":yggdrasil-core:publishToMavenLocal", ":yggdrasil-bootstrap:publishToMavenLocal")
   }
   val it by creating(GradleBuild::class) {
-    inputs.files("$buildDir/libs/${project.name}-${project.version}.jar", "$buildDir/libs/pom.xml",
-      "$projectDir/test/src", "$projectDir/test/pom.xml")
+    inputs.files(copyLib.outputs.files, "$projectDir/test/src", "$projectDir/test/pom.xml")
+    outputs.dirs("$projectDir/test/build/test-results")
     setBuildFile("test/build.gradle.kts")
-    startParameter.projectProperties["version"] = version as String
     tasks = listOf("clean", "execMaven", "test")
-    dependsOn("publishToMavenLocal", itPrepare, ":yggdrasil-core:publishToMavenLocal",
-      ":yggdrasil-bootstrap:publishToMavenLocal")
+    dependsOn(publishToMavenLocal, copyLib)
   }
   "test"(Test::class) {
     isScanForTestClasses = false
     dependsOn(it)
   }
-  "jar" {
-    enabled = false
-    dependsOn(copyLib)
-  }
 }
 
 dependencies {
-  compile(kotlin("stdlib", dependencyVersions["kotlin"]))
-  compile("commons-io:commons-io:${dependencyVersions["commons-io"]}")
-  compile("org.apache.maven:maven-core:${dependencyVersions["maven"]}")
-  compile("org.apache.maven:maven-plugin-api:${dependencyVersions["maven"]}")
-  compile("org.apache.maven.plugin-tools:maven-plugin-annotations:${dependencyVersions["maven-plugin-annotations"]}")
-
+  compile(kotlin("stdlib"))
+  compile("commons-io:commons-io")
+  compile("org.apache.maven:maven-core")
+  compile("org.apache.maven:maven-plugin-api")
+  compile("org.apache.maven.plugin-tools:maven-plugin-annotations")
+  runtime("org.apache.maven.plugins:maven-plugin-plugin")
   compile(project(":yggdrasil-core"))
   compile(project(":yggdrasil-bootstrap"))
 }

@@ -19,9 +19,27 @@ import org.jetbrains.dokka.gradle.LinkMapping
 
 val dependencyVersions: Map<String, String> by extra
 
+buildscript {
+  project.apply {
+    from("versions.gradle.kts")
+    from("version.gradle.kts")
+  }
+  val dependencyVersions: Map<String, String> by extra
+
+  repositories {
+    jcenter()
+    mavenLocal()
+  }
+  dependencies {
+    classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:${dependencyVersions["gradle-bintray-plugin"]}")
+    classpath("org.jetbrains.dokka:dokka-gradle-plugin:${dependencyVersions["dokka-gradle-plugin"]}")
+    classpath("io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE")
+  }
+}
+
 allprojects {
   group = "io.squark.yggdrasil"
-  version = "0.2.4-SNAPSHOT"
+  version = project.version
 
   repositories {
     jcenter()
@@ -31,26 +49,12 @@ allprojects {
   buildscript {
     repositories {
       jcenter()
+      mavenLocal()
     }
     dependencies {
       classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:${dependencyVersions["gradle-bintray-plugin"]}")
       classpath("org.jetbrains.dokka:dokka-gradle-plugin:${dependencyVersions["dokka-gradle-plugin"]}")
     }
-  }
-}
-
-buildscript {
-  project.apply {
-    from("versions.gradle.kts")
-  }
-  val dependencyVersions: Map<String, String> by extra
-
-  repositories {
-    jcenter()
-  }
-  dependencies {
-    classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:${dependencyVersions["gradle-bintray-plugin"]}")
-    classpath("org.jetbrains.dokka:dokka-gradle-plugin:${dependencyVersions["dokka-gradle-plugin"]}")
   }
 }
 
@@ -60,8 +64,8 @@ plugins {
 
 apply {
   plugin("com.jfrog.bintray")
-  plugin("java")
   plugin("base")
+  plugin("io.spring.dependency-management")
 }
 
 dependencies {
@@ -71,12 +75,48 @@ dependencies {
   }
 }
 
-configure(subprojects) {
+subprojects {
   val subproject = this
+
   apply {
     plugin("maven-publish")
     plugin("com.jfrog.bintray")
     plugin("org.jetbrains.dokka")
+    plugin("io.spring.dependency-management")
+  }
+
+  dependencyManagement {
+    dependencies {
+      dependency(kotlinDependency("stdlib", dependencyVersions["kotlin"]))
+      dependency(kotlinDependency("maven-plugin", dependencyVersions["kotlin"]))
+      dependency(kotlinDependency("test", dependencyVersions["kotlin"]))
+      dependency("org.jboss.weld.se:weld-se-core:${dependencyVersions["weld"]}")
+      dependency("org.jboss.weld.servlet:weld-servlet-core:${dependencyVersions["weld"]}")
+      dependency("javax.enterprise:cdi-api:${dependencyVersions["cdi-api"]}")
+      dependency("javax.servlet:javax.servlet-api:${dependencyVersions["servlet-api"]}")
+      dependency("io.undertow:undertow-servlet:${dependencyVersions["undertow"]}")
+      dependency("io.undertow:undertow-core:${dependencyVersions["undertow"]}")
+      dependency("org.jboss.xnio:xnio-nio:${dependencyVersions["xnio"]}")
+      dependency("javax.ws.rs:javax.ws.rs-api:${dependencyVersions["rs-api"]}")
+      dependency("org.jboss.resteasy:resteasy-jaxrs:${dependencyVersions["resteasy"]}")
+      dependency("org.jboss.resteasy:resteasy-cdi:${dependencyVersions["resteasy"]}")
+      dependency("org.jboss.resteasy:resteasy-jackson2-provider:${dependencyVersions["resteasy"]}")
+      dependency("org.jboss.resteasy:resteasy-servlet-initializer:${dependencyVersions["resteasy"]}")
+      dependency("javax.json:javax.json-api:${dependencyVersions["javax.json"]}")
+      dependency("org.glassfish:javax.json:${dependencyVersions["javax.json"]}")
+      dependency("com.fasterxml.jackson.datatype:jackson-datatype-jsr353:${dependencyVersions["jackson-datatype-jsr353"]}")
+      dependency("org.apache.logging.log4j:log4j-api:${dependencyVersions["log4j"]}")
+      dependency("org.apache.logging.log4j:log4j-core:${dependencyVersions["log4j"]}")
+      dependency("org.apache.logging.log4j:log4j-web:${dependencyVersions["log4j"]}")
+      dependency("commons-io:commons-io:${dependencyVersions["commons-io"]}")
+      dependency("org.apache.maven:maven-core:${dependencyVersions["maven"]}")
+      dependency("org.apache.maven:maven-plugin-api:${dependencyVersions["maven"]}")
+      dependency("org.apache.maven.plugin-tools:maven-plugin-annotations:${dependencyVersions["maven-plugin-annotations"]}")
+      dependency("org.apache.maven.plugins:maven-plugin-plugin:${dependencyVersions["maven-plugin-plugin"]}")
+      dependency("io.rest-assured:rest-assured:${dependencyVersions["rest-assured"]}")
+      dependency("org.junit.jupiter:junit-jupiter-api:${dependencyVersions["junit-jupiter"]}")
+      dependency("org.junit.jupiter:junit-jupiter-engine:${dependencyVersions["junit-jupiter"]}")
+    }
   }
 
   configure<PublishingExtension> {
@@ -210,4 +250,8 @@ configure(subprojects) {
       findByName("bintrayUpload")!!.dependsOn(subprojects.map { it.tasks.getByName("bintrayUpload") })
     }
   }
+}
+
+fun kotlinDependency(module: String, version: String? = null): String {
+    return project.dependencies.kotlin(module, version) as String
 }

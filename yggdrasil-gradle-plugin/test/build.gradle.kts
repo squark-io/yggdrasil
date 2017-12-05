@@ -1,22 +1,38 @@
+import java.io.FileInputStream
+import java.util.Properties
+import java.util.regex.Pattern
+
 import com.wiredforcode.gradle.spawn.KillProcessTask
 import com.wiredforcode.gradle.spawn.SpawnProcessTask
+import io.spring.gradle.dependencymanagement.internal.dsl.StandardDependencyManagementExtension
+import org.gradle.api.tasks.GradleBuild
 import org.gradle.api.tasks.JavaExec
 import org.gradle.kotlin.dsl.compile
 import org.gradle.kotlin.dsl.compileOnly
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.repositories
+import org.gradle.kotlin.dsl.task
 import org.gradle.kotlin.dsl.testCompile
 import org.gradle.kotlin.dsl.testRuntime
 import java.io.File
 import java.util.Random
 
-val dependencyVersions: Map<String, String> by extra
+task<Wrapper>("wrapper") {
+  val wrapperProps = Properties()
+  wrapperProps.load(FileInputStream(File("$projectDir/../../gradle/wrapper/gradle-wrapper.properties")))
+  val distributionUrl = (wrapperProps["distributionUrl"] as String)
+  val pattern = Pattern.compile(".*gradle-(.*)-all.zip")
+  val matcher = pattern.matcher(distributionUrl)
+  matcher.find()
+  gradleVersion = matcher.group(1)
+  distributionType = Wrapper.DistributionType.ALL
+  jarFile = File("$projectDir/../../gradle/wrapper/gradle-wrapper.jar")
+}
 
 buildscript {
   project.apply {
-    from("../../versions.gradle.kts")
+    from("../../version.gradle.kts")
   }
-  val dependencyVersions: Map<String, String> by extra
   repositories {
     jcenter()
     mavenLocal()
@@ -24,8 +40,9 @@ buildscript {
   }
   dependencies {
     classpath("io.squark.yggdrasil:yggdrasil-gradle-plugin:$version")
-    classpath("com.wiredforcode:gradle-spawn-plugin:${dependencyVersions["gradle-spawn-plugin"]}")
-    classpath("org.junit.platform:junit-platform-gradle-plugin:${dependencyVersions["junit-platform-gradle-plugin"]}")
+    classpath("io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE")
+    classpath("com.wiredforcode:gradle-spawn-plugin:0.6.0")
+    classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.0")
   }
 }
 
@@ -36,11 +53,20 @@ plugins {
 apply {
   plugin("io.squark.yggdrasil.yggdrasil-gradle-plugin")
   plugin("org.junit.platform.gradle.plugin")
+  plugin("io.spring.dependency-management")
 }
 
 repositories {
   mavenLocal()
   jcenter()
+}
+
+dependencyManagement {
+  dependencies {
+    imports {
+      mavenBom("io.squark.yggdrasil:yggdrasil-gradle-plugin:$version")
+    }
+  }
 }
 
 tasks {
@@ -50,7 +76,7 @@ tasks {
   val port = Random().nextInt(2000) + 10000
   val startJvm by creating(SpawnProcessTask::class) {
     dependsOn("yggdrasil", deleteLogFile)
-    command = "java -Dio.squark.yggdrasil.port=$port -jar $projectDir/build/libs/yggdrasil-gradle-plugin-test-${version}-yggdrasil.jar $projectDir/build/test-results/main.log"
+    command = "java -Dio.squark.yggdrasil.port=$port -jar $projectDir/build/libs/yggdrasil-gradle-plugin-test-$version-yggdrasil.jar $projectDir/build/test-results/main.log"
     ready = "Yggdrasil initiated"
   }
   afterEvaluate {
@@ -66,13 +92,13 @@ tasks {
 
 dependencies {
   compile(kotlin("stdlib"))
-  compileOnly("javax.enterprise", "cdi-api", dependencyVersions["cdi-api"])
-  compileOnly("javax.ws.rs", "javax.ws.rs-api", dependencyVersions["rs-api"])
-  compileOnly("javax.json", "javax.json-api", dependencyVersions["javax.json"])
-  compileOnly("org.apache.logging.log4j", "log4j-core", dependencyVersions["log4j"])
-  compile("com.google.guava", "guava", "23.2-jre")
-  testCompile("commons-io", "commons-io", dependencyVersions["commons-io"])
-  testCompile("io.rest-assured", "rest-assured", dependencyVersions["rest-assured"])
-  testCompile("org.junit.jupiter", "junit-jupiter-api", dependencyVersions["junit-jupiter"])
-  testRuntime("org.junit.jupiter", "junit-jupiter-engine", dependencyVersions["junit-jupiter"])
+  compileOnly("javax.enterprise:cdi-api")
+  compileOnly("javax.ws.rs:javax.ws.rs-api")
+  compileOnly("javax.json:javax.json-api")
+  compileOnly("org.apache.logging.log4j:log4j-core")
+  compile("com.google.guava:guava:23.2-jre")
+  testCompile("commons-io:commons-io")
+  testCompile("io.rest-assured:rest-assured")
+  testCompile("org.junit.jupiter:junit-jupiter-api")
+  testRuntime("org.junit.jupiter:junit-jupiter-engine")
 }

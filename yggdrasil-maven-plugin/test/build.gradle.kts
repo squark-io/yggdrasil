@@ -7,26 +7,38 @@ import org.gradle.kotlin.dsl.repositories
 import org.gradle.kotlin.dsl.testCompile
 import org.gradle.kotlin.dsl.testRuntime
 import java.io.File
+import java.util.Properties
+import java.io.FileInputStream
 import java.util.Random
+import java.util.regex.Pattern
 
-val dependencyVersions: Map<String, String> by extra
+task<Wrapper>("wrapper") {
+  val wrapperProps = Properties()
+  wrapperProps.load(FileInputStream(File("$projectDir/../../gradle/wrapper/gradle-wrapper.properties")))
+  val distributionUrl = (wrapperProps["distributionUrl"] as String)
+  val pattern = Pattern.compile(".*gradle-(.*)-all.zip")
+  val matcher = pattern.matcher(distributionUrl)
+  matcher.find()
+  gradleVersion = matcher.group(1)
+  distributionType = Wrapper.DistributionType.ALL
+  jarFile = File("$projectDir/../../gradle/wrapper/gradle-wrapper.jar")
+}
 
 buildscript {
   project.apply {
-    from("../../versions.gradle.kts")
+    from("../../version.gradle.kts")
   }
-  val dependencyVersions: Map<String, String> by extra
   repositories {
+    jcenter()
     mavenLocal()
     maven { setUrl("http://dl.bintray.com/vermeulen-mp/gradle-plugins") }
   }
   dependencies {
-    classpath("com.wiredforcode:gradle-spawn-plugin:${dependencyVersions["gradle-spawn-plugin"]}")
-    classpath("org.junit.platform:junit-platform-gradle-plugin:${dependencyVersions["junit-platform-gradle-plugin"]}")
+    classpath("io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE")
+    classpath("com.wiredforcode:gradle-spawn-plugin:0.6.0")
+    classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.0")
   }
 }
-
-val junitVersion: String = dependencyVersions["junit-platform-gradle-plugin"]!!
 
 plugins {
   kotlin("jvm") version "1.1.51"
@@ -34,11 +46,21 @@ plugins {
 
 apply {
   plugin("org.junit.platform.gradle.plugin")
+  plugin("io.spring.dependency-management")
 }
 
 repositories {
   mavenLocal()
   jcenter()
+}
+
+
+dependencyManagement {
+  dependencies {
+    imports {
+      mavenBom("io.squark.yggdrasil:yggdrasil-gradle-plugin:$version")
+    }
+  }
 }
 
 tasks {
@@ -48,8 +70,9 @@ tasks {
     }
   }
   "compileKotlin" { enabled = false }
-  val depsAsStringList = dependencyVersions.entries.map { "-D${it.key}=${it.value}" }.toMutableList()
-  depsAsStringList.add("-Dkotlin=1.1.51")
+  val depsAsStringList = dependencyManagement.managedVersions.entries.map {
+    "-D${it.key.split(':')[1]}=${it.value}"
+  }.toMutableList()
 
   val updateVersion by creating(Exec::class) {
     val args = mutableListOf("mvn", "-B", "-U", "-e", "versions:set", "-DnewVersion=$version", "versions:commit")
@@ -85,9 +108,9 @@ tasks {
 }
 
 dependencies {
-  testCompile(kotlin("stdlib", "1.1.51"))
-  testCompile("org.junit.jupiter", "junit-jupiter-api", dependencyVersions["junit-jupiter"])
-  testCompile("io.rest-assured", "rest-assured", dependencyVersions["rest-assured"])
-  testRuntime("org.junit.jupiter", "junit-jupiter-engine", dependencyVersions["junit-jupiter"])
-  testCompile("commons-io", "commons-io", dependencyVersions["commons-io"])
+  testCompile(kotlin("stdlib"))
+  testCompile("org.junit.jupiter:junit-jupiter-api")
+  testCompile("io.rest-assured:rest-assured")
+  testRuntime("org.junit.jupiter:junit-jupiter-engine")
+  testCompile("commons-io:commons-io")
 }

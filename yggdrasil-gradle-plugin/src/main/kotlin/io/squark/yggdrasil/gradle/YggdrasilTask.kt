@@ -35,14 +35,21 @@ import java.util.jar.Manifest
  */
 open class YggdrasilTask : Jar() {
 
+  private var stageDir: File? = null
+
   /**
    * Staging dir for preparing jar
    */
   @OutputDirectory
   fun getStageDir(): File {
-    val stageDir = File(project.buildDir, YGGDRASIL_STAGE_DIR)
-    stageDir.mkdirs()
-    return stageDir
+    if (stageDir == null) {
+      stageDir = File(project.buildDir, YGGDRASIL_STAGE_DIR)
+      if (stageDir!!.exists()) {
+        stageDir!!.deleteRecursively()
+      }
+      stageDir!!.mkdirs()
+    }
+    return stageDir!!
   }
 
   /**
@@ -69,6 +76,7 @@ open class YggdrasilTask : Jar() {
   /**
    * Actual @TaskAction method
    */
+  @Suppress("unused")
   @TaskAction
   fun action() {
     description = YGGDRASIL_TASK_DESC
