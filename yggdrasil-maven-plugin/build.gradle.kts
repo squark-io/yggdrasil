@@ -103,15 +103,24 @@ tasks {
     dependsOn(copyLib)
   }
   val publishToMavenLocal = "publishToMavenLocal" {
-    outputs.dirs("$projectDir/test/build/test-results")
     dependsOn(":yggdrasil-core:publishToMavenLocal", ":yggdrasil-bootstrap:publishToMavenLocal")
   }
   val it by creating(GradleBuild::class) {
-    inputs.files(copyLib.outputs.files, "$projectDir/test/src", "$projectDir/test/pom.xml")
-    outputs.dirs("$projectDir/test/build/test-results")
-    setBuildFile("test/build.gradle.kts")
+    inputs.files(copyLib.outputs.files, "$projectDir/yggdrasil-maven-plugin-test/src", "$projectDir/yggdrasil-maven-plugin-test/pom.xml")
+    val testResults = File(buildDir, "test-results/")
+    outputs.dirs(testResults)
+    setBuildFile("yggdrasil-maven-plugin-test/build.gradle.kts")
     tasks = listOf("clean", "execMaven", "test")
     dependsOn(publishToMavenLocal, copyLib)
+    doLast {
+      copy {
+        if (testResults.exists()) {
+          testResults.deleteRecursively()
+        }
+        from(File(projectDir, "yggdrasil-maven-plugin-test/build/test-results/"))
+        into(testResults)
+      }
+    }
   }
   "test"(Test::class) {
     isScanForTestClasses = false

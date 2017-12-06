@@ -15,7 +15,7 @@ plugins {
 tasks {
   "clean" {
     doFirst {
-      delete("$projectDir/test/build")
+      delete("$projectDir/yggdrasil-gradle-plugin-test/build")
     }
   }
   val jarTask = "jar"(Jar::class) {
@@ -24,15 +24,24 @@ tasks {
     }
   }
   val publishToMavenLocal = "publishToMavenLocal" {
-    outputs.dirs("$projectDir/test/build/test-results")
     dependsOn(":yggdrasil-core:publishToMavenLocal", ":yggdrasil-bootstrap:publishToMavenLocal")
   }
   val it by creating(GradleBuild::class) {
-    inputs.files(jarTask.outputs.files, "$projectDir/test/src")
-    outputs.dirs("$projectDir/test/build/test-results")
-    setBuildFile("test/build.gradle.kts")
+    inputs.files(jarTask.outputs.files, "$projectDir/yggdrasil-gradle-plugin-test/src")
+    val testResults = File(buildDir, "test-results/")
+    outputs.dirs(testResults)
+    setBuildFile("$projectDir/yggdrasil-gradle-plugin-test/build.gradle.kts")
     tasks = listOf("clean", "yggdrasil", "test")
     dependsOn(publishToMavenLocal, jarTask)
+    doLast {
+      copy {
+        if (testResults.exists()) {
+          testResults.deleteRecursively()
+        }
+        from(File(projectDir, "yggdrasil-gradle-plugin-test/build/test-results/"))
+        into(testResults)
+      }
+    }
   }
   "test"(Test::class) {
     isScanForTestClasses = false
@@ -46,5 +55,3 @@ dependencies {
   provided(project(":yggdrasil-core"))
   provided(project(":yggdrasil-bootstrap"))
 }
-
-interface Temp : Map<String, String>

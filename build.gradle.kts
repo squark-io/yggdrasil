@@ -59,8 +59,7 @@ apply {
 }
 
 tasks {
-  project.pluginManager.findPlugin("org.jetbrains.kotlin.jvm")
-  "jar" {
+  all {
     enabled = false
   }
 }

@@ -35,22 +35,11 @@ import java.util.jar.Manifest
  */
 open class YggdrasilTask : Jar() {
 
-  private var stageDir: File? = null
-
   /**
    * Staging dir for preparing jar
    */
   @OutputDirectory
-  fun getStageDir(): File {
-    if (stageDir == null) {
-      stageDir = File(project.buildDir, YGGDRASIL_STAGE_DIR)
-      if (stageDir!!.exists()) {
-        stageDir!!.deleteRecursively()
-      }
-      stageDir!!.mkdirs()
-    }
-    return stageDir!!
-  }
+  val stageDir = File(project.buildDir, YGGDRASIL_STAGE_DIR)
 
   /**
    * Classes dirs
@@ -86,8 +75,13 @@ open class YggdrasilTask : Jar() {
     val resourcesDir = getResourcesDir()
     val classesDirs = getClassesDirs()
 
-    from(getStageDir())
-    val beansXML = File(getStageDir(), "META-INF/beans.xml")
+    if (stageDir.exists()) {
+      stageDir.deleteRecursively()
+    }
+    stageDir.mkdirs()
+
+    from(stageDir)
+    val beansXML = File(stageDir, "META-INF/beans.xml")
     if (!beansXML.exists()) {
       beansXML.parentFile.mkdirs()
       beansXML.createNewFile()
@@ -107,18 +101,18 @@ open class YggdrasilTask : Jar() {
         "Failed to find exactly 1 occurence of yggdrasil-bootstrap dependency. Found ${bootstrapFirstLevel.size}")
     }
     val bootstrapArtifacts = bootstrapFirstLevel.single().allModuleArtifacts
-    bootstrapArtifacts.forEach { unpackJar(it.file, getStageDir()) }
+    bootstrapArtifacts.forEach { unpackJar(it.file, stageDir) }
 
     val dependencies = getProjectDependencies(project)
     project.copy {
       from(dependencies)
-      into(File(getStageDir(), "META-INF/libs"))
+      into(File(stageDir, "META-INF/libs"))
     }
 
     val files = getProjectFiles(classesDirs, resourcesDir, project)
     project.copy {
       from(files)
-      into(getStageDir())
+      into(stageDir)
     }
     val manifestFile = File(resourcesDir, JarFile.MANIFEST_NAME)
     var delegatedMainClass: String? = null
