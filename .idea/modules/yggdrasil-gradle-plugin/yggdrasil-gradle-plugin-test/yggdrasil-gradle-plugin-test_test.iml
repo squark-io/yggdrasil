@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":yggdrasil-gradle-plugin:yggdrasil-gradle-plugin-test:test" external.linked.project.path="$MODULE_DIR$/../../../../yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test" external.root.project.path="$MODULE_DIR$/../../../.." external.system.id="GRADLE" external.system.module.group="io.squark.yggdrasil" external.system.module.type="sourceSet" external.system.module.version="0.2.4-SNAPSHOT" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="3" platform="JVM 1.6" useProjectSettings="false">
+        <compilerSettings />
+        <compilerArguments>
+          <option name="destination" value="$MODULE_DIR$/../../../../yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test/build/classes/kotlin/test" />
+          <option name="noStdlib" value="true" />
+          <option name="noReflect" value="true" />
+          <option name="moduleName" value="yggdrasil-gradle-plugin-test" />
+          <option name="addCompilerBuiltIns" value="true" />
+          <option name="loadBuiltInsFromDependencies" value="true" />
+          <option name="languageVersion" value="1.1" />
+          <option name="apiVersion" value="1.1" />
+          <option name="pluginOptions">
+            <array />
+          </option>
+          <option name="pluginClasspaths">
+            <array />
+          </option>
+        </compilerArguments>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+    <output-test url="file://$MODULE_DIR$/../../../../yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test/out/test/classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test/src/test/kotlin" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test/src/test/resources" type="java-test-resource" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="yggdrasil-gradle-plugin-test_main" />
+    <orderEntry type="library" name="Gradle: io.squark.yggdrasil:yggdrasil-core:0.2.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.1.51" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.guava:guava:23.2-jre" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.resteasy:resteasy-cdi:3.1.2.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.resteasy:resteasy-servlet-initializer:3.1.2.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.resteasy:resteasy-jaxrs:3.1.2.Final" level="project" />
+    <orderEntry type="library" name="Gradle: commons-io:commons-io:2.5" level="project" />
+    <orderEntry type="library" name="Gradle: io.rest-assured:rest-assured:3.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.junit.jupiter:junit-jupiter-api:5.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.weld.se:weld-se-core:3.0.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.weld.servlet:weld-servlet-core:3.0.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.weld.probe:weld-probe-core:3.0.0.Final" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.junit.jupiter:junit-jupiter-engine:5.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.weld.module:weld-jsf:3.0.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.weld.module:weld-web:3.0.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.weld.environment:weld-environment-common:3.0.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.weld:weld-core-impl:3.0.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.weld:weld-spi:3.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.weld:weld-api:3.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: javax.enterprise:cdi-api:2.0" level="project" />
+    <orderEntry type="library" name="Gradle: javax.servlet:javax.servlet-api:3.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: io.undertow:undertow-servlet:1.4.21.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.undertow:undertow-core:1.4.21.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.xnio:xnio-nio:3.3.8.Final" level="project" />
+    <orderEntry type="library" name="Gradle: javax.ws.rs:javax.ws.rs-api:2.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.resteasy:resteasy-jackson2-provider:3.1.2.Final" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.datatype:jackson-datatype-jsr353:2.8.7" level="project" />
+    <orderEntry type="library" name="Gradle: javax.json:javax.json-api:1.1.0-M1" level="project" />
+    <orderEntry type="library" name="Gradle: org.glassfish:javax.json:1.1.0-M1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-web:2.8.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-core:2.8.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:1.3.9" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.errorprone:error_prone_annotations:2.0.18" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.j2objc:j2objc-annotations:1.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
+    <orderEntry type="library" name="Gradle: io.rest-assured:xml-path:3.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-xml:2.4.6" level="project" />
+    <orderEntry type="library" name="Gradle: io.rest-assured:json-path:3.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy-json:2.4.6" level="project" />
+    <orderEntry type="library" name="Gradle: io.rest-assured:rest-assured-common:3.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.groovy:groovy:2.4.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpmime:4.5.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.hamcrest:hamcrest-library:1.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.ccil.cowan.tagsoup:tagsoup:1.2.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.junit.platform:junit-platform-commons:1.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apiguardian:apiguardian-api:1.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.opentest4j:opentest4j:1.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.spec.javax.el:jboss-el-api_3.0_spec:1.0.7.Final" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.junit.platform:junit-platform-engine:1.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.logging:jboss-logging:3.3.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: javax.el:javax.el-api:3.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: javax.interceptor:javax.interceptor-api:1.2" level="project" />
+    <orderEntry type="library" name="Gradle: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec:1.0.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec:1.0.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.xnio:xnio-api:3.3.8.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec:1.0.1.Beta1" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.resteasy:resteasy-jaxrs-services:3.1.2.Final" level="project" />
+    <orderEntry type="library" name="Gradle: javax.activation:activation:1.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: net.jcip:jcip-annotations:1.0" level="project" />
+    <orderEntry type="library" name="Gradle: javax.validation:validation-api:1.1.0.Final" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.8.6" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.8.6" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.8.6" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.8.7" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.8.7" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.8.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.logging.log4j:log4j-api:2.8.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.4.4" level="project" />
+    <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
+    <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.9" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.classfilewriter:jboss-classfilewriter:1.1.2.Final" level="project" />
+    <orderEntry type="library" name="Gradle: javax.annotation:javax.annotation-api:1.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.2_spec:1.0.0.Final" level="project" />
+  </component>
+  <component name="TestModuleProperties" production-module="yggdrasil-gradle-plugin-test_main" />
+</module>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="yggdrasil-maven-plugin-test" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="buildSrc_main" target="1.8" />
+      <module name="buildSrc_test" target="1.8" />
+      <module name="yggdrasil-bootstrap_main" target="1.8" />
+      <module name="yggdrasil-bootstrap_test" target="1.8" />
+      <module name="yggdrasil-core_main" target="1.8" />
+      <module name="yggdrasil-core_test" target="1.8" />
+      <module name="yggdrasil-gradle-plugin-test_main" target="1.8" />
+      <module name="yggdrasil-gradle-plugin-test_test" target="1.8" />
+      <module name="yggdrasil-gradle-plugin_main" target="1.8" />
+      <module name="yggdrasil-gradle-plugin_test" target="1.8" />
+      <module name="yggdrasil-gradle-plugin_yggdrasil-bootstrap" target="1.8" />
+      <module name="yggdrasil-gradle-plugin_yggdrasil-core" target="1.8" />
+      <module name="yggdrasil-maven-plugin" target="1.5" />
+      <module name="yggdrasil-maven-plugin-test" target="1.5" />
+      <module name="yggdrasil-maven-plugin-test_main" target="1.8" />
+      <module name="yggdrasil-maven-plugin-test_test" target="1.8" />
+      <module name="yggdrasil-maven-plugin_main" target="1.8" />
+      <module name="yggdrasil-maven-plugin_test" target="1.8" />
+      <module name="yggdrasil-maven-plugin_yggdrasil-bootstrap" target="1.8" />
+      <module name="yggdrasil-maven-plugin_yggdrasil-core" target="1.8" />
+      <module name="yggdrasil_main" target="1.8" />
+      <module name="yggdrasil_test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

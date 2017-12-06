@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/yggdrasil-bootstrap" />
+            <option value="$PROJECT_DIR$/yggdrasil-core" />
+            <option value="$PROJECT_DIR$/yggdrasil-gradle-plugin" />
+            <option value="$PROJECT_DIR$/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test" />
+            <option value="$PROJECT_DIR$/yggdrasil-maven-plugin" />
+            <option value="$PROJECT_DIR$/yggdrasil-maven-plugin/yggdrasil-maven-plugin-test" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/yggdrasil.iml" filepath="$PROJECT_DIR$/yggdrasil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-bootstrap/yggdrasil-bootstrap.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-bootstrap/yggdrasil-bootstrap.iml" group="yggdrasil-bootstrap" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-bootstrap/yggdrasil-bootstrap_main.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-bootstrap/yggdrasil-bootstrap_main.iml" group="yggdrasil-bootstrap" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-bootstrap/yggdrasil-bootstrap_test.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-bootstrap/yggdrasil-bootstrap_test.iml" group="yggdrasil-bootstrap" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-core/yggdrasil-core.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-core/yggdrasil-core.iml" group="yggdrasil-core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-core/yggdrasil-core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-core/yggdrasil-core_main.iml" group="yggdrasil-core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-core/yggdrasil-core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-core/yggdrasil-core_test.iml" group="yggdrasil-core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin.iml" group="yggdrasil-gradle-plugin" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test/yggdrasil-gradle-plugin-test.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test/yggdrasil-gradle-plugin-test.iml" group="yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test/yggdrasil-gradle-plugin-test_main.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test/yggdrasil-gradle-plugin-test_main.iml" group="yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test/yggdrasil-gradle-plugin-test_test.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test/yggdrasil-gradle-plugin-test_test.iml" group="yggdrasil-gradle-plugin/yggdrasil-gradle-plugin-test" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin_main.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin_main.iml" group="yggdrasil-gradle-plugin" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin_test.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-gradle-plugin/yggdrasil-gradle-plugin_test.iml" group="yggdrasil-gradle-plugin" />
+      <module fileurl="file://$PROJECT_DIR$/yggdrasil-maven-plugin/yggdrasil-maven-plugin-test/yggdrasil-maven-plugin-test.iml" filepath="$PROJECT_DIR$/yggdrasil-maven-plugin/yggdrasil-maven-plugin-test/yggdrasil-maven-plugin-test.iml" group="yggdrasil-maven-plugin/yggdrasil-maven-plugin-test" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-maven-plugin/yggdrasil-maven-plugin-test/yggdrasil-maven-plugin-test_main.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-maven-plugin/yggdrasil-maven-plugin-test/yggdrasil-maven-plugin-test_main.iml" group="yggdrasil-maven-plugin/yggdrasil-maven-plugin-test" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-maven-plugin/yggdrasil-maven-plugin-test/yggdrasil-maven-plugin-test_test.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-maven-plugin/yggdrasil-maven-plugin-test/yggdrasil-maven-plugin-test_test.iml" group="yggdrasil-maven-plugin/yggdrasil-maven-plugin-test" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-maven-plugin/yggdrasil-maven-plugin_main.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-maven-plugin/yggdrasil-maven-plugin_main.iml" group="yggdrasil-maven-plugin" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-maven-plugin/yggdrasil-maven-plugin_test.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-maven-plugin/yggdrasil-maven-plugin_test.iml" group="yggdrasil-maven-plugin" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil-maven-plugin/yggdrasil-maven-plugin~1.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil-maven-plugin/yggdrasil-maven-plugin~1.iml" group="yggdrasil-maven-plugin" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil_main.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil_main.iml" group="yggdrasil" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/yggdrasil_test.iml" filepath="$PROJECT_DIR$/.idea/modules/yggdrasil_test.iml" group="yggdrasil" />
+    </modules>
+  </component>
+</project>
