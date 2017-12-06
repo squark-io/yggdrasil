@@ -22,7 +22,6 @@ val dependencyVersions: Map<String, String> by extra
 buildscript {
   project.apply {
     from("versions.gradle.kts")
-    from("version.gradle.kts")
   }
   val dependencyVersions: Map<String, String> by extra
 
@@ -45,27 +44,24 @@ allprojects {
     jcenter()
     mavenLocal()
   }
-
-  buildscript {
-    repositories {
-      jcenter()
-      mavenLocal()
-    }
-    dependencies {
-      classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:${dependencyVersions["gradle-bintray-plugin"]}")
-      classpath("org.jetbrains.dokka:dokka-gradle-plugin:${dependencyVersions["dokka-gradle-plugin"]}")
-    }
-  }
 }
 
 plugins {
   kotlin("jvm") version "1.1.51" apply false
+  base
+  java
 }
 
 apply {
   plugin("com.jfrog.bintray")
-  plugin("base")
   plugin("io.spring.dependency-management")
+  plugin("org.jetbrains.kotlin.jvm:1.1.51")
+}
+
+tasks {
+  "jar" {
+    enabled = false
+  }
 }
 
 dependencies {

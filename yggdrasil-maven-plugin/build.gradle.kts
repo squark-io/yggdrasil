@@ -11,12 +11,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
 
-buildscript {
-  repositories {
-    mavenLocal()
-  }
-}
-
 description = "Yggdrasil Maven Plugin"
 
 plugins {

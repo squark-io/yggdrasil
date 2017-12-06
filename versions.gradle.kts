@@ -1,4 +1,6 @@
 allprojects {
+  version = "0.2.4-SNAPSHOT"
+
   extra["dependencyVersions"] = mapOf(
     "kotlin" to "1.1.51",
     "weld" to "3.0.0.Final",

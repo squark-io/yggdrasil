@@ -31,7 +31,7 @@ task<Wrapper>("wrapper") {
 
 buildscript {
   project.apply {
-    from("../../version.gradle.kts")
+    from("../../versions.gradle.kts")
   }
   repositories {
     jcenter()
