@@ -38,22 +38,21 @@ buildscript {
     mavenLocal()
     maven { setUrl("http://dl.bintray.com/vermeulen-mp/gradle-plugins") }
   }
+  val dependencyVersions: Map<String, String> by extra
   dependencies {
     classpath("io.squark.yggdrasil:yggdrasil-gradle-plugin:$version")
-    classpath("io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE")
-    classpath("com.wiredforcode:gradle-spawn-plugin:0.6.0")
-    classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.0")
+    classpath("io.spring.gradle:dependency-management-plugin:${dependencyVersions["dependency-management-plugin"]}")
+    classpath("com.wiredforcode:gradle-spawn-plugin:${dependencyVersions["gradle-spawn-plugin"]}")
+    classpath("org.junit.platform:junit-platform-gradle-plugin:${dependencyVersions["junit-platform-gradle-plugin"]}")
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${dependencyVersions["kotlin"]}")
   }
-}
-
-plugins {
-  kotlin("jvm") version "1.1.51"
 }
 
 apply {
   plugin("io.squark.yggdrasil.yggdrasil-gradle-plugin")
   plugin("org.junit.platform.gradle.plugin")
   plugin("io.spring.dependency-management")
+  plugin("org.jetbrains.kotlin.jvm")
 }
 
 repositories {

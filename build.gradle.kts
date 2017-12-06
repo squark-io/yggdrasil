@@ -32,7 +32,8 @@ buildscript {
   dependencies {
     classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:${dependencyVersions["gradle-bintray-plugin"]}")
     classpath("org.jetbrains.dokka:dokka-gradle-plugin:${dependencyVersions["dokka-gradle-plugin"]}")
-    classpath("io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE")
+    classpath("io.spring.gradle:dependency-management-plugin:${dependencyVersions["dependency-management-plugin"]}")
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${dependencyVersions["kotlin"]}")
   }
 }
 
@@ -47,7 +48,6 @@ allprojects {
 }
 
 plugins {
-  kotlin("jvm") version "1.1.51" apply false
   base
   java
 }
@@ -55,10 +55,11 @@ plugins {
 apply {
   plugin("com.jfrog.bintray")
   plugin("io.spring.dependency-management")
-  plugin("org.jetbrains.kotlin.jvm:1.1.51")
+  plugin("org.jetbrains.kotlin.jvm")
 }
 
 tasks {
+  project.pluginManager.findPlugin("org.jetbrains.kotlin.jvm")
   "jar" {
     enabled = false
   }

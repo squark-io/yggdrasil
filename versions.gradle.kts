@@ -22,6 +22,7 @@ allprojects {
     "gradle-spawn-plugin" to "0.6.0",
     "junit-platform-gradle-plugin" to "1.0.0",
     "junit-jupiter" to "5.0.0",
-    "rest-assured" to "3.0.2"
+    "rest-assured" to "3.0.2",
+    "dependency-management-plugin" to "1.0.3.RELEASE"
   )
 }
